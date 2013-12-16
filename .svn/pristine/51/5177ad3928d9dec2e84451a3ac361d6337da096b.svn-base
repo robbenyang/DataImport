@@ -1,44 +1,0 @@
-Got-­‐0	  
-Got-­‐5	   Got-­‐10	  
-Got-­‐15	   Got-­‐20	  
-Current 
-State 
- 
-Input 
-Next 
-State	  
-	  A	   	  d’n’	   	  
-A	   	  d’n	   	  
-A	   	  dn’	   	  
-B	   	  d’n’	   	  
-B	   	  d’n	   	  
-B	   	  dn’	   	  
-C	   	  d’n’	   	  
-C	   	  d’n	   	  
-C	   	  dn’	   	  
-D	   	  d’n’	   	  
-D	   	  d’n	   	  
-D	   dn’	   	  
-E	   	  d’n’	   	  
-	  	  	  	  	  	  	  	  	  	  E	   	  d’n	   	  
-	  	  	  	  	  	  	  	  	  E	   	  dn’	   	  
-nextA	  =	  	  
-nextB	  =	  	  
-nextC	  =	  
-nextD	  =	  
-nextE	  =	  	  
-clk	  
-D	  
-N	  
-A	  
-B	  
-C	  
-D	  
-E	  
-F	  
-	  Input:     1100110100100110  … 
-  
- Output:    0000010000010010  …  
-	  
-Candy	  machine	  
-Sequence	  recognizer	  

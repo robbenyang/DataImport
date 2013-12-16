@@ -1,434 +1,0 @@
-1 
-Functions in MIPS	  
-2 
-Today’s  lecture:    Implemen4ng  Func4ons!  
-  The  program’s  flow  of  control  must  be  changed.  
-  The	  Jump	  and	  Link	  (jal)	  instruc7on	  (NEW!)	  
-  Using	  Jump	  Register	  (jr)	  
-  Arguments  and  return  values  are  passed  back  &  forth.  
-  Register	  Conven7ons	  
-  Alloca4ng  (and  dealloca4ng)  space  for  local  variables  
-  The	  stack	  
-  The	  stack	  pointer	  ($sp)	  
-3 
-Control flow in C 
-  Invoking  a  func4on  changes  the  
-control  flow  of  a  program  twice.  
-1. Calling	  the	  func7on	  
-2. Returning	  from	  the	  func7on	  
-  In  this  example  the  main  func4on  
-calls  fact  twice,  and  fact  returns  
-twice—but  to  different  loca4ons  in  
-main.  
-  Each  4me  fact  is  called,  the  CPU  
-has  to  remember  the  appropriate  
-return  address.  
-  No4ce  that  main  itself  is  also  a  
-func4on!  It  is,  in  effect,  called  by  
-the  opera4ng  system  when  you  
-run  the  program.  
-int main() 
-{ 
- ... 
- t1 = fact(8); 
- t2 = fact(3); 
- t3 = t1 + t2; 
- ... 
-} 
- 
- 
-int fact(int n) 
-{ 
- int i, f = 1; 
- for (i = n; i > 1; i--) 
-  f = f * i; 
- return f; 
-} 
-4 
-Control flow in MIPS 
-  MIPS  uses  the  jump-­‐and-­‐link  instruc4on  jal  to  call  func4ons.  
-  jal	  saves	  the	  return	  address	  (the	  address	  of	  the	  next	  instruc7on)	  
-in	  the	  dedicated	  register	  $ra,	  before	  jumping	  to	  the	  func7on.	  
-  jal	  is	  the	  only	  MIPS	  instruc7on	  that	  can	  access	  the	  value	  of	  the	  
-program	  counter,	  so	  it	  can	  store	  the	  return	  address	  PC+4	  in	  $ra.	  
-jal Fact!
-  To  transfer  control  back  to  the  caller,  the  func4on  just  has  to  jump  
-to  the  address  that  was  stored  in  $ra.  
-jr $ra!
-  Let’s  now  add  the  jal  and  jr  instruc4ons  that  are  necessary  for  our  
-factorial  example.  
-5 
-Data flow in C 
-  Func4ons  accept  arguments  
-and  produce  return  values.  
-  The  blue  parts  of  the  program  
-show  the  actual  and  formal  
-arguments  of  the  fact  
-func4on.  
-  The  purple  parts  of  the  code  
-deal  with  returning  and  using  
-a  result.  
-int main() 
-{ 
- ... 
- t1 = fact(8); 
- t2 = fact(3); 
- t3 = t1 + t2; 
- ... 
-} 
- 
-int fact(int n) 
-{ 
- int i, f = 1; 
- for (i = n; i > 1; i--) 
-  f = f * i; 
- return f; 
-} 
-6 
-Data flow in MIPS 
-  MIPS  uses  the  following  conven4ons  for  func4on  arguments  
-and  results.  
-  Up	  to	  four	  func7on	  arguments	  can	  be	  “passed”	  by	  placing	  
-them	  in	  argument	  registers	  $a0-­‐$a3	  before	  calling	  the	  
-func7on	  with	  jal.	  
-  A	  func7on	  can	  “return”	  up	  to	  two	  values	  by	  placing	  them	  in	  
-registers	  $v0-­‐$v1,	  before	  returning	  via	  jr.	  
-  These  conven4ons  are  not  enforced  by  the  hardware  or  
-assembler,  but  programmers  agree  to  them  so  func4ons  
-wriTen  by  different  people  can  interface  with  each  other.  
-  Later  we’ll  talk  about  handling  addi4onal  arguments  or  
-return  values.  
-7 
-  Assembly  language  is  untyped—there  is  no  dis4nc4on  
-between  integers,  characters,  pointers  or  other  kinds  of  
-values.    
-  It  is  up  to  you  to  “type  check”  your  programs.  In  par4cular,  
-make  sure  your  func4on  arguments  and  return  values  are  
-used  consistently.  
-  For  example,  what  happens  if  somebody  passes  the  address  
-of  an  integer  (instead  of  the  integer  itself)  to  the  fact  
-func4on?  
-A note about types 
-8 
-The big problem so far 
-  There  is  a  big  problem  here!  
-  The	  main	  code	  uses	  $t1	  to	  store	  the	  result	  of	  fact(8).	  
-  But	  $t1	  is	  also	  used	  within	  the	  fact	  func7on!	  
-  The  subsequent  call  to  fact(3)  will  overwrite  the  value  of  
-fact(8)  that  was  stored  in  $t1.  
-9 
-A:  ... 
- # Put B’s args in $a0-$a3 
- jal  B  # $ra = A2 
-A2:  ... 
- 
- 
- 
-B:  ... 
- # Put C’s args in $a0-$a3, 
- # erasing B’s args! 
- jal  C  # $ra = B2 
-B2:  ... 
- jr  $ra  # Where does 
-   # this go??? 
- 
- 
- 
-C:  ... 
- jr  $ra 
-Nested functions 
-  A  similar  situa4on  happens  
-when  you  call  a  func4on  that  
-then  calls  another  func4on.  
-  Let’s  say  A  calls  B,  which  calls  C.  
-  The	  arguments	  for	  the	  call	  to	  
-C	  would	  be	  placed	  in	  $a0-­‐$a3,	  
-thus	  overwri*ng	  the	  original	  
-arguments	  for	  B.	  
-  Similarly,	  jal	  C	  overwrites	  the	  
-return	  address	  that	  was	  saved	  
-in	  $ra	  by	  the	  earlier	  jal	  B.	  
-10 
-Spilling registers 
-  The  CPU  has  a  limited  number  of  registers  for  use  by  all  
-func4ons,  and  it’s  possible  that  several  func4ons  will  need  
-the  same  registers.  
-  We  can  keep  important  registers  from  being  overwriTen  by  a  
-func4on  call,  by  saving  them  before  the  func4on  executes,  
-and  restoring  them  a\er  the  func4on  completes.  
-  But  there  are  two  important  ques4ons.  
-  Who	  is	  responsible	  for	  saving	  registers—the	  caller	  or	  the	  
-callee?	  
-  Where	  exactly	  are	  the	  register	  contents	  saved?	  
-11 
-Who saves the registers? 
-  Who  is  responsible  for  saving  important  registers  across  func4on  calls?  
-  The	  caller	  knows	  which	  registers	  are	  important	  to	  it	  and	  should	  be	  saved.	  
-  The	  callee	  knows	  exactly	  which	  registers	  it	  will	  use	  and	  poten7ally	  
-overwrite.	  
-  However,  in  the  typical  “black  box”  programming  approach,  the  caller  and  
-callee  do  not  know  anything  about  each  other’s  implementa4on.  
-  Different	  func7ons	  may	  be	  wri\en	  by	  different	  people	  or	  companies.	  
-  A	  func7on	  should	  be	  able	  to	  interface	  with	  any	  client,	  and	  different	  
-implementa7ons	  of	  the	  same	  func7on	  should	  be	  subs7tutable.	  
-  So  how  can  two  func4ons  cooperate  and  share  registers  when  they  don’t  
-know  anything  about  each  other?  
-12 
-The caller could save the registers… 
-  One  possibility  is  for  the  caller  to  
-save  any  important  registers  that  
-it  needs  before  making  a  func4on  
-call,  and  to  restore  them  a\er.  
-  But  the  caller  does  not  know  what  
-registers  are  actually  wriTen  by  
-the  func4on,  so  it  may  save  more  
-registers  than  necessary.  
-  In  the  example  on  the  right,  frodo  
-wants  to  preserve  $a0,  $a1,  $s0  
-and  $s1  from  gollum,  but  gollum  
-may  not  even  use  those  registers.  
-frodo:  li  $a0, 3 
- li  $a1, 1 
- li  $s0, 4 
- li  $s1, 1 
- 
- # Save registers 
- # $a0, $a1, $s0, $s1 
- 
- jal  gollum 
- 
- # Restore registers 
- # $a0, $a1, $s0, $s1 
- 
- add  $v0, $a0, $a1 
- add  $v1, $s0, $s1 
- jr  $ra 
-13 
-…or the callee could save the registers… 
-  Another  possibility  is  if  the  
-callee  saves  and  restores  any  
-registers  it  might  overwrite.  
-  For  instance,  a  gollum  
-func4on  that  uses  registers  
-$a0,  $a2,  $s0  and  $s2  could  
-save  the  original  values  first,  
-and  restore  them  before  
-returning.  
-  But  the  callee  does  not  know  
-what  registers  are  important  
-to  the  caller,  so  again  it  may  
-save  more  registers  than  
-necessary.  
-gollum: 
- # Save registers 
- # $a0 $a2 $s0 $s2 
- 
- li  $a0, 2 
- li  $a2, 7 
- li  $s0, 1 
- li  $s2, 8 
- ... 
- 
- # Restore registers 
- # $a0 $a2 $s0 $s2 
- 
- jr  $ra 
-14 
-…or they could work together 
-  MIPS  uses  conven4ons  again  to  split  the  register  spilling  chores.  
-  The  caller  is  responsible  for  saving  and  restoring  any  of  the  following  
-caller-­‐saved  registers  that  it  cares  about.  
-$t0-$t9   $a0-$a3   $v0-$v1 
- In  other  words,  the  callee  may  freely  modify  these  registers,  under  the  
-assump4on  that  the  caller  already  saved  them  if  necessary.  
-  The  callee  is  responsible  for  saving  and  restoring  any  of  the  following  
-callee-­‐saved  registers  that  it  uses.    
-$s0-$s7 
- Thus  the  caller  may  assume  these  registers  are  not  changed  by  the  callee.  
-  $ra  is  special;  it  is  “used”  by  jal.    It  is  saved  by  a  callee  who  is  also  a  caller.    
-$ra 
-15 
-Register spilling example 
-  This  conven4on  ensures  that  the  caller  and  callee  together  save  all  of  
-the  important  registers—frodo  only  needs  to  save  registers  $a0  and  $a1,  
-while  gollum  only  has  to  save  registers  $s0  and  $s2.  
-frodo:  li  $a0, 3 
- li  $a1, 1 
- li  $s0, 4 
- li  $s1, 1 
- 
- # Save registers 
- # $a0, $a1, $ra 
- 
- jal  gollum 
- 
- # Restore registers 
- # $a0, $a1, $ra 
- 
- add  $v0, $a0, $a1 
- add  $v1, $s0, $s1 
- jr  $ra 
-gollum: 
- # Save registers 
- # $s0 and $s2 
- 
- li  $a0, 2 
- li  $a2, 7 
- li  $s0, 1 
- li  $s2, 8 
- ... 
- 
- # Restore registers 
- # $s0 and $s2 
- 
- jr  $ra 
-16 
-How to fix factorial 
-  In  the  factorial  example,  main  (the  caller)  should  save  two  
-registers.  
-— $t1	  must	  be	  saved	  before	  the	  second	  call	  to	  fact.	  
-— $ra	  will	  be	  implicitly	  overwri\en	  by	  the	  jal	  instruc7ons.	  
-  But  fact  (the  callee)  does  not  need  to  save  anything.  It  only  
-writes  to  registers  $t0,  $t1  and  $v0,  which  should  have  been  
-saved  by  the  caller.  
-17 
-Where are the registers saved? 
-  Now  we  know  who  is  responsible  for  saving  which  registers,  
-but  we  s4ll  need  to  discuss  where  those  registers  are  saved.  
-  It  would  be  nice  if  each  func4on  call  had  its  own  private  
-memory  area.  
-  This	  would	  prevent	  other	  func7on	  calls	  from	  overwri7ng	  
-our	  saved	  registers—otherwise	  using	  memory	  is	  no	  be\er	  
-than	  using	  registers.	  
-  We	  could	  use	  this	  private	  memory	  for	  other	  purposes	  too,	  
-like	  storing	  local	  variables.	  
-18 
-Function calls and stacks 
-  No4ce  func4on  calls  and  returns  
-occur  in  a  stack-­‐like  order:  the  most  
-recently  called  func4on  is  the  first  
-one  to  return.  
-1. 	  Someone	  calls	  A	  
-2. 	   	  A	  calls	  B	  
-3. 	   	   	  B	  calls	  C	  
-4. 	   	   	  C	  returns	  to	  B	  
-5. 	   	  B	  returns	  to	  A	  
-6. 	  A	  returns	  
-	  
-  Here,  for  example,  C  must  return  to  B  
-before  B  can  return  to  A.  
-A:  ... 
- jal B 
-A2: ... 
- jr $ra 
- 
- 
-B:  ... 
- jal C 
-B2: ... 
- jr  $ra 
- 
- 
-C:  ... 
- jr  $ra 
-1 
-2 
-3 
-4 
-5 
-6 
-19 
-Stacks and function calls 
-  It’s  natural  to  use  a  stack  for  func4on  call  storage.  
-A  block  of  stack  space,  called  a  stack  frame,  can  be  
-allocated  for  each  func4on  call.  
-  When	  a	  func7on	  is	  called,	  it	  creates	  a	  new	  frame	  
-onto	  the	  stack,	  which	  will	  be	  used	  for	  local	  
-storage.	  
-  Before	  the	  func7on	  returns,	  it	  must	  pop	  its	  stack	  
-frame,	  to	  restore	  the	  stack	  to	  its	  original	  state.	  
-  The  stack  frame  can  be  used  for  several  purposes.  
-  Caller-­‐	  and	  callee-­‐save	  registers	  can	  be	  put	  in	  the	  
-stack.	  
-  The	  stack	  frame	  can	  also	  hold	  local	  variables,	  or	  
-extra	  arguments	  and	  return	  values.	  
-20 
-The MIPS stack 
-  In  MIPS  machines,  part  of  main  
-memory  is  reserved  for  a  stack.  
-  The	  stack	  grows	  downward	  in	  terms	  
-of	  memory	  addresses.	  
-  The	  address	  of	  the	  top	  element	  of	  
-the	  stack	  is	  stored	  (by	  conven7on)	  in	  
-the	  “stack	  pointer”	  register,	  $sp.	  
-  MIPS  does  not  provide  “push”  and  
-“pop”  instruc4ons.    Instead,  they  must  
-be  done  explicitly  by  the  programmer.  
-0x7FFFFFFF 
-0x00000000 
-$sp 
- stack 
-21 
-Pushing elements 
-  To  push  elements  onto  the  stack:  
-  Move	  the	  stack	  pointer	  $sp	  down	  to	  make	  
-room	  for	  the	  new	  data.	  
-  Store	  the	  elements	  into	  the	  stack.	  
-  For  example,  to  push  registers  $t1  
-and  $t2  onto  the  stack:  
-  sub $sp, $sp, 8 
-  sw  $t1, 4($sp) 
-  sw  $t2, 0($sp) 
-  An  equivalent  sequence  is:  
-  sw  $t1, -4($sp) 
-  sw  $t2, -8($sp) 
-  sub $sp, $sp, 8 
-  Before  and  a\er  diagrams  of  the  
-stack  are  shown  on  the  right.  
-word 2 
-word 1 
-$t1 
-$t2 $sp 
-Before 
-After 
-word 2 
-word 1 
-$sp 
-22 
-Accessing and popping elements 
-  You  can  access  any  element  in  the  stack  (not  
-just  the  top  one)  if  you  know  where  it  is  
-rela4ve  to  $sp.  
-  For  example,  to  retrieve  the  value  of  $t1:  
-  lw  $s0, 4($sp) 
-  You  can  pop,  or  “erase,”  elements  simply  by  
-adjus4ng  the  stack  pointer  upwards.  
-  To  pop  the  value  of  $t2,  yielding  the  stack  
-shown  at  the  boTom:  
-  addi $sp, $sp, 4 
-  Note  that  the  popped  data  is  s4ll  present  in  
-memory,  but  data  past  the  stack  pointer  is  
-considered  invalid.  
-word 2 
-word 1 
-$t1 
-$t2 $sp 
-word 2 
-word 1 
-$t1 
-$t2 
-$sp 
-23 
-Summary 
-  Today  we  focused  on  implemen4ng  func4on  calls  in  MIPS.  
-  We	  call	  func7ons	  using	  jal,	  passing	  arguments	  in	  registers	  $a0-­‐$a3.	  
-  Func7ons	  place	  results	  in	  $v0-­‐$v1	  and	  return	  using	  jr	  $ra.	  
-  Managing  resources  is  an  important  part  of  func4on  calls.  
-  To	  keep	  important	  data	  from	  being	  overwri\en,	  registers	  are	  saved	  
-according	  to	  conven7ons	  for	  caller-­‐save	  and	  callee-­‐save	  registers.	  	  
-  Each	  func7on	  call	  uses	  stack	  memory	  for	  saving	  registers,	  storing	  
-local	  variables	  and	  passing	  extra	  arguments	  and	  return	  values.	  
-  Assembly  programmers  must  follow  many  conven4ons.  Nothing  
-prevents  a  rogue  program  from  overwri4ng  registers  or  stack  
-memory  used  by  some  other  func4on.  
-  On  Monday,  we’ll  look  at  wri4ng  recursive  func4ons.  

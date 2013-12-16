@@ -1,56 +1,0 @@
-A	  shop	  has	  the	  following	  rules	  for	  making	  a	  good	  (meat)	  sandwich:	  	  
-	  (1)	  All	  sandwiches	  must	  have	  at	  least	  one	  type	  of	  meat.	  
-	  (2)	  Don’t	  put	  both	  roast	  beef	  and	  ham	  on	  the	  same	  sandwich.	  	  
-	  (3)	  Cheese	  only	  goes	  on	  sandwiches	  that	  include	  turkey.	  	  
-	  
-Write	  a	  Boolean	  expression	  for	  the	  allowed	  combinaFons	  of	  	  
-sandwich	  ingredients	  using	  the	  following	  variables:	  	  
-	  c	  =	  cheese	  
-	  h	  =	  ham	  
-	  t	  =	  turkey	  	  
-	  r	  =	  roast	  beef	  	  
-c h t r f(..) 
-0 0 0 0  
-0 0 0 1  
-0 0 1 0  
-0 0 1 1  
-0 1 0 0  
-0 1 0 1  
-0 1 1 0  
-0 1 1 1  
-1 0 0 0  
-1 0 0 1  
-1 0 1 0  
-1 0 1 1  
-1 1 0 0  
-1 1 0 1  
-1 1 1 0  
-1 1 1 1  
- 
-x y (xy)’ 
-0 0 1 
-0 1 1 
-1 0 1 
-1 1 0 
- 
- 
-x y (x+y)’ 
-0 0 1 
-0 1 0 
-1 0 0 
-1 1 0 
- 
- 
-NAND	  	  (NOT-­‐AND)	   NOR	  (NOT-­‐OR)	   XOR	  (eXclusive	  OR)	  
-(xy)’	  =	  x’+	  y’	   (x	  +	  y)’	  =	  x’y’	   x	  ⊕	  y	  =	  x’y	  +	  xy’	  
-OperaFon:	  
-Expressions:	  
-Truth	  table:	  
-Logic	  gates:	  
-x y x⊕y 
-0 0 0 
-0 1 1 
-1 0 1 
-1 1 0 
- 
- 

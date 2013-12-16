@@ -1,655 +1,0 @@
-Kevin	  C.	  Chang
-Map  Reduce
-Database	  Systems
-1
-	  
-All	  the	  way	  through	  non	  relational	  data,	  
-now	  this	  is	  the	  time	  for	  mapreduce!	  
-• Why	  MapReduce?
-• Scenarios	  where	  MapReduce may	  excel.
-• MapReduce abstraction.
-• MapReduce architecture.
-• Is	  MapReduce better,	  or	  not?	  Where	  and	  why?
-Concepts	  You	  Will	  Learn
-Map	  Reduce	  (1	  of	  44)Default	  Section	  (1	  of	  2)
-	  
-	  
-The  Big  Picture:  Where  We  Are
-Map  Reduce  (2  of  44)Default  Section  (2  of  2)
-Data	  Access
-Data	  Modeling
-Data/Query	  Processing
-Data	  Acquisition
-Relational NonRelational
-St
-ru
-ct
-ur
-ed
-Se
-m
-iS
-tr
-uc
-tu
-re
-d
-Transaction	  Management
-N
-oS
-Q
-L  
-D
-at
-ab
-as
-es
-XM
-L  
-D
-at
-ab
-as
-es
-U
-nt
-ru
-ct
-ur
-ed
-Relational  Databases
-• SQL
-• Relational  Algebra
-• Query  Optimization
-• Query  Execution
-• Indexing
-• Concurrency  Control
-• Logging  Recovery
-Database  Systems Toolkits
-M
-ap
-  R
-ed
-uc
-e
-(P
-ar
-al
-le
-l)
-St
-or
-m
-  
-(S
-tr
-ea
-m
-)
-Information  Extraction
-ER  à Relational  Model
-Query	  Language
-	  
-So	  far,	  we	  have	  studied	  relational	  algebra,	  
-XML	  databases,	  NOSQL	  databases,	  query	  
-processing,	  query	  optimization	  and	  so	  on.	  
-However,	  these	  are	  not	  sufficient.	  There	  
-is	  a	  kind	  of	  scenario	  when	  we	  are	  dealing	  
-with	  non-­‐relational	  data	  but	  we	  still	  have	  
-to	  process	  data	  just	  like	  the	  way	  we	  join	  
-and	  project.	  So	  we	  introduce	  map-­‐reduce.	  	  
-Why	  Do	  We	  Learn	  This?
-Map  Reduce  (3  of  44)Why  Do  We  Learn  This?  (0  of  7)
-	  
-There	  are	  many	  reasons	  to	  use	  
-mapreduce.	  To	  learn	  the	  basic	  idea	  of	  
-mapreduce,	  you	  can	  view	  this	  link	  
-http://en.wikipedia.org/wiki/MapReduce
-or	  go	  on	  reading	  next	  pages.	  
-Big  Data,  Again!
-Map  Reduce  (4  of  44)Why  Do  We  Learn  This?  (1  of  7)
-People  and  brands  on Twitter send  
-more  than 340	  million	  tweets a  day.
-People  upload 72	  hours	  (259,200	  
-seconds) of  new  video  to YouTube a  
-minute.
-Google receives  over 2	  million	  
-search	  queries a  minute.
-	  
-Data	  is	  everywhere.	  Huge	  data	  flow	  is	  
-everywhere,	  thus	  a	  need	  for	  big	  data	  
-decomposition	  method	  is	  needed.	  
-The	  definition	  and	  brief	  introduction	  to	  
-big	  data:	  
-http://en.wikipedia.org/wiki/Big_data	  
-	  
-• Data	  is	  distributed	  in	  multiple	  computers.
-• Logically	  a	  single	  machine
-• Featuring	  well-­‐defined	  schemas,	  declarative	  query	  
-languages	  (SQL).
-• Have	  been	  studied	  for	  decades.
-Traditional	  Solution	  for	  Big	  Data:
-Parallel	  Database
-Map	  Reduce	  (5	  of	  44)Why	  Do	  We	  Learn	  This?	  (2	  of	  7)
-SQL
-Relational	  
-Data
-	  
-Use	  SQL	  as	  primary	  way	  to	  store	  big	  data	  
-in	  multi	  computers	  traditionally…	  
-More	  information	  and	  definition	  about	  
-parallel	  database:	  
-http://en.wikipedia.org/wiki/Parallel_dat
-abase	  
-Example:	  when	  we	  do	  beers	  join	  sells,	  we	  
-can	  do	  it	  on	  ten	  computers.	  
-Parallel  database  is  powerful  in  supporting  SQL  
-queries  on  big  data.
-Map  Reduce  (6  of  44)Why  Do  We  Learn  This?  (3  of  7)
-But	  ...
-	  
-There	  are	  scenarios	  that	  parallel	  database	  
-is	  not	  sufficient.	  Mapreduce	  and	  other	  no	  
-sql	  database	  become	  new	  ways	  to	  solve	  
-several	  dilemmas	  relational	  database	  is	  
-lacking	  capability	  of.	  	  
-• A	  lot	  of	  Web	  data	  are	  semi-­‐structured	  without	  
-predefined	  schema.
-Scenario	  1:	  Semi-­‐Structured	  Data
-Map	  Reduce	  (7	  of	  44)Why	  Do	  We	  Learn	  This?	  (4	  of	  7)
-Inconsistent	  with	  relational	  model	  in	  RDBMS	  
-	  
-First:	  Use	  key-­‐value	  pairs	  in	  JSON	  or	  XML	  
-or	  other	  semi-­‐structured	  data.	  
-See	  more	  in	  previous	  semi-­‐structure	  
-database	  slides	  for	  a	  review.	  
-Scenario  2:  ETL  (Extraction,  Transform  and  Load)  
-and  “read  once”  Tasks
-Map  Reduce  (8  of  44)Why  Do  We  Learn  This?  (5  of  7)
-Example: Web	  Logs Processing
-Web	  Logs
-It	  is	  unnecessary	  to	  store	  data	  	  in	  DBMS	  for	  
-querying.
-Counting	  Word	  Distribution
-Aggregated	  by	  Users
-Trend	  Analysis
-Useful	  
-Statistics
-	  
-ETL:	  load	  ,extract,	  and	  transform	  data,	  a	  
-work	  flow	  before	  SQL	  database.	  As	  
-second	  scenario.	  	  	  
-http://en.wikipedia.org/wiki/Extract,_tra
-nsform,_load	  
-Scenario  3:  Data  Mining  Applications
-Map  Reduce  (9  of  44)Why  Do  We  Learn  This?  (6  of  7)
-Data
-Initial  
-Assignment  
-of  Clusters
-Find  
-Cluster  
-Center
-Reassign  
-Data
-...
-Could	  not	  be	  structured	  as	  single	  SQL	  queries.
-Example: K-­‐Means
-	  
-For	  data	  mining	  purposes.	  Complex	  
-operation	  far	  beyond	  the	  Greek	  symbols	  
-(RA	  query)	  
-Scenario  4:  Limited-­‐budge  and  Robust  
-Map  Reduce  (10  of  44)Why  Do  We  Learn  This?  (7  of  7)
-• Open	  source	  distributed  database  
-systems  are  not	  robust	  enough
-• Commercial distributed  database  
-systems  are  expensive
-	  
-Really	  expensive	  traditional	  database.	  
-Long	  work	  flow:	  transaction	  semantic	  
-with	  no	  partial	  result.	  
-All	  of	  them	  are	  shortcomings	  of	  SQL.	  
-What	  is	  MapReduce?
-Map  Reduce  (11  of  44)What  is  MapReduce?  (0  of  3)
-	  
-	  
-• A	  Programming	  model	  for	  large-­‐scale	  distributed	  
-data	  processing
-• History
-• The	  actual	  origins	  of	  Mapreduce are	  arguable,	  but	  the	  
-paper	  which	  is	  most	  cited	  is	  “MapReduce:	  Simplified	  Data	  
-Processing	  on	  Large	  Clusters” by	  Jeffrey	  Dean	  and	  Sanjay	  
-Ghemawat in	  2004
-• Pioneer	  of	  MapReduce implementation:	  Hadoop
-Framework	  by	  Doug	  Cutting	  and	  …
-• Today,	  numerous	  independent	  people	  and	  organizations	  
-contribute	  to	  MapReduce Project
-What	  is	  MapReduce?
-Map	  Reduce	  (12	  of	  44)What	  is	  MapReduce?	  (1	  of	  3)
-	  
-Map-­‐reduce	  history	  
-• “Googlers’	  Hammer	  for	  80%	  of	  our
-Data	  crunching”
-• Large	  scale	  web	  search	  indexing
-• Clustering	  problems	  for	  Google	  News
-• Produce	  reports	  for	  	  popular	  queries
-• Large-­‐scale	  machine	  learning	  problems.
-• ...
-MapReduce in	  Google
-Map	  Reduce	  (13	  of	  44)What	  is	  MapReduce?	  (2	  of	  3)
-	  
-Wide	  range	  of	  usage	  of	  Mapreduce	  in	  
-Google’s	  applications.	  
-• Google	  MapReduce
-• Support	  C++,	  Java,	  Python,	  Sawzall,	  ...
-• Based	  on	  Proprietary	  infrastructres
-• GFS,	  Sawzall,	  Chubby,	  BigTable
-• And	  some	  open	  source	  libraries
-• Hadoop Map-­‐Reduce
-• Open	  Source	  (Kudos	  to	  Doug	  and	  the	  team)
-• Plus	  the	  whole	  equivalent	  package,	  and	  more
-• HDFS,	  Map-­‐Reduce,	  Pig,	  Zookeeper,	  Hbase,	  Hive
-• Used	  by	  Yahoo!,	  Facebook,	  Amazon,	  ...
-• Dryad
-• Proprietary,	  based	  on	  Microsoft	  SQL	  Servers
-• Dyrad,	  DyradLINQ
-Existing	  MapReduce and	  Similar	  Systems
-Map	  Reduce	  (14	  of	  44)What	  is	  MapReduce?	  (3	  of	  3)
-	  
-Some	  examples	  of	  mapreduce	  
-applications.	  	  
-For	  example,	  Hadoop:	  
-http://en.wikipedia.org/wiki/Apache_Had
-oop	  
-MapReduce	  Abstraction
-Map  Reduce  (15  of  44)MapReduce  Abstraction  (0  of  9)
-	  
-	  
-• Many	  tasks	  are	  composed	  of	  a	  Map	  procedure	  and	  a	  
-Reduce	  procedure
-• Map:	  Categorize	  the	  data.
-• Reduce:	  Aggregate	  the	  data.
-• Ex:	  Counting	  Number	  of	  Keywords	  in	  Text	  Corpus
-• Map:	  Categorize	  the	  keyword	  occurrence	  by	  its	  content.
-• Reduce:	  Count	  the	  number	  of	  occurrences	  of	  each	  keyword
-Intuition	  behind	  MapReduce
-Map	  Reduce	  (16	  of	  44)MapReduce	  Abstraction	  (1	  of	  9)
-	  
-Map	  and	  reduce	  are	  derived	  from	  
-functional	  language	  such	  as	  list,	  where	  we	  
-always	  work	  on	  a	  list	  of	  values,	  apply	  a	  
-function	  that	  is	  called	  map,	  then	  sum	  up	  
-to	  generates	  some	  aggregate,	  called	  
-reduce.	  
-Two	  operators	  in	  MapReduce:	  map	  and	  
-reduce,	  take	  user	  defined	  function,	  that’s	  
-the	  reason	  why	  mapreduce	  is	  so	  
-powerful.	  
-MapReduce Framework
-Map  Reduce  (17  of  44)MapReduce  Abstraction  (2  of  9)
-Data
-Map():	  Categorize  the  
-data  to  re-­‐distribute  the  
-workload.
-Reduce():	  Aggregate  the  
-Categorized  data
-	  
-In	  WordCount()	  example,	  map	  will	  take	  
-each	  document,	  categorize	  the	  keyword	  
-occurrence	  by	  its	  content,	  generate	  
-output	  <key,..>.	  Reduce	  will	  sum	  up	  the	  
-number	  of	  occurrences	  of	  each	  keyword.	  
-• Problem:	  Counting	  the	  frequency	  of	  each	  keyword.
-• Input:	  List	  of	  documents.
-• Output:	  <Keyword_1,	  Frequency_1>,	  <Keyword_2,	  
-Frequency_2>,	  ...
-Use	  WordCount()	  as	  Example
-Map	  Reduce	  (18	  of	  44)MapReduce	  Abstraction	  (3	  of	  9)
-	  
-Map	  will	  generate	  output	  <keyword,	  
-frequency>,	  e.g.	  
-<”data”,12312>	  
-<”query”,3231>	  
-Example:  Map()  in  WordCount()
-Map  Reduce  (19  of  44)MapReduce  Abstraction  (4  of  9)
-Map()𝐾𝑒𝑦, 𝑉𝑎𝑙 List(𝐾𝑒𝑦(,  𝑉𝑎𝑙()
-Abstraction  of  Map()
-Map()
-Doc0,  “A  bad  
-beginning  
-makes  a  bad  
-ending”.    
-[<“a”,  1>,
-<“bad”,  2>,
-<“makes”,  1>,
-<“ending”,  1>  
-...]
-	  
-Map	  transforms	  key-­‐value	  pairs	  into	  a	  list	  
-of	  key-­‐value	  pairs.	  
-The	  key	  for	  input	  is	  Doc0,	  and	  the	  key	  for	  
-output	  is	  the	  word,	  the	  output	  is	  also	  key-­‐
-value	  paired.	  
-Can	  even	  have	  multi	  level	  maps.	  (See	  
-next)	  
-	  
-Abstraction  of  Reduce()
-Map  Reduce  (20  of  44)MapReduce  Abstraction  (5  of  9)
-Example:  Reduce()  in  WordCount()
-Reduce()
-𝐾𝑦𝑒$,𝐿𝑖𝑠𝑡(𝑉𝑎𝑙$) 𝐾𝑦𝑒$, 𝑉𝑎𝑙$′
-Reduce()
-“bad”,  
-[2,1,1,1] “bad”,  5  
-	  
-Reduce	  part	  will	  take	  the	  value	  of	  same	  
-key,	  merge	  them	  together	  (e.g.,	  sum	  the	  
-value	  up)	  to	  get	  final	  key-­‐value	  results.	  
-Again	  the	  output	  is	  key-­‐value	  paired.	  
-Both	  the	  key	  of	  input	  and	  output	  is	  word.	  
-Workflow  of  WordCount()
-Map  Reduce  (21  of  44)MapReduce  Abstraction  (6  of  9)
-Data
-“A	  bad	  beginning	  
-makes	  a	  bad	  ending”.	   ”I	  have	  a	  bad	  news.”
-<“bad”,	  3> <“a”,	  3>
-<“bad”,  2>
-<“a”,  2> <“bad”,  1><“a”,  1>
-Map	  Phase
-Reduce	  Phase
-	  
-Visual	  flow	  of	  data	  in	  mapreduce	  :	  
-Have	  two	  documents.	  Do	  parallel	  
-mappers,	  the	  first	  document	  go	  to	  one	  
-mapper,	  the	  other	  go	  to	  another.	  And	  
-send	  same	  words	  to	  the	  same	  reducer	  
-(Done	  by	  MapReduce	  framework).	  The	  
-reducer	  will	  sum	  up	  the	  value.	  
-• Problem:	  Compute	  average	  income	  in	  a	  city	  for	  a	  
-given	  year	  (e.g.,	  2007)
-• Input:
-• Personal	  Information:	  <SSN,	  Personal	  Info>
-• E.g.	  <“12345”,	  {John	  Smith,	  Sunnyvale,	  CA}>
-• Income	  Information:	  <SSN,	  {year,	  income}>
-• E.g.	  <“12345”,	  {2007,	  $72000}>,	  <“98765”,	  {2013,	  $12344}>
-• Output:	  Average	  income	  in	  each	  city	  in	  2007
-• E.g.	  <Sunnyvale,	  12000>,	  <Champaign,	  2000>,	  ...
-Example	  2:	  Average	  Income
-Map	  Reduce	  (22	  of	  44)MapReduce	  Abstraction	  (7	  of	  9)
-Example	  From	  	  Zhao	  et	  al.	  :”MapReduce:	  The	  Programming	  Model	  and	  Practice”
-	  
-A	  multi	  level	  example	  of	  mapreduce.	  
-This	  time	  we	  create	  two	  types	  of	  key-­‐
-value	  pairs.	  
-See	  solution	  in	  next-­‐>next	  slide!	  
-How  to  Design  Map()  &  Reduce()?
-Map  Reduce  (23  of  44)MapReduce  Abstraction  (8  of  9)
-	  
-	  
-Solution
-Map  Reduce  (24  of  44)MapReduce  Abstraction  (9  of  9)
-	  
-In	  mapper	  1a,	  we	  project	  SSN,	  city.	  
-In	  mapper	  1b,	  we	  project	  SSN,	  2007	  
-income	  
-In	  reducer	  1,	  same	  SSN	  come	  together,	  
-and	  do	  a	  join.	  
-In	  mapper	  2,	  use	  SSN	  as	  a	  key,	  project	  city	  
-2007	  income	  
-In	  reducer	  2,	  use	  city	  as	  a	  key,	  do	  the	  
-aggregate,	  calculate	  the	  average	  
-MapReduce	  Architecture
-Map  Reduce  (25  of  44)MapReduce  Architecture  (0  of  8)
-	  
-	  
-Map  Reduce  Architecture
-Map  Reduce  (26  of  44)MapReduce  Architecture  (1  of  8)
-	  
-	  
-(0)  Shards the  input  file.
-Map  Reduce  (27  of  44)MapReduce  Architecture  (2  of  8)
-A  bad  beginning  
-makes  a  bad  ending
-I  have  a  
-bad  news
-Each  shard  is  typically  
-16~64MB  in  size.
-	  
-	  
-(1)  The  user  program  creates	  processes	  on  
-the  Master  and  worker  threads.
-Map  Reduce  (28  of  44)MapReduce  Architecture  (3  of  8)
-A  bad  beginning  
-makes  a  bad  ending
-I  have  a  
-bad  news
-	  
-	  
-(2)  Master  pick  idle  workers  to  assignmap  
-or  reduce  tasks
-Map  Reduce  (29  of  44)MapReduce  Architecture  (4  of  8)
-A  bad  beginning  
-makes  a  bad  ending
-I  have  a  
-bad  news
-	  
-	  
-(3)  Each  mapworker  reads  assigned  input  
-shard  and  output  <key,  value>  pairs.
-Map  Reduce  (30  of  44)MapReduce  Architecture  (5  of  8)
-<bad,  2>
-<a,  1>
-<ending,  1>
-...
-<bad,  1>
-<a,  1>
-<news,  1>
-...
-A  bad  beginning  
-makes  a  bad  ending
-I  have  a  
-bad  news
-	  
-	  
-(4)  Write Intermediate  <key,  value> pairs  to  
-local  disk.
-Map  Reduce  (31  of  44)MapReduce  Architecture  (6  of  8)
-<bad,  2>
-<a,  1>
-<ending,  1>
-...
-<bad,  1>
-<a,  1>
-<news,  1>
-...
-	  
-	  
-(5)  Reduceworker  reads  intermediate  data  
-sort  by  key
-Map  Reduce  (32  of  44)MapReduce  Architecture  (7  of  8)
-<bad,  2>
-<a,  1>
-<ending,  1>
-...
-<bad,  1>
-<a,  1>
-<news,  1>
-...
-<bad,  (2,  1)>
-<ending,  1>
-...
-<a,  (1,  1)>
-<news,  1>
-...
-	  
-	  
-(6)  Reduce  workers  write the  result.
-Map  Reduce  (33  of  44)MapReduce  Architecture  (8  of  8)
-<bad,  (2,  1)>
-<ending,  1>
-...
-<a,  (1,  1)>
-<news,  1>
-...
-<bad,  3>
-<ending,  
-1>
-...
-<a,  2>
-<news,  1>
-...
-	  
-	  
-Back	  to	  Parallel	  Databases
-Map  Reduce  (34  of  44)Back  to  Parallel  Databases  (0  of  2)
-	  
-	  
-• Scenario	  1:	  Semi-­‐Structured	  Data
-• The	  data	  model	  of	  MapReduce use	  “key-­‐value	  pair”	  data.
-• Scenario	  2	  &	  3:	  ETL	  Tasks	  and	  Data	  Mining	  
-Applications
-• Fast	  data	  loading	  time.
-• Flexible	  User-­‐defined	  map()	  and	  reduce()	  functions	  in	  
-MapReduce.
-Scenarios	  where	  MapReduce outperforms	  Parallel	  
-Databases
-Map	  Reduce	  (35	  of	  44)Back	  to	  Parallel	  Databases	  (1	  of	  2)
-	  
-	  
-• Scenario	  4:	  Limited-­‐budget	  and	  Robust.
-• Most	  MapReduce projects	  are	  open	  source	  and	  free.
-• MapReduce supports	  mid-­‐query	  fault	  tolerance.
-• If	  a	  node	  fails,	  the	  query	  does	  not	  need	  to	  be	  restarted.
-• DBMSs	  typical	  don’t	  support	  it.
-• Only	  important	  as	  the	  number	  of	  nodes	  increases
-• 1	  failure/month,	  1	  hour/query
-• Pr(mid_query_failure|10	  nodes)	  =	  1%
-• Pr(mid_query_failure|100	  nodes)	  =	  13%
-• Pr(mid_query_failure|1000	  nodes)	  =	  75%
-Scenarios	  where	  MapReduce outperforms	  
-Distributed	  Databases
-Map	  Reduce	  (36	  of	  44)Back	  to	  Parallel	  Databases	  (2	  of	  2)
-	  
-	  
-Performance	  Comparison
-Map  Reduce  (37  of  44)Performance  Comparison  (0  of  7)
-	  
-	  
-• Goals
-• Understand	  efficiency	  differences	  between	  MapReduce
-and	  distributed	  databases
-• Software
-• MapReduce:	  Hadoop
-• Distributed	  Databases:	   DBMS-­‐X	  and	  Vertica
-• Ran	  on	  100	  node	  Linux	  cluster
-• Dataset:	  Grep (used	  in	  original	  MapReduce paper,	  
-1TB	  of	  data)
-Benchmark	  (Madden	  2009)
-Map	  Reduce	  (38	  of	  44)Performance	  Comparison	  (1	  of	  7)
-	  
-	  
-05000
-10000
-15000
-20000
-25000
-30000
-25*40GB 50*20GB 100*10GB
-Ti
-m
-e	  
-(s
-ec
-on
-ds
-)
-Hadoop
-Vertica
-DBMS-­‐X
-Load	  Times
-Map	  Reduce	  (39	  of	  44)Performance	  Comparison	  (2	  of	  7)
-Databases	  don’t	  scale	  linearly;	  Hadoop does
-	  
-	  
-0
-200
-400
-600
-800
-1000
-1200
-1400
-1600
-25*40GB 50*20GB 100*10GB
-Ti
-m
-e	  
-(s
-ec
-on
-ds
-)
-Hadoop
-Vertica
-DBMS-­‐X
-Query	  Time
-Map	  Reduce	  (40	  of	  44)Performance	  Comparison	  (3	  of	  7)
-Vertica’s compression	  works	  better	  than	  DBMS-­‐X
-	  
-	  
-0
-200
-400
-600
-800
-1000
-1200
-1400
-25*40GB 50*20GB 100*10GB
-Ti
-m
-e	  
-(s
-ec
-on
-ds
-)
-Hadoop
-Vertica
-DBMS-­‐X
-Aggregation	  Task
-Map	  Reduce	  (41	  of	  44)Performance	  Comparison	  (4	  of	  7)
-DBMS	  perform	  better	  because	  1.	  No	  parsing	  
-overheads;	  2.	  Compression.
-	  
-	  
-• Hadoop load	  times	  are	  faster
-• Very	  important	  for	  one-­‐off	  processing	  tasks
-• Hadoop Query	  and	  aggregation	  times	  are	  a	  lot	  
-slower.
-• Parsing,	  compression	  and	  indexing	  in	  RDBMS
-• No	  compelling	  reason	  to	  choose	  MapReduce over	  a	  
-database	  for	  traditional	  database	  workload.
-Experimental	  Conclusion
-Map	  Reduce	  (42	  of	  44)Performance	  Comparison	  (5	  of	  7)
-	  
-	  
-The	  Future	  of	  MapReduce and	  Parallel	  Database:	  
-Friend	  or	  Foe?
-Map  Reduce  (43  of  44)Performance  Comparison  (6  of  7)
-	  
-	  
-• Supporting	  SQL	  queries	  over	  MapReduce
-Framework.
-• Hive,	  Pig,	  Scope,	  Dryad/Linq.
-• Supporting	  MapReduce Functions	  in	  Parallel	  
-Databases.
-• X	  Su,	  et	  al.:	  Oracle	  in-­‐database	  Hadoop,	  when	  
-MapReduce meets	  RDBMS.	  In	  SIGMOD	  2012
-Efforts	  Towards	  Integrating	  Parallel	  Databases	  and	  
-MapReduce
-Map	  Reduce	  (44	  of	  44)Performance	  Comparison	  (7	  of	  7)
-	  
-	  
-	  

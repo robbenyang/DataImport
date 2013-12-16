@@ -1,98 +1,0 @@
-Last	  lecture-­‐transac-ons	  cont.	  
-•  Transac-ons	  that	  change	  the	  state	  of	  databases	  could	  be	  complex,	  so	  there	  are	  
-several	  rules	  to	  ensure	  transac-ons	  behave	  well:	  
-•  We	  want	  to	  make	  sure	  it	  is	  ACID:	  	  
-•  Atomic	  (all	  or	  nothing)	  
-•  Consistent	  (is	  always	  valid)	  
-•  Isolated	  (other	  transac-ons	  do	  not	  see	  effects	  of	  the	  transac-on	  un-l	  it	  is	  finished)	  
-•  Durable	  (finished	  transac-ons	  can	  survive	  system	  failure)	  
-•  hIp://en.wikipedia.org/wiki/ACID	  
-Undo	  Logs	  
-•  In	  order	  to	  ensure	  we	  do	  not	  lose	  the	  state	  of	  the	  database	  before	  a	  transac-on	  
-takes	  place,	  we	  keep	  logs	  
-•  Undo	  log	  remembers	  only	  the	  old	  values	  before	  a	  transac-on,	  and	  if	  something	  
-goes	  wrong	  we	  can	  go	  back	  to	  those	  old	  values	  
-•  Rule	  1:	  Log	  of	  transac-on	  occurs	  before	  flush	  (output).	  This	  is	  because	  if	  s/t	  goes	  
-wrong	  before	  the	  values	  are	  wriIen	  on	  disk,	  we	  have	  values	  in	  memory	  to	  go	  back	  
-to	  
-•  Rule	  2:	  Logging	  “commit”	  means	  that	  the	  transac-on	  was	  successful,	  so	  the	  record	  
-must	  have	  been	  flushed	  (output)	  to	  disk	  before	  we	  say	  it	  was	  successful	  and	  write	  
-“commit”	  to	  the	  log.	  	  
-Checkpoin-ng	  
-•  If	  system	  crashes,	  to	  recover	  you	  must	  go	  from	  latest	  to	  earliest,	  scanning	  for	  any	  
-uncommiIed	  transac-ons	  (this	  is	  expensive)	  
-•  With	  checkpoin-ng	  you	  can	  be	  sure	  every	  transac-on	  up	  to	  checkpoint	  had	  
-commiIed,	  so	  if	  something	  you	  can	  go	  back	  to	  the	  last	  checkpoint	  
-•  How	  it	  works:	  at	  a	  checkpoint,	  stop	  taking	  new	  transac-ons,	  complete	  all	  long	  
-running	  transac-ons	  and	  then	  commit	  
-•  BUT	  checkpoint	  very	  is	  s-ll	  expensive	  because	  it	  has	  to	  put	  everything	  on	  hold	  
-Nonquiescent	  Checkpoin-ng	  
-•  Has	  two	  points	  for	  each	  checkpoint:	  begin	  checkpoint	  and	  end	  checkpoint	  
-•  ”nonquiesent”	  means	  “business	  as	  usual”	  
-•  When	  a	  new	  checkpoint	  starts,	  keep	  track	  of	  ac-ve	  transac-ons	  
-•  ac-ve	  transac-ons	  are	  non	  commiIed	  ones	  (transac-ons	  I	  want	  to	  complete)	  
-•  Push	  ac-ve	  transac-ons	  to	  complete;	  when	  they	  are	  done	  we	  can	  end	  checkpoint	  
-•  “end	  checkpoin-ng”	  means	  everything	  has	  been	  wriIen	  to	  disk	  by	  “start	  
-checkpoin-ng”,	  so	  you	  only	  have	  to	  scan	  to	  “start	  checkpoin-ng”	  if	  error	  occurs	  
-aXer	  “end	  checkpoin-ng”.	  	  
-•  If	  an	  error	  occurs	  before	  “end	  checkpoin-ng”,	  you	  have	  to	  go	  back	  to	  the	  start	  of	  
-ac-ve	  transac-ons	  in	  “start	  checkpoin-ng”	  and	  undo	  them	  
-Redo	  
-•  Keep	  log	  of	  “start”	  of	  transac-on,	  when	  it	  is	  “commiIed”,	  if	  it	  is	  “aborted”,	  and	  
-that	  it	  has	  changed	  element	  X	  to	  new	  value	  v	  
-•  Rule	  1.	  log	  must	  occur	  before	  saying	  “commit”	  	  
-•  Rule	  2.	  output	  to	  disk	  can	  only	  happen	  aXer	  we	  have	  declared	  “commiIed”	  (not	  
-before	  as	  in	  undo	  logging)	  
-•  How	  to	  do	  recovery?	  
-•  If	  system	  crashed	  before	  “commit”,	  you	  don’t	  have	  to	  do	  anything	  for	  the	  
-incomplete	  transac-on	  because	  it	  wasn’t	  commiIed,	  so	  it	  wasn’t	  output	  
-•  If	  system	  crashed	  aXer	  “commit”,	  we’re	  not	  sure	  if	  it	  was	  output,	  so	  we	  must	  
-“redo”	  to	  make	  sure	  the	  transac-on	  occurred	  
-Nonquiescent	  checkpoint	  for	  redo	  
-•  Redo	  log:	  scan	  from	  “start”,	  all	  the	  way	  to	  the	  commit	  record	  of	  completed	  
-transac-ons	  
-•  Make	  sure	  that	  whenever	  a	  transac-on	  is	  commi%ed,	  they	  are	  flushed	  to	  disk	  
-•  Remember	  ac-ve	  transac-ons	  from	  “start	  checkpoint”,	  then	  output	  all	  the	  
-commiIed	  (not	  ac-ve)	  transac-ons	  
-•  “end	  checkpoint”	  when	  every	  transac-on	  “commited”	  up	  to	  “start”	  has	  been	  
-flushed	  
-•  Redo	  recovery:	  if	  error	  occurs	  aXer	  “start	  checkpoint”,	  go	  back	  to	  the	  transac-ons	  
-that	  have	  been	  commiIed	  but	  not	  covered	  by	  “end	  checkpoint”,	  and	  redo	  them	  
-Combo	  undo/redo	  logging	  
-•  Can	  output	  to	  disk	  any-me	  you	  want,	  has	  flexibility	  because	  you	  have	  both	  old	  and	  
-new	  values	  saved	  
-conclusions	  
-•  You	  are	  alive	  if	  you	  have	  data	  	  
-•  Rules	  for	  project	  fair,	  sign	  up.	  Rules	  for	  final.	  Tutorial	  next	  week	  
-•  Mo-va-ons	  for	  dbms:	  a	  lot	  of	  electronic	  processing	  share	  similar	  func-ons:	  
-sor-ng,	  file	  maintenance,	  report	  gen,	  Propose	  we	  should	  factor	  out	  commonali-es	  
-•  Data	  is	  meaningful	  associa-on	  of	  values	  that	  represent	  real	  world	  en--es	  
-•  What	  is	  database?	  
-•  ^condensing	  and	  abstrac-ng	  the	  world,	  represen-ng	  the	  world	  in	  our	  computer	  so	  
-we	  can	  operate	  on	  the	  world	  using	  soXware.	  
-•  Big	  picture	  diagram	  
-•  Important	  people	  for	  database!	  
-•  What	  is	  most	  important	  ingredient	  of	  beer?	  Data!	  
-•  Beyond:	  data	  is	  everywhere!	  
-•  What	  is	  most	  advanced	  database?	  The	  web…(search)	  
-•  Search	  is	  the	  new	  fron-er,	  the	  web	  is	  a	  big	  library	  
-•  Project1:	  how	  to	  get	  access	  to	  data	  on	  deep	  web	  on	  internet?	  (deep	  because	  
-beyond	  the	  reach	  of	  google):	  	  
-•  Project2:	  push	  search	  of	  values,	  turn	  whole	  web	  into	  database	  of	  en--es	  
-•  CS	  511	  subject	  focus	  on	  Ironman.	  	  
-Summary	  and	  Beyond	  
-	  
-Final	  Exam:	  Tuesday	  12/17	  
-Summary	  
-•  Mo.va.on:	  Emergence	  of	  the	  No-on	  of	  DBMS	  	  
-•  What	  is	  a	  database?	  -­‐	  Organiza-on	  of	  data,	  where	  you	  store	  data	  
-•  What	  is	  database	  about?	  -­‐	  How	  we	  see	  the	  world	  
-Beyond	  
-•  Advanced	  database	  system-­‐-­‐WEB	  
-•  What	  have	  you	  been	  searching	  lately?	  
-•  Web	  is	  “interlinked	  pages”	  of	  “data	  objects”	  
-•  Recent	  projects:	  	  
-•  MetaQuerier:	  Exploring	  and	  integra-ng	  deep	  web	  
-•  WISDM:	  Uncovering	  structured	  data	  on	  the	  surface	  web	  
-•  CS	  511:	  Advanced	  Data	  Management	  	  
-•  Special	  Thanks	  to	  TAs	  and	  beers!	  

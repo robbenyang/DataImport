@@ -1,59 +1,0 @@
-AB
-control[0]
-Cin
-out
-Cout
-1-bit ALU slice
-control[1]
-control[2]
-R0# Output#0# undefined#1# undefined#2# Xi##+#Yi#3# Xi##3#Yi#4# Xi##AND#Yi#5# Xi#OR#Yi#6# Xi#NOR#Yi#7# Xi#XOR#Yi#
- 
- 
-module alu1(out, carryout, A, B, carryin, control);!
-   output      out, carryout;!
-   input       A, B, carryin;!
-   input [2:0] control;!
-A B control
-3
-carryincarryout
-out
-Which	  parts	  	  of	  the	  1-­‐bit	  adder/subtractor	  belong	  in	  inside	  the	  1-­‐bit	  ALU?	  
-What	  should	  we	  do	  with	  the	  full	  adder’s	  Cin	  input?	  
-Where	  will	  “Sub”	  signal	  come	  from?	  
-To	  what	  should	  the	  logic	  unit’s	  control	  signals	  (R0,	  R1)	  be	  connected?	  
-How	  do	  we	  select	  between	  the	  adder	  and	  the	  logic	  unit?	  
-How	  do	  we	  control	  the	  selecIon?	  
-R1# R0# Output#
-0# 0# Gi#=#XiYi#
-0# 1# Gi#=#Xi#+#Yi#
-1# 0# Gi#=#(Xi+Yi)'##
-1# 1# Gi#=#Xi#⊕#Yi#
-#
-#
-Logic	  Unit	  control	  
-A B ctrl
-3
-cincout
-out
-A B ctrl
-3
-cincout
-out
-A B ctrl
-3
-cincout
-out
-A B ctrl
-3
-cincout
-out
-A B ctrl
-3
-cincout
-out
-NegaIve:	  
-	  
-Zero:	  
-	  
-Overflow:	  
-Please  bring  this  completed  handout  to  discussion  sec4on  for  a6endance  credit  

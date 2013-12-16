@@ -1,339 +1,0 @@
-1 
-Number  Systems  II:  
-2’s	  Complement,	  Arithme2c,	  Overflow,	  &	  
-Wri2ng	  Bit-­‐wise	  Logical	  &	  Shi@ing	  Code	  
-2 
-Today’s  lecture  
-  Two’s  complement  signed  binary  representa:on  
-  Nega2ng	  numbers	  in	  Two’s	  complement	  
-  Sign	  extension	  
-  Bit-­‐wise  shi>  opera:ons  
-  Wri2ng	  bit-­‐wise	  logical	  and	  shi@ing	  code	  
-  Two’s  complement  arithme:c  
-  Addi2on	  
-  Subtrac2on	  
-  Overflow	  
-3 
-Review:  4-­‐bit  2’s  complement  
-0000
-1000
-01001100
-0010
-1010 0110
-1110
-0001
-1001
-0101
-1101 0011
-1011
-0111
-1111
-0 1
-2
-3
-4
-5
-6
-7
-AdditionSubtraction -1
--2
--3
--4
--5
--6
--7 -8
-Two’s  complement  has  
-asymmetric  ranges;  there  is  one  
-more  nega:ve  number  than  
-posi:ve  number.  Here,  you  can  
-represent  -­‐8  but  not  +8.  
-4 
-Nega:ng  Numbers  in  2’s  Complement  
-  To  negate  a  number:  
-  Complement	  each	  bit	  and	  then	  add	  1.	  
-  Example:    
-0100   =  +410   (a  posi:ve  number  in  4-­‐bit  two’s  complement)  
-     =     (invert  all  the  bits)  
-     =  -­‐410   (and  add  one)  
-     =     (invert  all  the  bits)  
-     =  +410   (and  add  one)  
-  
-Some%mes,  people  talk  about  “taking  the  two’s  complement”  of  a  number.  This  is  a  
-confusing   phrase,   but   it   usually   means   to   negate   some   number   that’s   already   in  
-two’s  complement  format.  
-6 
-Conver:ng  2’s  Complement  to  Decimal  
-  Algorithm  1:  
-  if	  nega2ve,	  negate;	  then	  do	  unsigned	  binary	  to	  decimal	  
-  Algorithm  2:  
-  Same  as  with  n-­‐bit  unsigned  binary  
-  Except,  the  MSB  is  worth  –(2n-­‐1)  
-  Example:    
-1100   =  -­‐410   (a  nega:ve  number  in  4-­‐bit  two’s  complement)  
-9 
-Sign  Extension  
-  In  everyday  life,  decimal  numbers  are  assumed  to  have  an  infinite  number  
-of  0’s  in  front  of  them.  This  helps  in  “lining  up”  numbers.  
-  To  subtract  231  and  3,  for  instance,  you  can  imagine:  
-           231  
-     -­‐  003  
-           228  
-  This  works  for  posi%ve  2’s  complement  numbers,  but  not  nega%ve  ones.  
-  To  preserve  sign  and  value  for  nega:ve  numbers,  we  add  more  1’s.  
-  For  example,  going  from  4-­‐bit  to  8-­‐bit  numbers:  
-  0101	  (+5)	  should	  become	  0000	  0101	  (+5).	  
-  But	  1100	  (-­‐4)	  should	  become	  1111	  1100	  (-­‐4).	  
-  The  proper  way  to  extend  any  signed  binary  number  is  to  replicate  the  
-sign  bit.  
-10 
-Sign  Extension,  cont.  
-0000
-1000
-01001100
-0010
-1010 0110
-1110
-0001
-1001
-0101
-1101 0011
-1011
-0111
-1111
-0 1
-2
-3
-4
-5
-6
-7
-AdditionSubtraction -1
--2
--3
--4
--5
--6
--7 -8
-11
-11
-11
-11
-11
-11
-11
-01
-00
-00
-00
-00
-00
-00
-01
-00
-11
-11
-11
-00
-00
-00
-00
-10
-11
-11
-11
-10
-00
-00
-00
-01
-0101
-00
-00
-00
-11
-1011
-5
-6
-7
--5
--6
--7 -8
-4-­‐bit   8-­‐bit  
-11 
-What  you  need  to  know  for  Lab  2.  
-12 
-Review:  Bitwise  Logical  opera:ons  
-  Last  :me  we  introduced  bit-­‐wise  logical  opera:ons:  
-0 1unsigned char a = 0x55; 010 101
-unsigned char b = 0x0f; 0 10 10 10 1
-unsigned char c = a | b;
-0 1010 101
-0 10 10 10 1
-11 110 101
-OR
-unsigned char d = a & b;
-0 1010 101
-0 10 10 10 1
-0 101
-AND
-0 00 0
-unsigned char e = a ^ b;
-0 1010 101
-0 10 10 10 1
-110 101
-XOR
-0 0
-(bit-wise OR) (bit-wise AND)
-(bit-wise XOR)
-unsigned char n = ~a;
-0 1010 101
-11
-NOT
-0 0
-(bit-wise NOT)
-11 0 0
-13 
-Bit-­‐wise  shi>ing  
-  When  doing  bit-­‐wise  logical  opera:ons,  it  can  be  useful  to  
-“shi>”  bits  to  the  le>  or  right  within  a  word.    
-  Le>  shi>:    
-  
-  
-  
-  
-  
-  
-We  are  shi@ing  bits  toward  the  most  significant  bit  (MSB);  we  call  this  a  le@  
-shi@  because  we  think  of  the  MSB  being  on  the  le@.  
-top bits disappear...
-always left shift in zeros unsigned char f = b << 5;
-0 10 10 10 1
-00 00011 1
-(left shift)
-14 
-Bit-­‐wise  shi>ing,  cont.  
-  Two  kinds  of  right  shi>,  depends  on  type  of  variable:  
-  Unsigned  numbers  
-  Signed  numbers  
-  
-bottom bits disappear...
-if unsigned, right shift in zeros       
-unsigned char g = f >> 2;
-0 00 0011
-00 00011 1
-1
-(right shift logical)
-bottom bits disappear...
-if signed, sign extend MSB       
-unsigned char i =  h >> 2;
-00011
-00 00011 1
-1
-signed char h =  f;
-11
-(right shift arithmetic)
-Note: x >> 1 not the same as x/2 for negative numbers; compare (-3)>>1 with (-3)/2 
-15 
-Useful  for  extrac:ng  bits  
-  We  have  the  unsigned    8-­‐bit  word:         b7b6b5b4b3b2b1b0  
-  And  we  want  the  8-­‐bit  word:                         0  0  0  0  0  b5b4b3  
-  i.e.,	  we	  want	  to	  extract	  bits	  3-­‐5.	  
-  We  can  do  this  with  bit-­‐wise  logical  &  shi>ing  opera:ons  
-  y	  =	  (x	  >>	  3)	  &	  0x7;	  
-	   	  x 	   	   	  b7b6b5b4b3b2b1b0	  
-	   	  x	  >>	  3	  
-	   	  (x	  >>	  3)	  &	  0x7	  
-16 
-Useful  for  merging  two  bit  pacerns  
-  We  have  2  unsigned    8-­‐bit  words:         a7a6a5a4a3a2a1a0  
-                 b7b6b5b4b3b2b1b0  
-  And  we  want  the  8-­‐bit  word:                       a7b6a5b4a3b2a1b0  
-  
-19 
-Binary  addi:on  with  2’s  Complement  
-  You  can  add  two’s  complement  numbers  just  as  if  they  are  
-unsigned  numbers.  
-  Recall,	  this	  was	  the	  whole	  reason	  for	  this	  representa2on	  
- 
- 0  1  0  1  1      11 
-+  1  1  1  0  0  + (-4) 
-       
-20 
-Subtrac:on  
-  We  can  implement  subtrac:on  by  nega:ng  the  2nd  input  and  
-then  adding:  
- 
- 0  1  1  0  1     13 
--  0  1  0  1  0  -  10 
-       
- 
- 0  1  1  0  1       13 
-+  1  0  1  1  0  + (-10) 
-       
-21 
-Why  does  this  work?  
-  For  n-­‐bit  numbers,  the  nega:on  of  B  in  two’s  complement  is  
-2n  -­‐  B  (this  is  alterna:ve  way  of  nega:ng  a  2’s-­‐complement  
-number).  
-     A  -­‐  B  =  A  +  (-­‐B)  
-        =  A  +  (2n  -­‐  B)  
-        =  (A  -­‐  B)  +  2n  
-  If  A  ≥  B,  then  (A  -­‐  B)  is  a  posi:ve  number,  and  2n  represents  a  
-carry  out  of  1.  Discarding  this  carry  out  is  equivalent  to  
-subtrac:ng  2n,  which  leaves  us  with  the  desired  result  (A  -­‐  B).    
-  If  A  <  B,  then  (A  -­‐  B)  is  a  nega:ve  number  and  we  have  2n  -­‐  (A  
--­‐  B).  This  corresponds  to  the  desired  result,  -­‐(A  -­‐  B),  in  two’s  
-complement  form.  
-24 
-Overflow  Review  
-  Recall  that  when  we  add  two  numbers  the  result  may  be  
-larger  than  we  can  represent.         
-(in  5b  2’s  complement  we  can  represent  -­‐16  to  +15)  
-  
-  
-  
-	  
-  The  same  thing  can  happen  when  we  add  nega:ve  numbers.  
- 
- 0  1  0  1  1  Augend    (11) 
-+  0  1  1  1  0  Addend    (14) 
- 1  1  0  0  1  Sum         (-7)  
- 
- 1  1  0  0  1  Augend    (-7) 
-+  1  0  1  0  0  Addend    (-12) 
- 0  1  1  0  1  Sum         (13) 
-25 
-How  can  we  know  if  overflow  has  occurred?  
-  The  easiest  way  to  detect  signed  overflow  is  to  look  at  all  of  
-the  sign  bits.    
-  Overflow  occurs  only  in  the  two  situa:ons  above:  
-  If	  you	  add	  two	  posi%ve	  numbers	  and	  get	  a	  nega%ve	  result.	  
-  If	  you	  add	  two	  nega%ve	  numbers	  and	  get	  a	  posi%ve	  result.	  
-  Overflow  cannot  occur  if  you  add  a  posi:ve  number  to  a  
-nega:ve  number.    Do  you  see  why?  
-  
-     0  1  0  0     (+4)     
-+   0  1  0  1     (+5)  
-     1   0  0  1     (-­‐7)  
-     1   1   0  0     (-­‐4)  
-+   1   0  1  1      (-­‐5)  
-     0  1   1  1      (+7)  
-27 
-Overflow  in  so>ware  (e.g.,  Java  programs)  
-public class overflow {     
- public static void main(String[] args) { 
-  int i = 0; 
-  while (i >= 0) {    
-     i++; 
-  } 
-  System.out.println("i = " + i); 
-  i--; 
-  System.out.println("i = " + i); 
-  i++; 
-  System.out.println("i = " + i);    
- }} 
-  
-Output: 
-i = -2147483648   231  
-i = 2147483647    231-1 
-i = -2147483648 

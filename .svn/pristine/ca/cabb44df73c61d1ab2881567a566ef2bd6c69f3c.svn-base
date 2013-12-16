@@ -1,544 +1,0 @@
-1 
-Flip	  Flops,	  Registers,	  and	  Register	  Files	  
-2 
-Today’s	  lecture	  
-  Storing	  State	  
-  Finishing	  up	  the	  SR	  Latch	  
-  Synchronous	  Design	  
-  Clocks	  
-  D	  Flip	  Flops	  
-  MIPS	  ISA	  introduc=on	  
-  Register	  Files	  
-  Registers	  
-  Decoders	  
-3 
-Timing	  diagram	  of	  an	  SR	  Latch	  
-0
-1
-0
-1
-Time
-0
-1
-0
-1
-R
-S
-Q'
-Q
-NOR
-NOR
-Q
-Q'
-reset
-set
-NOR
-NOR
-Q
-Q'
-reset
-set
-4 
-SR	  Latches	  are	  a	  useful	  storage	  mechanism	  
-  An	  SR	  latch	  provides	  the	  three	  features:	  	  
-  It	  holds	  its	  value	  
-  We	  can	  read	  its	  value	  
-  We	  can	  change	  its	  value	  
-  We	  call	  the	  data	  stored	  (Q)	  the	  state	  of	  the	  latch.	  
-  1	  bit	  of	  informa?on	  is	  stored	  
-	  
-!"#$%&' ($))*"%' +*,%'
--' .' /' /0' /' /0'
-1' 1' 1' 2' 1' 2'
-1' 1' 2' 1' 2' 1'
-1' 2' 1' 2' 1' 2'
-1' 2' 2' 1' 1' 2'
-2' 1' 1' 2' 2' 1'
-2' 1' 2' 1' 2' 1'
-'
-'
- 
-  We	  represent	  the	  behavior	  as	  a	  
-state	  table,	  which	  explicitly	  shows	  
-that	  the	  next	  values	  of	  Q	  and	  Q’	  
-depend	  on	  their	  current	  values,	  as	  
-well	  as	  on	  the	  inputs	  S	  and	  R.	  
-!" #" $"
-%" %" &'"()*+,-"
-%" ." %"/0-1-23"
-." %" ."/1-23"
-"
-"
-5 
-Aside:	  SR	  Latches	  are	  not	  combina6onal	  circuits	  
-  In	  the	  2nd	  lecture	  we	  defined	  Combina=onal	  Logic	  as:	  	  
-	  Boolean	  circuits	  where	  the	  output	  is	  a	  pure	  func=on	  of	  
-the	  present	  input	  only.	  
-  Below	  we	  can	  see	  this	  doesn’t	  hold	  for	  the	  SR	  Latch	  
-  When	  S	  =	  R	  =	  0	  we	  can	  have	  two	  different	  outputs	  
-  The	  SR	  Latch	  is	  a	  Sequen=al	  circuit	  
-!"#$%&' ($))*"%' +*,%'
--' .' /' /0' /' /0'
-1' 1' 1' 2' 1' 2'
-1' 1' 2' 1' 2' 1'
-1' 2' 1' 2' 1' 2'
-1' 2' 2' 1' 1' 2'
-2' 1' 1' 2' 2' 1'
-2' 1' 2' 1' 2' 1'
-'
-'
- 
-The outputs of a sequential circuit 
-depend on not only the inputs, but 
-also the state, or the current contents 
-of some memory. 
-6 
-Synchronous	  Design	  
-  The	  easiest	  (and	  most	  common)	  way	  to	  build	  computers	  
-  All	  state	  elements	  get	  updated	  at	  the	  same	  =me	  
-  Using	  a	  clock	  signal	  
-  Clock	  signal	  
-  A	  square	  wave	  with	  a	  constant	  period	  
-  We	  always	  update	  state	  at	  the	  same	  point	  in	  wave	  
-  E.g.,	  the	  rising	  edge	  
-0
-1
-Time
-clk
-clock period
-7 
-Synchronous	  Design,	  cont.	  
-  Alternate	  between	  computa=on	  and	  upda=ng	  state.	  
-Computation
-(combinational
-logic)
-State
-(memory)
-0
-1
-Time
-clk
-Compute
-ST
-OR
-E
-Compute
-ST
-OR
-E
-Compute
-ST
-OR
-E
-Compute
-ST
-OR
-E
-Compute
-ST
-OR
-E
-Compute
-8 
-The	  state	  element	  that	  we	  really	  want…	  
-  The	  D	  flip	  flop	  
-  Holds	  1	  bit	  of	  state	  
-  Output	  as	  Q.	  
-  Inputs	  
-  Copies	  D	  input	  into	  state	  on	  rising	  edge	  of	  clock.	  
-QD
-0
-1
-0
-1
-Time
-Q
-D
-0
-1clk
-9 
-Implemen=ng	  the	  D-­‐type	  Flip	  Flop	  
-  Remember	  the	  SR	  Latch?	  
-  We’re	  going	  to	  use	  two	  special	  kinds	  of	  latches.	  
-  SR	  Latch	  with	  enable	  
-  D	  Latch	  with	  enable	  
-NOR
-NOR
-Q
-Q'
-reset
-set
-!" #" $"
-%" %" &'"()*+,-"
-%" ." %"/0-1-23"
-." %" ."/1-23"
-"
-"
-10 
-SR	  Latch	  with	  Enable	  
-  Take	  SR	  Latch,	  make	  it	  ignore	  input	  when	  enable	  =	  0	  
-NOR
-NOR
-Q
-Q'
-reset
-set
-AND
-AND
-enable
-SR Latch
-11 
-D-­‐Latch	  with	  Enable	  
-  Take	  SR	  Latch	  with	  Enable,	  make	  reset	  =	  !set	  
-  State	  get	  set	  to	  whatever	  D	  is.	  
-NOR
-NOR
-Q
-Q'
-D
-AND
-AND
-enable
-SR Latch
-NOT
-Enable D Q 
-0 X No change 
-1 0 0 
-1 1 1 
-12 
-The	  D	  Flip	  Flop	  
-  Only	  one	  of	  the	  latches	  is	  enabled	  at	  a	  =me	  
-  When	  clk=0,	  the	  master	  is	  transparent;	  slave	  holds	  its	  value	  
-  When	  clk=1,	  the	  master	  holds	  its	  value;	  slave	  transparent	  
-  On	  rising	  edge,	  value	  at	  master’s	  input	  passed	  to	  slaves	  output.	  
-QD
-Q'
-enable
-QS
-Q'
-enable
-R
-NOT
-D
-clk
-Q
-Master
-(D Latch w/Enable)
-Slave
-(SR Latch w/Enable)
-13 
-The	  D	  Flip	  Flop	  
-QD
-Q'
-enable
-QS
-Q'
-enable
-R
-NOT
-D
-clk
-Q
-Master
-(D Latch w/Enable)
-Slave
-(SR Latch w/Enable)
-0
-1
-0
-1
-Time
-Q
-D
-0
-1clk
-0
-1E
-E	  
-14 
-Flip	  flop	  with	  asynchronous	  reset	  
-  Asynchronous	  =	  pertaining	  to	  opera6on	  without	  the	  use	  
-of	  fixed	  6me	  intervals	  (opposed	  to	  synchronous).	  
-  Processed	  immediately,	  ignores	  clock.	  	  
-  Reset	  =	  set	  the	  value	  to	  zero	  
-QD
-reset
-0
-1
-0
-1
-Time
-Q
-D
-0
-1clk
-0
-1reset
-x,y	  =	  
-a)  0,0	  
-b)  0,1	  
-c)  1,0	  
-d)  1,1	  
-x y 
-4 
-Asynchronous	  Reset	  implementa0on 	  	  
-One	  example	  possible	  implementa0on	  
-Forces	  Q	  output	  to	  zero.	  Ignores	  inputs	  and	  current	  state.	  
-(Not	  required	  material)	  
-NOR
-NOR
-Q
-Q'
-reset
-set
-AND
-AND
-SR Latch w/Enable
-NOR
-NORD
-AND
-AND
-enable
-D Latch w/Enable
-NOT
-enable
-NOT
-clk
-NOT
-5 
-Flip	  flop	  with	  enable	  
-  When	  enable=0,	  Q	  output	  doesn’t	  change	  on	  rising	  edge	  
-  Behaves	  normally	  when	  enable=1	  
-0
-1
-0
-1
-Time
-Q
-D
-0
-1clk
-0
-1enable
-QD
-en
-x,y	  =	  
-a)  0,0	  
-b)  0,1	  
-c)  1,0	  
-d)  1,1	  
-x y 
-7 
-How	  can	  we	  store	  more	  than	  1	  bit?	  
-  We	  build	  registers	  out	  of	  flip	  flops.	  
-  Example	  4-­‐bit	  register	  made	  of	  four	  D	  flip	  flops	  
-  1	  data	  input,	  1	  data	  output	  per	  flip	  flop	  
-  All	  control	  signals	  use	  the	  same	  input	  
-QD
-reseten
-QD
-reseten
-QD
-reseten
-QD
-reseten
-reset
-clk
-enable
-D3 D2 D1 D0
-Q3 Q2 Q1 Q0
-D3
-D2
-D1
-D0
-Q3
-Q2
-Q1
-Q0
-reset
-enable
-11 
-How	  can	  we	  store	  more	  than	  1	  bit?	  
-  We	  build	  registers	  out	  of	  flip	  flops.	  
-  Example	  4-­‐bit	  register	  made	  of	  four	  D	  flip	  flops	  
-  1	  data	  input,	  1	  data	  output	  per	  flip	  flop	  
-  All	  control	  signals	  use	  the	  same	  input	  
-QD
-reseten
-QD
-reseten
-QD
-reseten
-QD
-reseten
-reset
-clk
-enable
-D3 D2 D1 D0
-Q3 Q2 Q1 Q0
-D3
-D2
-D1
-D0
-Q3
-Q2
-Q1
-Q0
-reset
-enable
-12 
-Register	  file	  implementa0on	  
-  A	  register	  file	  has	  3	  parts	  
-  The	  Storage:	  An	  array	  of	  registers	  
-  The	  Read	  Ports:	  Output	  the	  value	  of	  selected	  register	  
-  The	  Write	  Port:	  Selec6vely	  write	  one	  of	  the	  registers	  
-  Let’s	  consider	  a	  2	  word	  memory	  	  
-  with	  4-­‐bit	  words	  
-A data
-B data
-A address
-B address
-1
-1
-4
-4
-write data
-write address1
-4
-write enable
-2  x 4
-register file
-1
-13 
-What	  does	  it	  do?	  
-0
-1
-0
-1
-Time
-R_dataA
-R_addrA
-0
-1clk
-0
-1reset
-0
-1W_addr
-0
-1W_data 0xa 0x1 0x5 0xf 0xe
-0
-1W_en
-0
-1
-0
-1R_dataB
-R_addrB
-0!
-1!
-14 
-2	  x	  4-­‐bit	  register	  file	  (only	  1	  read	  port	  shown)	  
-wen
-Q3D3
-reset
-enable
-Q2D2
-Q1D1
-Q0D0
-Q3D3
-reset
-enable
-Q2D2
-Q1D1
-Q0D0
-0
-1
-waddr
-0
-1
-wdata[3]
-wdata[2]
-wdata[1]
-wdata[0]
-clk
-reset
-0
-1
-0
-1
-0
-1
-raddrA
-rdataA[3]
-rdataA[2]
-rdataA[1]
-rdataA[0]
-23 
-A	  32	  x	  32b	  Register	  File	  
-Figure 2: Block diagram of register file internals.
-3
-25 
-Decoders	  
-  This	  circuit	  is	  a	  1-­‐to-­‐2	  decoder	  
-  It	  decodes	  a	  1-­‐bit	  address,	  se0ng	  the	  specified	  output	  to	  1	  
-  Assuming	  the	  circuit	  is	  enabled	  
-AND
-NOT
-AND
-Q1
-Q0
-EN
-S0
-1
-0
-Q1
-Q0
-EN
-S0
-EN S0 (Q1,Q0) 
-0 X (0, 0) 
-1 0 (0, 1) 
-1 1 (1, 0) 
-0 
-Q1 
-Q0 
-1 
-0	  
-1
-26 
-Scaling	  Decoders	  
-  Decoders	  can	  be	  generalized	  as	  follows	  
-  A	  1-­‐to-­‐2n	  decoder:	  
-  Has	  a	  1-­‐bit	  enable	  input,	  and	  an	  n-­‐bit	  select	  input	  	  
-  Has	  2n	  outputs	  
-  All	  the	  outputs	  are	  zero,	  except	  the	  selectth	  if	  enable	  =	  1	  
-  If	  enable	  =	  0,	  all	  outputs	  are	  zero.	  
-  A	  1-­‐to-­‐4	  decoder:	  
-EN S[1:0] Q[3:0] 
-0 X (0,0,0,0) 
-1 (0,0) (0,0,0,1) 
-1 (0,1) (0,0,1,0) 
-1 (1,0) (0,1,0,0) 
-1 (1,1) (1,0,0,0) 
-EN S[4:0] Q[31:0] 
-0 X 0x0000 
-1 0 0x0001 
-1 1 0x0002 
-1 … … 
-1 30 0x4000 
-1 31 0x8000 
-Q1
-Q0
-1
-0
-Q3
-EN
-S[1:0]
-Q2
-2
-3
-Q1
-Q0
-Q31
-EN
-S[4:0]
-Q30
