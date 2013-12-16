@@ -34,6 +34,9 @@ public class Insertion {
 	public int insertNotes(String notes, String name, String url) throws SQLException {
 		int key = -1;
 		String sql;
+		/*
+		 * You have to manually change the course ID field in order to match with database  
+		 */
 		sql = "INSERT INTO `notesofcourse_nocdb`.`TestNotes` (`NoteID`, `CourseID`, `Title`, `Link`, `Content`) VALUES (NULL, '6', '"
 				+ name + "',  '" + url + "', '" + notes + "');";
 		System.out.println(sql);
