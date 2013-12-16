@@ -1,0 +1,268 @@
+• User view: “Transfer money from savings to 
+checking”
+• Program: 
+• read savings; 
+• verify balance is adequate;
+• update savings balance; 
+• read checking;
+• update checking balance;
+A Typical Transaction
+Transaction Management (13 of 61)Correctness of Transactions (2 of 12)
+• A transactions which only READs expects DB to be 
+consistent, and cannot cause it to become 
+otherwise.
+• When a transaction which does any WRITE finishes, 
+it must either
+• COMMIT: "I'm done and the DB is consistent again" OR
+• ABORT (ROLLBACK): "I'm done but I goofed: my changes 
+must be undone."
+"Commit" and "Abort"
+Transaction Management (14 of 61)Correctness of Transactions (3 of 12)
+• A DB may have many simultaneous users
+• simultaneous users implies simultaneous transactions 
+implies simultaneous DB access
+• multiprogramming/multiprocessing
+• Things can go wrong!
+• transactions can conflict with one another
+• programs may crash, OS may crash, disk may crash
+• company loses customer, gets sued, goes bankrupt, etc.
+Complications
+Transaction Management (15 of 61)Correctness of Transactions (4 of 12)
+• Can't be allowed to become inconsistent
+• A DB that's 1% inaccurate is 100% unusable.
+• Can't lose data
+• Can't become unavailable
+Can you name information processing systems that 
+are more error tolerant?
+But DB Must Not Crash
+Transaction Management (16 of 61)Correctness of Transactions (5 of 12)
+• Part of the DBMS
+• Main duties:
+• Starts transactions
+• locate and start the right program
+• ensure timely, fair scheduling
+• Logs their activities
+• especially start/stop, writes, commits, aborts
+• Detects or avoids conflicts
+• Takes recovery actions
+Transaction Manager 
+(or TP Monitor)
+Transaction Management (17 of 61)Correctness of Transactions (6 of 12)
+DBMS Architecture
+Transaction Management (18 of 61)
+Query Executor
+Buffer Manager
+Storage Manager
+Storage
+Transaction Manager
+Logging & 
+Recovery
+Concurrency 
+Control
+Buffer: 
+data, indexes, log, etc
+Lock Tables
+Main Memory
+User/Web Forms/Applications/DBA
+query transaction
+Query Optimizer
+Query Rewriter
+Query Parser
+Records
+data, metadata, indexes, log, etc
+DDL Processor
+DDL commands
+Indexes
+Correctness of Transactions (7 of 12)
+• Transaction starts/stops
+• DB writes: "before" and/or "after" images of DB 
+records
+• befores can be used to rollback an aborted transaction
+• afters can be used to redo a transaction (recovery from 
+catastrophe)
+• COMMITs and ABORTs
+The log itself is as critical as the DB!
+What’s on the Log File?
+Transaction Management (19 of 61)Correctness of Transactions (8 of 12)
+• Recovery
+• Taking action to restore the DB to a consistent state
+• Concurrency Control
+• Making sure simultaneous transactions don't interfere 
+with one another
+The Big TP Issues
+Transaction Management (20 of 61)Correctness of Transactions (9 of 12)
+• Atomicity
+• Consistency Preservation
+• Isolation
+• Durability
+The ACID Properties
+Transaction Management (21 of 61)Correctness of Transactions (10 of 12)
+The ACID Properties: From Oracle Wiki
+Transaction Management (22 of 61)Correctness of Transactions (11 of 12)
+Behind the Scene: It’s Your Turn!
+Transaction Management (23 of 61)
+So, who coined “ACID”?
+Correctness of Transactions (12 of 12)
+Recovery
+Transaction Management (24 of 61)Recovery (0 of 8)
+Q: What Might Go Wrong?
+Transaction Management (25 of 61)Recovery (1 of 8)
+• Each transaction has internal state
+• When system crashes, internal state is lost
+• Don’t know which parts executed and which didn’t
+• Remedy: use a log
+• A file that records every single action of the transaction
+System Failures
+Transaction Management (26 of 61)Recovery (2 of 8)
+• Start Transaction 
+• Oracle  
+• autocommit is off by default, so a new transaction is started after each 
+COMMIT or ROLLBACK
+• MySQL
+• START TRANSACTION
+• End Transaction
+• COMMIT or ROLLBACK
+Transactions
+Transaction Management (27 of 61)Recovery (3 of 8)
+• Database is composed of elements
+• Usually 1 element = 1 block
+• Can be smaller (=1 record) or larger (=1 relation)
+• Each transaction reads/writes some elements
+Transaction Abstraction
+Transaction Management (28 of 61)Recovery (4 of 8)
+• There exists a notion of correctness for the 
+database
+• Explicit constraints (e.g. foreign keys)
+• Implicit conditions (e.g. sum of sales = sum of invoices)
+• Correctness principle: 
+Transaction will be programmed such that: 
+if a transaction starts in a correct database state, it 
+ends in a correct database state.
+• Consequence: we only need to guarantee that 
+transactions are atomic, and run (as if) in isolation.
+Correctness Principle
+Transaction Management (29 of 61)Recovery (5 of 8)
+• INPUT(X)
+• read element X to memory buffer
+• READ(X,t)
+• copy element X to transaction local variable t
+• WRITE(X,t)
+• copy transaction local variable t to element X
+• OUTPUT(X)
+• write element X to disk
+Primitive Operations of Transactions
+Transaction Management (30 of 61)Recovery (6 of 8)
+READ(A,t);    t := t*2;   WRITE(A,t);    READ(B,t);    t := t*2;   WRITE(B,t)
+Example
+Transaction Management (31 of 61)
+Action t Mem A Mem B Disk A Disk B
+INPUT(A) 8 8 8
+READ(A,t) 8 8 8 8
+t:=t*2 16 8 8 8
+WRITE(A,t) 16 16 8 8
+INPUT(B) 16 16 8 8 8
+READ(B,t) 8 16 8 8 8
+t:=t*2 16 16 8 8 8
+WRITE(B,t) 16 16 16 8 8
+OUTPUT(A) 16 16 16 16 8
+OUTPUT(B) 16 16 16 16 16Recovery (7 of 8)
+• An append‐only file containing log records
+• Note: multiple transactions run concurrently, log 
+records are interleaved
+• After a system crash, use log to:
+• Redo some transaction that did commit.
+• Undo other transactions that did not commit.
+The Log
+Transaction Management (32 of 61)Recovery (8 of 8)
+Undo Logging
+Transaction Management (33 of 61)Undo Logging (0 of 13)
+Log records
+• <START T> 
+• transaction T has begun
+• <COMMIT T> 
+• T has committed
+• <ABORT T>
+• T has aborted
+• <T,X,v>
+• T has updated element X, and its old value was v
+Undo Logging
+Transaction Management (34 of 61)Undo Logging (1 of 13)
+U1: If T modifies X, then <T,X,v> entry must be 
+written to log before X is written to disk
+U2: If T commits, then <COMMIT T> entry must be 
+written to log only after all changes by T are written 
+to disk
+• Hence: OUTPUTs are done early (before commit)
+Undo‐Logging Rules
+Transaction Management (35 of 61)Undo Logging (2 of 13)
+
+Transaction Management (36 of 61)
+Action T Mem A Mem B Disk A Disk B Log
+<START T>
+REAT(A,t) 8 8 8 8
+t:=t*2 16 8 8 8
+WRITE(A,t) 16 16 8 8 <T,A,8>
+READ(B,t) 8 16 8 8 8
+t:=t*2 16 16 8 8 8
+WRITE(B,t) 16 16 16 8 8 <T,B,8>
+OUTPUT(A) 16 16 16 16 8
+OUTPUT(B) 16 16 16 16 16
+<COMMIT T>
+Undo Logging (3 of 13)
+After system’s crash, run recovery manager 
+• Idea 1. Decide for each transaction T whether it is 
+completed or not
+• <START T>….<COMMIT T>….   = yes
+• <START T>….<ABORT T>…….   = yes
+• <START T>………………………   = no
+• Idea 2. Undo all modifications by incompleted
+transactions
+Recovery with Undo Log
+Transaction Management (37 of 61)Undo Logging (4 of 13)
+Recovery manager:
+• Read log from the end; cases:
+• <COMMIT T>:  mark T as completed
+• <ABORT T>: mark T as completed
+• <T,X,v>: if T is not completed
+then write X=v to disk
+else ignore /* committed or aborted xact. */
+• <START T>: ignore
+Recovery with Undo Log
+Transaction Management (38 of 61)Undo Logging (5 of 13)
+Recovery with Undo Log
+Transaction Management (39 of 61)
+…
+…
+<T6,X6,v6>
+…
+…
+<START T5>
+<START T4>
+<T1,X1,v1>
+<T5,X5,v5>
+<T4,X4,v4>
+<COMMIT T5>
+<T3,X3,v3>
+<T2,X2,v2>
+Undo Logging (6 of 13)
+• Note: all undo commands are idempotent
+• If we perform them a second time, no harm is done
+• E.g. if there is a system crash during recovery, simply 
+restart recovery from scratch
+Recovery with Undo Log
+Transaction Management (40 of 61)Undo Logging (7 of 13)
+When do we stop reading the log ?
+• We cannot stop until we reach the beginning of the 
+log file
+• This is impractical
+• Better idea: use checkpointing
+Recovery with Undo Log
+Transaction Management (41 of 61)Undo Logging (8 of 13)
+Checkpoint the database periodically
+• Stop accepting new transactions
+• Wait until all curent transactions complete
+• Flush log to disk
+• Write a <CKPT> log record, flush
+• Resume transactions
+Checkpointing
+Transaction Management (42 of 61)Undo Logging (9 of 13)

@@ -1,0 +1,853 @@
+November 11, 2013 More cache organizations 1 
+How big is the cache? 
+For a byte-addressable machine with 16-bit addresses with a cache with the 
+following characteristics: 
+  It is direct-mapped (as discussed last time) 
+  Each block holds one byte 
+  The cache index is the three least significant bits 
+Two questions: 
+  How many blocks does the cache hold? 
+  How many bits of storage are required to build the cache (e.g., for the 
+data array, tags, etc.)? 
+November 11, 2013 More cache organizations 3 
+How big is the cache? 
+For a byte-addressable machine with 16-bit addresses with a cache with the 
+following characteristics: 
+  It is direct-mapped (as discussed last time) 
+  Each block holds one byte 
+  The cache index is the four least significant bits 
+Two questions: 
+  How many blocks does the cache hold? 
+3-bit index -> 23 = 8 blocks 
+  How many bits of storage are required to build the cache (e.g., for the data 
+array, tags, etc.)? 
+tag size = 13 bits (16 bit address - 3 bit index) 
+(13 tag bits + 1 valid bit + 8 data bits) x 16 blocks = 22 bits x 8 = 176 bits 
+November 11, 2013 More cache organizations 4 
+Direct-mapped caches 
+  If the cache contains 2k 
+ blocks, then the k least 
+ significant bits (LSBs) are 
+ used as the index. 
+—  data from address i  
+ would be stored in  
+ block i mod 2k. 
+  For example, data from 
+ memory address 11 maps 
+ to cache block 3 on the 
+ right, since 11 mod 4 = 3 
+ and since the lowest two 
+ bits of 1011 are 11. 
+0 
+1 
+2 
+3 
+Index 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+12 
+13 
+14 
+15 
+Memory 
+Address 
+November 11, 2013 More cache organizations 5 
+Tags & Valid bits 
+  To find data stored in the cache, we need to add tags to distinguish 
+between different memory locations that map to the same cache block. 
+  We include a single valid bit per block to distinguish full and empty 
+blocks. 
+00 
+01 
+10 
+11 
+Index 
+0000 
+0001 
+0010 
+0011 
+0100 
+0101 
+0110 
+0111 
+1000 
+1001 
+1010 
+1011 
+1100 
+1101 
+1110 
+1111 
+Tag Data 
+00 
+11 
+01 
+01 
+Valid 
+1 
+1 
+1 
+1 
+November 11, 2013 ©2003 Craig Zilles (derived from 
+slides by Howard Huang) 
+6 
+More cache organizations 
+  Today, we’ll explore some cache organizations to improve hit rate 
+—  How can we take advantage of spatial locality too? 
+—  How can we reduce the number of potential conflicts? 
+ 
+November 11, 2013 More cache organizations 7 
+  One-byte cache blocks don’t take advantage of spatial locality, which 
+predicts that an access to one address will be followed by an access to a 
+nearby address.  
+  What can we do? 
+  
+Spatial locality 
+November 11, 2013 More cache organizations 8 
+  What we can do is make the cache block size larger than one byte. 
+  Here we use two- 
+ byte blocks, so 
+ we can load the 
+ cache with two 
+ bytes at a time. 
+  If we read from 
+ address 12, the 
+ data in addresses 
+ 12 and 13 would 
+ both be copied to 
+ cache block 2. 
+Spatial locality 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+12 
+13 
+14 
+15 
+Memory 
+Address 
+0 
+1 
+2 
+3 
+Index 
+November 11, 2013 More cache organizations 9 
+  Now how can we figure out where data should be placed in the cache? 
+  It’s time for block addresses! If the cache block size is 2n bytes, we can 
+conceptually split the main memory into 2n-byte chunks too. 
+  To determine the block address of a byte 
+ address i, you can do the integer division 
+  i / 2n 
+  Our example has two-byte cache blocks, so 
+ we can think of a 16-byte main memory as 
+ an “8-block” main memory instead. 
+  For instance, memory addresses 12 and 13 
+ both correspond to block address 6, since 
+ 12 / 2 = 6 and 13 / 2 = 6. 
+Block addresses 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+12 
+13 
+14 
+15 
+Byte 
+Address 
+0 
+ 
+1 
+ 
+2 
+ 
+3 
+ 
+4 
+ 
+5 
+ 
+6 
+ 
+7 
+ 
+Block 
+Address 
+November 11, 2013 More cache organizations 10 
+  Once you know the block address, you can map it to the cache as before: 
+find the remainder when the block address is divided by the number of 
+cache blocks. 
+  In our example,  
+ memory block 6 
+ belongs in cache 
+ block 2, since 
+ 6 mod 4 = 2. 
+  This corresponds 
+ to placing data 
+ from memory 
+ byte addresses 
+ 12 and 13 into 
+ cache block 2. 
+Cache mapping 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+8 
+9 
+10 
+11 
+12 
+13 
+14 
+15 
+Byte 
+Address 
+0 
+1 
+2 
+3 
+Index 
+0 
+ 
+1 
+ 
+2 
+ 
+3 
+ 
+4 
+ 
+5 
+ 
+6 
+ 
+7 
+ 
+Block 
+Address 
+November 11, 2013 More cache organizations 11 
+  When we access one byte of data in memory, we’ll copy its entire block 
+into the cache, to hopefully take advantage of spatial locality. 
+  In our example, if a program reads from byte address 12 we’ll load all of 
+memory block 6 (both addresses 12 and 13) into cache block 2. 
+  Note byte address 13 corresponds to the same memory block address! So 
+a read from address 13 will also cause memory block 6 (addresses 12 and 
+13) to be loaded into cache block 2. 
+  To make things simpler, byte i of a memory block is always stored in byte 
+i of the corresponding cache block. 
+Data placement within a block 
+12 
+13 
+Byte 
+Address 
+2 
+Cache 
+Block Byte 1 Byte 0 
+November 11, 2013 More cache organizations 12 
+Locating data in the cache 
+  Let’s say we have a cache with 2k blocks, each containing 2n bytes. 
+  We can determine where a byte of data belongs in this cache by looking 
+at its address in main memory. 
+—  k bits of the address will select one of the 2k cache blocks. 
+—  The lowest n bits are now a block offset that decides which of the 2n 
+bytes in the cache block will store the data. 
+  Our example used a 22-block cache with 21 bytes per block. Thus, 
+memory address 13 (1101) would be stored in byte 1 of cache block 2. 
+m-bit Address 
+k bits (m-k-n) bits 
+n-bit Block 
+Offset  Tag Index 
+4-bit Address 
+2 bits 1 bit 
+1-bit Block 
+Offset  1 10  1 
+November 11, 2013 More cache organizations 13 
+A picture 
+ 1 
+0 
+1 
+2 
+3 
+Index Tag Data Valid 
+Address (4 bits) 
+= 
+Hit 
+2 
+Block offset 
+Mux 
+Data 
+8 8 
+8 
+1 10 
+Tag Index (2 bits) 
+1   0 
+November 11, 2013 More cache organizations 14 
+An exercise 
+n 
+0 
+1 
+2 
+3 
+Index Tag Data Valid 
+Address (4 bits) 
+= 
+Hit 
+2 
+Block offset 
+Mux 
+Data 
+8 8 
+8 
+n nn 
+Tag Index (2 bits) 
+1 
+1 
+1 
+1 
+0 
+1 
+0 
+1 
+0xCA 0xFE 
+0xDE 0xAD 
+0xBE 0xEF 
+0xFE 0xED 
+0 
+0 
+For the addresses below, 
+what byte is read from the 
+cache (or is there a miss)? 
+ 
+  1010   
+  1110   
+  0001   
+  1101   
+a)  miss, tag mismatch 
+b)  miss, tag invalid 
+c)  hit, 0xDE 
+d)  hit, oxEF 
+e)  hit, oxFE 
+November 11, 2013 More cache organizations 15 
+An exercise 
+n 
+0 
+1 
+2 
+3 
+Index Tag Data Valid 
+Address (4 bits) 
+= 
+Hit 
+2 
+Block offset 
+Mux 
+Data 
+8 8 
+8 
+n nn 
+Tag Index (2 bits) 
+1 
+1 
+1 
+1 
+0 
+1 
+0 
+1 
+0xCA 0xFE 
+0xDE 0xAD 
+0xBE 0xEF 
+0xFE 0xED 
+0 
+0 
+For the addresses below, 
+what byte is read from the 
+cache (or is there a miss)? 
+ 
+  1010  (0xDE) 
+  1110  (miss, invalid) 
+  0001  (0xFE) 
+  1101  (miss, bad tag) 
+November 11, 2013 More cache organizations 16 
+Using arithmetic 
+  An equivalent way to find the right location within the cache is to use 
+arithmetic again. 
+  We can find the index in two steps, as outlined earlier. 
+—  Do integer division of the address by 2n to find the block address. 
+—  Then mod the block address with 2k to find the index. 
+  The block offset is just the memory address mod 2n. 
+  For example, we can find address 13 in a 4-block, 2-byte per block cache. 
+—  The block address is 13 / 2 = 6, so the index is then 6 mod 4 = 2. 
+—  The block offset would be 13 mod 2 = 1. 
+m-bit Address 
+k bits (m-k-n) bits 
+n-bit Block 
+Offset  Tag Index 
+November 11, 2013 More cache organizations 17 
+A diagram of a larger example cache 
+  Here is a cache with 1,024 
+blocks of 4 bytes each, and 
+32-bit memory addresses. 
+0 
+1 
+2 
+3 
+... 
+... 
+1022 
+1023 
+Index Tag Data Valid 
+Address (32 bits) 
+= 
+Hit 
+10 20 
+Tag 
+2 bits 
+Mux 
+Data 
+8 8 8 8 
+8 
+November 11, 2013 More cache organizations 18 
+A larger example cache mapping 
+  Where would the byte from memory address 6146 be stored in this direct-
+mapped 210-block cache with 22-byte blocks? 
+  We can determine this with the binary force. 
+—  6146 in binary is 00...01 1000 0000 00 10. 
+—  The lowest 2 bits, 10, mean this is the second byte in its block. 
+—  The next 10 bits, 1000000000, are the block number itself (512). 
+  Equivalently, you could use your arithmetic mojo instead. 
+—  The block offset is 6146 mod 4, which equals 2. 
+—  The block address is 6146/4 = 1536, so the index is 1536 mod 1024, or 
+512. 
+November 11, 2013 More cache organizations 19 
+A larger diagram of a larger example cache mapping 
+ 10 
+0 
+1 
+2 
+... 
+512 
+... 
+1022 
+1023 
+Index Tag Data Valid 
+Address (32 bits) 
+= 
+Hit 
+10 20 
+Tag 
+2 bits 
+Mux 
+Data 
+8 8 8 8 
+8 
+0000 .... 0001 1000000000 
+November 11, 2013 More cache organizations 20 
+What goes in the rest of that cache block? 
+  The other three bytes of that cache block come from the same memory 
+block, whose addresses must all have the same index (1000000000) and 
+the same tag (00...01). 
+ 10 
+... 
+512 
+... 
+Index Tag Data Valid 
+Address (32 bits) 
+= 
+Hit 
+10 20 
+Tag 
+Mux 
+Data 
+8 8 8 8 
+8 
+0000 .... 0001 1000000000 
+November 11, 2013 More cache organizations 21 
+  Again, byte i of a memory block is stored into byte i of the corresponding 
+cache block. 
+—  In our example, memory block 1536 consists of byte addresses 6144 to 
+6147. So bytes 0-3 of the cache block would contain data from 
+address 6144, 6145, 6146 and 6147 respectively. 
+—  You can also look at the lowest 2 bits of the memory address to find 
+the block offsets. 
+  Block offset   Memory address  Decimal 
+   00  00..01 1000000000 00  6144 
+   01  00..01 1000000000 01  6145 
+   10  00..01 1000000000 10  6146 
+   11  00..01 1000000000 11  6147 
+The rest of that cache block 
+... 
+512 
+... 
+Index Tag Data Valid 
+November 11, 2013 More cache organizations 22 
+Disadvantage of direct mapping 
+  The direct-mapped cache is easy: indices and offsets can be computed 
+with bit operators or simple arithmetic, because each memory address 
+belongs in exactly one block. 
+  But, what happens if a  
+ program uses addresses  
+ 2, 6, 2, 6, 2, …? 
+00 
+01 
+10 
+11 
+Index 
+0000 
+0001 
+0010 
+0011 
+0100 
+0101 
+0110 
+0111 
+1000 
+1001 
+1010 
+1011 
+1100 
+1101 
+1110 
+1111 
+Memory 
+Address 
+November 11, 2013 More cache organizations 23 
+Disadvantage of direct mapping 
+  The direct-mapped cache is easy: indices and offsets can be computed 
+with bit operators or simple arithmetic, because each memory address 
+belongs in exactly one block. 
+  However, this isn’t really 
+ flexible. If a program uses 
+ addresses 2, 6, 2, 6, 2, ..., 
+ then each access will result 
+ in a cache miss and a load 
+ into cache block 2. 
+  This cache has four blocks, 
+ but direct mapping might 
+ not let us use all of them. 
+  This can result in more 
+ misses than we might like. 
+00 
+01 
+10 
+11 
+Index 
+0000 
+0001 
+0010 
+0011 
+0100 
+0101 
+0110 
+0111 
+1000 
+1001 
+1010 
+1011 
+1100 
+1101 
+1110 
+1111 
+Memory 
+Address 
+November 11, 2013 More cache organizations 24 
+A fully-associative cache 
+  A fully-associative cache permits data to be stored in any cache block, 
+instead of forcing each memory address into one particular block. 
+—  When data is fetched from memory, it can be placed in any unused 
+block of the cache.  
+—  This way we’ll never have a conflict between two or more memory 
+addresses that map to a single cache block. 
+  In the previous example, we might put memory address 2 in cache block 
+2, and address 6 in block 3. Then subsequent repeated accesses to 2 and 
+6 would all be hits instead of misses. 
+  If all the blocks are already in use, it’s usually best to replace the least 
+recently used one, assuming that if it hasn’t used it in a while, it won’t 
+be needed again anytime soon. 
+November 11, 2013 More cache organizations 25 
+The price of full associativity 
+  However, a fully-associative cache is expensive to implement. 
+—  Because there is no index field in the address anymore, the entire 
+address must be used as the tag, increasing the total cache size. 
+—  Data could be anywhere in the cache, so we must check the tag of 
+every cache block. That’s a lot of comparators! 
+... 
+... 
+... 
+Index Tag (32 bits) Data Valid  Address (32 bits) 
+= 
+Hit 
+ 32 
+Tag 
+= 
+= 
+November 11, 2013 More cache organizations 26 
+Set associativity 
+  An intermediate possibility is a set-associative cache. 
+—  The cache is divided into groups of blocks, called sets. 
+—  Each memory address maps to exactly one set in the cache, but data 
+may be placed in any block within that set. 
+  If each set has 2x blocks, the cache is a 2x-way associative cache.  
+  Here are several possible organizations of an eight-block cache. 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+ Set 
+0 
+1 
+2 
+3 
+ Set 
+0 
+1 
+ Set 
+direct mapped 
+8 “sets”, 1 block each 
+2-way associativity 
+4 sets, 2 blocks each 
+4-way associativity 
+2 sets, 4 blocks each 
+November 11, 2013 More cache organizations 27 
+Locating a set associative block 
+  We can determine where a memory address belongs in an associative 
+cache in a similar way as before. 
+  If a cache has 2s sets and each block has 2n bytes, the memory address 
+can be partitioned as follows. 
+  Our arithmetic computations now compute a set index, to select a set 
+within the cache instead of an individual block. 
+  Block Offset  = Memory Address mod 2n 
+  Block Address = Memory Address / 2n 
+  Set Index  = Block Address mod 2s 
+ 
+Address (m bits) 
+s (m-s-n) n 
+ Tag Index Block 
+offset 
+November 11, 2013 More cache organizations 28 
+Example placement in set-associative caches 
+  Where would data from memory byte address 6195 be placed, assuming 
+the eight-block cache designs below, with 16 bytes per block? 
+  6195 in binary is 00...0110000 011 0011. 
+  Each block has 16 bytes, so the lowest 4 bits are the block offset. 
+  For the direct mapped cache, the next three bits (011) are the set index. 
+ For the 2-way cache, the next two bits (11) are the set index. 
+ For the 4-way cache, the next one bit (1) is the set index. 
+  The data may go in any block, shown in green, within the correct set. 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+ Set 
+0 
+1 
+2 
+3 
+ Set 
+0 
+1 
+ Set 
+direct mapped 
+8 sets, 1 block each 
+2-way associativity 
+4 sets, 2 blocks each 
+4-way associativity 
+2 sets, 4 blocks each 
+November 11, 2013 More cache organizations 29 
+Block replacement 
+  Any empty block in the correct set may be used for storing data. 
+  If there are no empty blocks, the cache controller will attempt to replace 
+the least recently used block, just like before.  
+  For highly associative caches, it’s expensive to keep track of what’s 
+really the least recently used block, so some approximations are used. 
+We won’t get into the details. 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+ Set 
+0 
+1 
+2 
+3 
+ Set 
+0 
+1 
+ Set 
+Direct mapped 
+8 sets, 1 block each 
+2-way associativity 
+4 sets, 2 blocks each 
+4-way associativity 
+2 sets, 4 blocks each 
+April 21, 2003 More cache organizations 30 
+LRU example 
+  Assume a fully-associative cache with two blocks, which of the following 
+memory references miss in the cache.   
+—  assume distinct addresses go to distinct blocks 
+LRU Tags 
+A 
+B 
+A 
+C 
+B 
+A 
+B 
+addresses 
+-- -- 0 
+0 1 
+April 21, 2003 More cache organizations 31 
+LRU example 
+  Assume a fully-associative cache with two blocks, which of the following 
+memory references miss in the cache.   
+—  assume distinct addresses go to distinct blocks 
+LRU Tags 
+A 
+B 
+A 
+C 
+B 
+A 
+B 
+addresses 
+-- -- 0 
+0 1 
+A -- 1 
+A B 0 
+A B 1 
+A C 0 
+B C 1 
+B A 0 
+B A 1 
+miss 
+miss 
+miss 
+miss 
+miss 
+On a miss, we 
+replace the LRU. 
+ 
+On a hit, we just 
+update the LRU. 
+November 11, 2013 More cache organizations 32 
+Set associative caches are a general idea 
+  By now you may have noticed the 1-way set associative cache is the same 
+as a direct-mapped cache. 
+  Similarly, if a cache has 2k blocks, a 2k-way set associative cache would 
+be the same as a fully-associative cache. 
+0 
+1 
+2 
+3 
+4 
+5 
+6 
+7 
+ Set 
+0 
+1 
+2 
+3 
+ Set 
+0 
+1 
+ Set 
+1-way 
+8 sets, 
+1 block each 
+2-way 
+4 sets, 
+2 blocks each 
+4-way 
+2 sets, 
+4 blocks each 
+0 
+ Set 
+8-way 
+1 set, 
+8 blocks 
+direct mapped fully associative 
+November 11, 2013 More cache organizations 33 
+2-way set associative cache implementation 
+0 
+... 
+2k 
+Index Tag Data Valid 
+Address (m bits) 
+= 
+Hit 
+k (m-k-n) 
+Tag 
+ 2-to-1 mux 
+Data 
+2n 
+Tag Valid Data 
+2n 
+2n 
+= 
+Index Block 
+offset 
+  How does an implementation of a 
+2-way cache compare with that of 
+a fully-associative cache? 
+  Only two comparators are 
+ needed. 
+  The cache tags are a little 
+ shorter too. 
+November 11, 2013 More cache organizations 34 
+Summary 
+  Larger block sizes can take advantage of spatial locality by loading data 
+from not just one address, but also nearby addresses, into the cache. 
+  Associative caches assign each memory address to a particular set within 
+the cache, but not to any specific block within that set. 
+—  Set sizes range from 1 (direct-mapped) to 2k (fully associative).  
+—  Larger sets and higher associativity lead to fewer cache conflicts and 
+lower miss rates, but they also increase the hardware cost. 
+—  In practice, 2-way through 16-way set-associative caches strike a good 
+balance between lower miss rates and higher costs. 
+  Next time, we’ll talk more about measuring cache performance, and also 
+discuss the issue of writing data to a cache. 

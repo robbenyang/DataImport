@@ -1,0 +1,179 @@
+1 
+MP7 available, EC due 12/03 11:59p, due 12/10, 11:59p. 
+This Is It deadlines 
+ 
+ 
+ 
+  
+ 
+Today’s announcements: 
+Q:  if this graph is simple and connected, how many 
+edges does it have? 
+ 
+A:  at least ________, at most _________ 
+Graphs: Adjacency List 
+a 
+b 
+c 
+d 
+ 2 
+ 2 
+ 3 
+ 1 
+u 
+v 
+w 
+z 
+Some functions we’ll compare: 
+insertVertex(vertex v) 
+removeVertex(vertex v) 
+areAdjacent(vertex v, vertex u) 
+incidentEdges(vertex v) 
+v 
+u 
+w 
+a c 
+b 
+z 
+d 
+v a u
+  w b v
+  w c u 
+z d w 
+u 
+v 
+w 
+z 
+a 
+b 
+c 
+d 
+u v w z 
+u a c 
+v a b 
+w c b d 
+z d 
+u 
+v 
+w 
+z 
+Graphs: Adjacency Matrix 
+ d w 
+ d z  b v 
+ a u  a w 
+ c w  a v 
+Graphs: Edge List 
+ c u 
+Graphs: Asymptotic Performance 
+• n vertices, m edges 
+• no parallel edges 
+• no self-loops 
+• Bounds are big-O 
+Edge 
+List 
+Adjacency 
+List 
+Adjacency 
+Matrix 
+Space n + m n + m n2 
+incidentEdges(v) m deg(v) n 
+areAdjacent (v, w) m min(deg(v), deg(w)) 1 
+insertVertex(o) 1 1 n2 
+insertEdge(v, w, o) 1 1 1 
+removeVertex(v) m deg(v) n2 
+removeEdge(e) 1 1 1 
+Graphs – traversal  
+Objective: 
+       Visit every vertex and every edge in the graph 
+ 
+Purpose: 
+       We can search for interesting substructures in the graph, 
+ 
+Contrast graph traversal to BST traversal: 
+  
+•Ordered 
+•Obvious start 
+•  
+•  
+•  
+Graphs: Traversal - BFS 
+http://www.cs.duke.edu/csed/jawaa2/examples/BFS.html 
+http://www.student.seas.gwu.edu/~idsv/idsv.html 
+C B 
+A 
+E 
+D 
+F 
+Graphs: Traversal – BFS 
+Visits every vertex and classifies each edge as 
+either “discovery” or “cross” 
+Algorithm BFS(G) 
+     Input: graph G 
+     Output:  labeling of the edges of G 
+as discovery edges and back edges 
+ 
+For all u in G.vertices() 
+   setLabel(u, UNEXPLORED) 
+For all e in G.edges() 
+   setLabel(e, UNEXPLORED) 
+For all v in G.vertices() 
+   if getLabel(v) = UNEXPLORED 
+      BFS(G,v) 
+Algorithm BFS(G,v) 
+     Input: graph G and start vertex v 
+     Output:  labeling of the edges of G in the connected 
+component of v as discovery edges and cross edges 
+queue q; 
+setLabel(v, VISITED) 
+q.enqueue(v); 
+While !(q.isEmpty) 
+   q.dequeue(v) 
+   For all w in G.adjacentVertices(v) 
+        if getLabel(w) = UNEXPLORED 
+              setLabel((v,w),DISCOVERY) 
+              setLabel(w, VISITED) 
+              q.enqueue(w) 
+        else if getLabel((v,w)) = UNEXPLORED 
+              setLabel((v,w),CROSS) 
+C B 
+A 
+E 
+D 
+F 
+Graphs: BFS example 
+A C  B  D  
+B A  C  E 
+C B  A  D  E  F 
+D A  C  F 
+E B  C  G 
+F C  D  G 
+G E  F  H 
+H D  G 
+C B 
+A 
+E 
+D 
+F 
+H G 
+While loop  
+ 
+For loop 
+ 
+TOTAL RUNNING TIME: 
+Graphs: BFS properties 
+•   
+ 
+•   
+ 
+•   
+ 
+•   
+C B 
+A 
+E 
+D 
+L0 
+L1 
+F 
+L2 
+BFS 

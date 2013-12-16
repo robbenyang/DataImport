@@ -1,0 +1,233 @@
+Kevin C. Chang
+SQL 3: DB Modification, 
+Definition, Views 
+Database Systems
+• Insertion
+• Deletion
+• Update
+• Table creation
+• View definition
+• View expansion
+• Updating a view
+Concepts You Will Learn
+SQL 3: DB Modification, Definition, Views   
+(1 of 27)Default Section (1 of 1)
+Why Do We Learn This?
+SQL 3: DB Modification, Definition, Views   
+(2 of 27)Why Do We Learn This? (0 of 0)
+Database Modifications
+SQL 3: DB Modification, Definition, Views   
+(3 of 27)Database Modification (0 of 13)
+• A modification command does not return a result as a query does, 
+but it changes the database in some way.
+• There are three kinds of modifications:
+• Insert a tuple or tuples.
+• Delete a tuple or tuples.
+• Update the value(s) of an existing tuple or tuples.
+Database Modifications
+SQL 3: DB Modification, Definition, Views   
+(4 of 27)Database Modification (1 of 13)
+• To insert a single tuple:
+INSERT INTO <relation>
+VALUES ( <list of values> );
+• Example:
+INSERT INTO Likes
+VALUES(‘Sally’, ‘Bud’);
+Insertion
+SQL 3: DB Modification, Definition, Views   
+(5 of 27)Database Modification (2 of 13)
+• We may add to the relation name a list of attributes.
+• There are two reasons to do so:
+• We forget the standard order of attributes for the relation.
+• We don’t have values for all attributes, and we want the system to fill in 
+missing components with NULL or a default value.
+• Example:
+INSERT INTO Likes(beer, drinker)
+VALUES(‘Bud’, ‘Sally’);
+Specifying Attributes in INSERT
+SQL 3: DB Modification, Definition, Views   
+(6 of 27)Database Modification (3 of 13)
+• We may insert the entire result of a query, using the form:
+INSERT INTO <relation>
+( <subquery> );
+• Example:
+INSERT INTO Beers(name)
+(SELECT beer from Sells
+where beer not in (select name from Beers);)
+INSERT INTO Buddies
+(SELECT d2.drinker
+FROM Frequents d1, Frequents d2
+WHERE d1.drinker = ‘Sally’ AND
+d2.drinker <> ‘Sally’ AND
+d1.bar = d2.bar
+);
+Inserting Many Tuples
+SQL 3: DB Modification, Definition, Views   
+(7 of 27)Database Modification (4 of 13)
+• To delete tuples satisfying a condition from some relation:
+DELETE FROM <relation>
+WHERE <condition>;
+Deletion
+SQL 3: DB Modification, Definition, Views   
+(8 of 27)Database Modification (5 of 13)
+• Delete from Likes(drinker, beer) the fact that Sally likes Bud:
+DELETE FROM Likes
+WHERE drinker = ‘Sally’ AND
+beer = ‘Bud’;
+Example: Deletion
+SQL 3: DB Modification, Definition, Views   
+(9 of 27)Database Modification (6 of 13)
+• Make the relation Likes empty:
+DELETE FROM Likes;
+• Note no WHERE clause needed.
+Example: Delete all Tuples
+SQL 3: DB Modification, Definition, Views   
+(10 of 27)Database Modification (7 of 13)
+• Delete from Beers(name, manf) all beers for which there is another 
+beer by the same manufacturer.
+DELETE FROM Beers b
+WHERE EXISTS (
+SELECT name FROM Beers
+WHERE manf = b.manf AND name <> b.name);
+Example: Delete Many Tuples
+SQL 3: DB Modification, Definition, Views   
+(11 of 27)Database Modification (8 of 13)
+• Suppose Busch makes only Bud and Bud Lite.
+• Suppose we come to the tuple b for Bud first.
+• The subquery is nonempty, because of the Bud Lite tuple, so we 
+delete Bud.
+• Now, When b is the tuple for Bud Lite, do we delete that tuple too?
+Semantics of Deletion ‐‐ 1
+SQL 3: DB Modification, Definition, Views   
+(12 of 27)Database Modification (9 of 13)
+• The answer is that we do delete Bud Lite as well.
+• The reason is that deletion proceeds in two stages:
+1. Mark all tuples for which the WHERE condition is satisfied in the original 
+relation.
+2. Delete the marked tuples.
+Semantics of Deletion ‐‐ 2
+SQL 3: DB Modification, Definition, Views   
+(13 of 27)Database Modification (10 of 13)
+• To change certain attributes in certain tuples of a relation:
+UPDATE <relation>
+SET <list of attribute assignments>
+WHERE <condition on tuples>;
+Updates
+SQL 3: DB Modification, Definition, Views   
+(14 of 27)Database Modification (11 of 13)
+• Change drinker Fred’s phone number to 555‐1212:
+UPDATE Drinkers
+SET phone = ‘555-1212’
+WHERE name = ‘Fred’;
+Example: Update
+SQL 3: DB Modification, Definition, Views   
+(15 of 27)Database Modification (12 of 13)
+• Increase price that is cheap:
+UPDATE Sells
+SET price = price * 1.07
+WHERE price < 3.0;
+Example: Update Several Tuples
+SQL 3: DB Modification, Definition, Views   
+(16 of 27)Database Modification (13 of 13)
+Defining a Database Schema
+SQL 3: DB Modification, Definition, Views   
+(17 of 27)Defining a Database Schema (0 of 1)
+• Create table
+CREATE TABLE Sells (
+bar CHAR(20),
+beer VARCHAR(20),
+price REAL,
+PRIMARY KEY (bar, beer)
+);
+• Change a table
+ALTER TABLE Bars DROP license;
+ALTER TABLE Bars ADD phone CHAR(16) DEFAULT ‘unlisted’;
+• Delete a table
+Creating Tables (See “Relational Model”)
+SQL 3: DB Modification, Definition, Views   
+(18 of 27)Defining a Database Schema (1 of 1)
+Views
+SQL 3: DB Modification, Definition, Views   
+(19 of 27)Views (0 of 4)
+• A view is a “virtual table,” a relation that is defined in terms of the 
+contents of other tables and views.
+• Declare by:
+CREATE VIEW <name> AS <query>;
+• In contrast, a relation whose value is really stored in the database is 
+called a base table.
+Views
+SQL 3: DB Modification, Definition, Views   
+(20 of 27)Views (1 of 4)
+•CanDrink(drinker, beer) is a view “containing” the 
+drinker‐beer pairs such that the drinker frequents at 
+least one bar that serves the beer:
+CREATE VIEW CanDrink AS
+SELECT drinker, beer
+FROM Frequents, Sells
+WHERE Frequents.bar = Sells.bar;
+Example: View Definition
+SQL 3: DB Modification, Definition, Views   
+(21 of 27)Views (2 of 4)
+• You may query a view as if it were a base table.
+• There is a limited ability to modify views if the modification makes sense as a 
+modification of the underlying base table.
+• Example:
+SELECT beer FROM CanDrink
+WHERE drinker = ‘Sally’;
+Example: Accessing a View
+SQL 3: DB Modification, Definition, Views   
+(22 of 27)Views (3 of 4)
+• The DBMS starts by interpreting the query as if the view were a base 
+table.
+• Typical DBMS turns the query into something like relational algebra.
+• The queries defining views are replaced by their algebraic 
+equivalents, and “spliced into” the expression tree for the query.
+View Expansion: 
+What Happens When a View Is Used?
+SQL 3: DB Modification, Definition, Views   
+(23 of 27)
+PROJbeer
+SELECTdrinker=‘Sally’
+CanDrink
+PROJdrinker, beer
+JOIN
+Frequents Sells
+Views (4 of 4)
+Updating Views
+SQL 3: DB Modification, Definition, Views   
+(24 of 27)Updating Views (0 of 3)
+Updating Views
+SQL 3: DB Modification, Definition, Views   
+(25 of 27)
+How can I insert a tuple into a table that doesn’t exist?
+CREATE VIEW JoeBarSells AS
+SELECT beer, price
+FROM Sells
+WHERE bar = ‘joe bar’;
+INSERT INTO JoeBarSells
+VALUES(“bud special”, 3.5)
+INSERT INTO Sells 
+VALUES(NULL, ‘bud special’, 3.5)
+If we make the
+following insertion: 
+It becomes:
+Q: Is the new tuple in table Sells? In the view JoeBarSells?
+Updating Views (1 of 3)
+Non‐Updatable Views
+SQL 3: DB Modification, Definition, Views   
+(26 of 27)
+CREATE VIEW Champaign-view  AS
+SELECT name, product, store
+FROM Person, Purchase
+WHERE Person.city = “Champaign”    AND
+Person.name = Purchase.buyer
+How can we add the following tuple to the view?
+(“Joe”,  “Shoe Model 12345”,  “Nine West”)
+We need to add “Joe” to Person first.  One copy ?  More copies ?
+Updating Views (2 of 3)
+• Check textbook for rules of “updatable” views.
+• Even when an update is allowed, it may not work intuitively as you 
+would expect.
+View Update Can be Tricky!
+SQL 3: DB Modification, Definition, Views   
+(27 of 27)Updating Views (3 of 3)

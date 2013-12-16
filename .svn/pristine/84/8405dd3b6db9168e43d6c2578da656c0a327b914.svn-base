@@ -1,0 +1,141 @@
+Kevin C. Chang
+Relational Algebra
+CS411 Database Systems
+1
+• If you are waiting to register for this class.
+Announcements
+2
+Question 1:
+How to “query” a database?
+3
+• Goal: specify what we want from our database
+Find all the employees who earn more than $50,000 and 
+pay taxes in Champaign‐Urbana.
+•Write in C++/Java?
+• Use high‐level query languages:
+• Theoretical: Relational Algebra, Datalog
+• Practical: SQL
+• Relational algebra: a basic set of operations on relations that 
+provide the basic principles.
+Question 2: What kinds of “computation” 
+can we do on relations?
+4
+• Mathematical system consisting of:
+• Operands ‐‐‐ variables or values from which new values can be constructed.
+• Operators ‐‐‐ symbols denoting procedures that construct new values from 
+given values.
+What is an “Algebra”
+5
+• Arithmetic algebra. Linear algebra.
+• What are operands?
+• What are operators?
+Q: Example algebra?
+6
+• An algebra whose operands are relations or variables that represent 
+relations.
+• Operators are designed to do common things that we need to do 
+with relations in a database.
+• The result is an algebra that can be used as a query language for 
+relations.
+What is Relational Algebra?
+7
+•Operators: relations as input, new relation as output
+•Basic RA operators:
+• Basic Set Operations
+• union, difference (no intersection, no complement)
+• Selection: 
+• Projection: 
+• Cartesian Product: X
+• Renaming: 
+•Derived operations:
+• Intersection, complement
+• Joins (natural, equi‐join, theta join, semi‐join)
+Relational Algebra at a Glance
+8
+• Union, difference
+• Binary operations
+Set Operations
+9
+• Union: all tuples in R1 or R2
+• Notation: R1 U R2
+• R1, R2 must have the same schema
+• R1 U R2 has the same schema as R1, R2
+• Example:  
+• ActiveEmployees U RetiredEmployees
+Set Operations: Union
+10
+• Difference: all tuples in R1 and not in R2
+• Notation: R1 – R2
+• R1, R2 must have the same schema
+• R1 ‐ R2 has the same schema as R1, R2 
+• Example
+• AllEmployees  ‐ RetiredEmployees
+Set Operations: Difference
+11
+• Returns all tuples which satisfy a condition
+• Notation:  ߪ௖ሺܴሻ
+• c is a condition: =, <, >, and, or, not
+• Output schema: same as input schema
+• Find all employees with salary more than $40,000:
+• ߪ௦௔௟௔௥௬வସ଴଴଴଴ሺEmployeeሻ
+Selection 
+12
+Selection Example
+13
+SSN Name DepartmentID Salary
+92881 John 1 30,000
+32877 Tony 1 32,000
+44544 Amy 2 45,000
+௦௔௟௔௥௬வସ଴଴଴଴
+•Unary operation: returns certain columns
+•Eliminates duplicate tuples!
+•Notation:    ஺భ,…,஺೙
+•Condition:
+• Suppose input schema ܴ ܤଵ,… , ܤ௠
+• ሼܣଵ, … , ܣ௡ሽ ⊆ ሼܤଵ,… , ܤ௠ሽ	
+•Output schema  ଵ ௡
+•Example:  ௌௌே,ே௔௠௘
+Projection 
+14
+Projection Example
+15
+SSN Name DepartmentID Salary
+92881 John 1 30,000
+32877 Tony 1 32,000
+44544 Amy 2 45,000
+ௌௌே,ே௔௠௘
+• Think of relation as a table.
+• How are they similar?
+• How are they different?
+• Why do you need both?
+Q: Comparing projection and selection?
+16
+•Each tuple in R1 with each tuple in R2
+•Notation:  ଵ ଶ
+• Input schemas  ଵ ଵ ௡ ଶ ଵ ௠
+•Condition:  ሼܣଵ,… , ܣ௡ሽ ∩ ሼܤଵ,… , ܤ௠ሽ ൌ ∅	
+•Output schema is   ଵ ௡ ଵ ௠
+•Example:  Employee x Dependents
+•Very rare in practice (but joins are very common)
+Cartesian Product
+17
+18
+Cartesian Product Example 
+ 
+Employee 
+Name SSN 
+John 999999999 
+Tony 777777777 
+ 
+Dependents 
+EmployeeSSN Dname 
+999999999 Emily 
+777777777 Joe 
+ 
+Employee x Dependents 
+Name SSN EmployeeSSN Dname 
+John 999999999 999999999 Emily 
+John 999999999 777777777 Joe 
+Tony 777777777 999999999 Emily 
+Tony 777777777 777777777 Joe 
+ 

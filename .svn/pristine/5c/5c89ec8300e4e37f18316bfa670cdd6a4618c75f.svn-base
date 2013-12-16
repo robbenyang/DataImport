@@ -1,0 +1,325 @@
+Kevin C. Chang
+NoSQL Databases
+Database Systems
+• “NoSQL”
+• Key‐value stores
+• Consistent hashing
+• Column families
+• Document databases
+• Graph databases
+Concepts You Will Learn
+NoSQL Databases (1 of 44)Default Section (1 of 1)
+Why Do We Learn This?
+Why Do We Learn This? (0 of 0) NoSQL Databases (2 of 44)
+Why NoSQL?
+Why NoSQL? (0 of 7) NoSQL Databases (3 of 44)
+New Trends:
+Data is getting ...
+Why NoSQL? (1 of 7) NoSQL Databases (4 of 44)
+RDBMS fails to scale up to Big Data
+• Data is growing very fast.
+People and brands on Twitter send 
+more than 340 million tweets a day.
+People upload 72 hours (259,200 
+seconds) of new video to YouTube a 
+minute.
+Google receives over 2 million 
+search queries a minute.
+...Why NoSQL? (2 of 7) NoSQL Databases (5 of 44)
+RDBMS fails to handle complex data
+Slide from neo technology, “A NoSQL Overview and the Benefits of Graph Databases"
+Why NoSQL? (3 of 7) NoSQL Databases (6 of 44)
+Goal: A Fast DBMS for large and complex data
+Fast 
+Speed
+However, scalability and complexity conflicts 
+with the goal of reaching high efficiency
+Why NoSQL? (4 of 7) NoSQL Databases (7 of 44)
+• The misleading term “NoSQL” is short for 
+“Not Only SQL”.
+• They do in fact allow SQL‐like Query Language 
+• NoSQL represents a category of non‐
+relational databases  with different data 
+models.
+NoSQL: Non‐relational Databases
+The misconception:
+Why NoSQL? (5 of 7) NoSQL Databases (8 of 44)
+• Reference: http://nosql‐database.org/
+NoSQL Databases Categories
+NoSQL Database Types Example
+Key Value/Tuple Store DynamoDB, Voldemort, Redis, …
+Column Families HBASE, Cassandra, Hypertable, …
+Document Store MongoDB, ElasticSearch, CouchDB, …
+Graph Databases Neo4J, Infinite Graph, InfoGrid, …
+Multimodel Databases ArangoDB, OrientDB, Datomic
+Object Databases Versant, db4o, Objectivity
+… ….
+Why NoSQL? (6 of 7) NoSQL Databases (9 of 44)
+Idea: Finding a balancing point between data size 
+and data complexity.
+Slide from neo technology, “A NoSQL Overview and the Benefits of Graph Databases"Why NoSQL? (7 of 7) NoSQL Databases (10 of 44)
+Key‐Value Stores
+Key‐Value Stores (0 of 14) NoSQL Databases (11 of 44)
+•Voldemort: A distributed key‐value 
+store used by Linkedit.
+Key‐Value Store Example: Voldemort
+Key‐Value Stores (1 of 14) NoSQL Databases (12 of 44)
+Database Queries in LinkedIn
+Key‐Value Stores (2 of 14) NoSQL Databases (13 of 44)
+If we use RDBMS ...
+User Friend User Friend
+Users who share common friends
+User View User View
+Users who view the same page
+Key‐Value Stores (3 of 14) NoSQL Databases (14 of 44)
+How to speed up the query?
+Key‐Value Stores (4 of 14) NoSQL Databases (15 of 44)
+Answer: Make Your Data as 
+Simple as Possible!
+Key‐Value Stores (5 of 14) NoSQL Databases (16 of 44)
+Store everything as key‐value pairs!
+id hair_color age height
+1923 Red 18 6’0”
+3371 Blue 34 NA
+… … … …
+User Friend
+1121 3322
+3322 6546
+User Friend
+1121 3322
+3322 6546
+Relational Database Key‐Value Store
+User1923_color Red
+User1923_age 18
+User1923_height 6’0’’
+User3371_color Blue
+User3371_age 34
+...
+User1121_Mayknow User3322
+User6546_Mayknow User1121
+....
+Key‐Value Stores (6 of 14) NoSQL Databases (17 of 44)
+•Voldemort Only Supported
+1. value = store.get(key) 
+2. store.put(key, value) 
+3. store.delete(key)
+Supported Operations in Voldemort
+Key‐Value Stores (7 of 14) NoSQL Databases (18 of 44)
+Hashing Problem 
+in Distributed Storage
+Key‐Value_1 Key‐Value_2 Key‐Value_3 Key‐Value_4
+Hash Function, e.g. key%N
+What if we add a new server?      Or some servers are down?
+Key‐Value Stores (8 of 14) NoSQL Databases (19 of 44)
+Key Technique in Voldemort: Consistent Hashing
+Hash Value: 0
+2^31‐1
+Key‐Value Stores (9 of 14) NoSQL Databases (20 of 44)
+Key Technique in Voldemort: Consistent Hashing
+Server 1
+Server 4
+Server 3
+Server 2
+Server 3
+Server 1
+Server 2
+Server 4
+Data Key
+Store in first available 
+server (Server 4)
+Key‐Value Stores (10 of 14) NoSQL Databases (21 of 44)
+Consistent Hashing:
+If One Server is Down.
+Server 1
+Server 4
+Server 3
+Server 2
+Server 3
+Server 1
+Server 2
+Server 4
+Data Key
+Go the next server, 
+i.e., Server 3
+Key‐Value Stores (11 of 14) NoSQL Databases (22 of 44)
+Consistent Hashing:
+If we add a new server 
+Server 1
+Server 4
+Server 3
+Server 2
+Server 3
+Server 1
+Server 2
+Server 4
+Data Key
+Server 5
+Server 5
+Go to new server
+Key‐Value Stores (12 of 14) NoSQL Databases (23 of 44)
+Consistent Hashing:
+If we add a new server 
+Server 1
+Server 4
+Server 3
+Server 2
+Server 3
+Server 1
+Server 2
+Server 4
+Data Key
+Server 5
+Server 5
+Key‐Value Stores (13 of 14) NoSQL Databases (24 of 44)
+Voldemort VS MySQL
+Sid Anand, LinkedIn Data Infrastructure (QCon London 2012)Key‐Value Stores (14 of 14) NoSQL Databases (25 of 44)
+Column Families
+Column Families (0 of 4) NoSQL Databases (26 of 44)
+Column Families Database in Industry
+F Chang, et al, Bigtable: A Distributed Storage System for Structured Data, osdi 06Column Families (1 of 4) NoSQL Databases (27 of 44)
+• Distributed Multilevel Map 
+• Fault‐tolerant, persistent 
+• Scalable 
+• 1000s of servers 
+• TB of in‐memory data 
+• Peta byte of disk based data 
+• Millions of read/writes per second, efficient scans 
+• Self‐managing 
+• Servers can be added/removed dynamically 
+• Servers adjust to the load imbalance
+BigTable in Google
+Column Families (2 of 4) NoSQL Databases (28 of 44)
+• Distributed multi‐dimensional sparse map.
+• (Row, Column, Timestamp) ‐> Cell Contents
+Big Table Data Model
+Row Column Time Stamp Cell Contents
+com.cnn.www Contents 09/26/2013 <html> …</html>
+com.cnn.www Anchor: cnnsi.com 01/01/2013 CNN
+com.cnn.www Anchor: my.look.ca 09/26/2013 CNN.COM
+Contents
+Anchor Text that refers to the page
+Column Families (3 of 4) NoSQL Databases (29 of 44)
+• Timestamps: used to store different versions of data in a cell
+• Look up options:
+• Return most recent K values
+• Return all values in timestamp range
+Timestamps
+Row Column Time Stamp Cell Contents
+com.cnn.www Contents 09/26/2013 <html> …</html>
+com.cnn.www Anchor: cnnsi.com 01/01/2013 CNN
+com.cnn.www Anchor: my.look.ca 09/26/2013 CNN.COM
+Column Families (4 of 4) NoSQL Databases (30 of 44)
+Document Databases
+Document Databases (0 of 7) NoSQL Databases (31 of 44)
+• MongoDB (from “humongous”) is an open‐source document 
+database.
+• Document‐oriented storage
+• Full index support
+• Replication & high availability
+• Auto‐sharding
+• Map/Reduce
+• GridFS
+MongoDB
+Document Databases (1 of 7) NoSQL Databases (32 of 44)
+MongoDB in Industries
+http://www.mongodb.org/about/production-deployments/Document Databases (2 of 7) NoSQL Databases (33 of 44)
+Concepts in Document Stores
+When I say 
+Collections
+Think
+Table
+Document
+Document Databases (3 of 7) NoSQL Databases (34 of 44)
+• Document  Row (Tuple, Record)
+• Field  Column (Attribute)
+• Document as JSON object:
+var mydoc = {
+_id: ObjectId("5099803df3f4948bd2f98391"),
+name: { 
+first: "Alan", 
+last: "Turing" },
+birth: new Date('Jun 23, 1912'),
+death: new Date('Jun 07, 1954'),
+contribs: [ "Turing machine", "Turing test", "Turingery" ],
+views : NumberLong(1250000),
+biography_id = ObjectId(“1123403df3f4948bd2f45ab”)
+}
+• _id holds an ObjectId.
+• name holds a subdocument that contains the fields first and last.
+• birth and death hold values of the Date type.
+• contribs holds an array of strings.
+• views holds a value of the NumberLong type.’
+• Biography_id is a reference to another document object.
+Documents, Fields, and Values
+Document Databases (4 of 7) NoSQL Databases (35 of 44)
+• Embedding: One document is contained in another. 
+• Usually for one‐to‐one or one‐to‐many relations.
+• Reference: One document is referred in another document.
+• For many‐to‐many relations.
+• Embedding V.S. Reference
+• Embedding has great reading performance, but might result in duplication. 
+• Reference is more flexible, might not be efficient
+Document Relationship: 
+Embedding & Reference
+Document Databases (5 of 7) NoSQL Databases (36 of 44)
+• Store Two Documents.
+• db.scores.save({title: 'MongoDB Tutorial', content: 'MongoDB is an ...', 
+read_times: 20})
+• db.scores.save({title: 'MongoDB Comments', content: 'MongoDB is Nice.', 
+read_times:10})
+• db.scores.save({title: 'MongoDB API', content: 'db.scores.find()', read_times: 
+15})
+• Finding documents whose “read_time” is greater than 12
+• db.scores.find({read_times:{'$gt':12}})
+MongoDB Demo http://www.mongodb.org/#
+Document Databases (6 of 7) NoSQL Databases (37 of 44)
+MongoDB is faster?
+avg med dev total
+mongoDB 0.00025 0.00021 0.00019 24.99955 
+MySQL 0.00199 0.00032 0.00518 199.32546
+100000 Indexed Queries
+avg med dev total
+mongoDB 0.05662 0.03704 0.19267 5.66164
+MySQL 1.99975 1.68468 1.99266 199.97469
+100 Non‐Indexed Queries
+http://www.idiotsabound.com/did‐i‐mention‐mongodb‐is‐fast‐way‐to‐go‐mongo
+Document Databases (7 of 7) NoSQL Databases (38 of 44)
+Graph Databases
+Graph Databases (0 of 5) NoSQL Databases (39 of 44)
+• High availability
+• Fully “ACID”
+• Scales to billions of nodes and relationships
+• High speed querying through traversals.
+Neo4j: A Robust Graph Database
+Graph Databases (1 of 5) NoSQL Databases (40 of 44)
+Data Model for Neo4j
+Data Model Abstraction:
+• Nodes
+• Properties
+• Relations
+Graph Databases (2 of 5) NoSQL Databases (41 of 44)
+Neo4j: Creating Nodes and Relations
+N1
+N2
+NeoService neo = ...
+Node mrAnderson = neo.createNode();
+mrAnderson.setProperty(“name”, “Thomas 
+Anderson”);
+mrAnderson.setProperty(“age”, 29)
+Node morpheus = neo.createNode()
+morpheus.setProperty(“name”, “Morpheus”);
+Morpheus.setProperty(“rank”, “Captain”);
+mrAnderson.createRelationshipTo(morpheus, 
+RelTypes.KNOWS);
+Name: Thomas Anderson
+Age: 29
+Name: Morpheus
+Rank: Captain
+KNOWS
+Graph Databases (3 of 5) NoSQL Databases (42 of 44)
+Example Operation: Graph Traversal
+Slides from Emil Eifrem, Neo4j and a NOSQL Overview
+Example: Friend Suggestion for Thomas Anderson
+Graph Databases (4 of 5) NoS L Databases (43 of 44)
+Performs Better in Graph Traversal
+Graph Databases (5 of 5) NoSQL Databases (44 of 44)

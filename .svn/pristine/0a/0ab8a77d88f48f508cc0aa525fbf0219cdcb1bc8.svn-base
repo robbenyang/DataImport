@@ -1,0 +1,214 @@
+Classical Synchronization II 
+CS 241 
+Oct. 21, 2013 
+void read() { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  /* Read from the file */ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+void writer() { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  /* Write to the file */ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+void read() { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  /* Read from the file */ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+void writer() { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  /* Write to the file */ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+void read() { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  /* Read from the file */ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+void writer() { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  /* Write to the file */ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+Readers-Writers Solutions 
+• Solution #1: 
+ 
+ 
+• Solution #2: 
+ 
+ 
+• Solution #3: 
+Sleeping Barber Problem 
+• Consider a barber shop where: 
+– One barber and one barber’s chair 
+– Fixed sized waiting room 
+ 
+– As a customer arrives, s/he checks if the barber is 
+sleeping or working. 
+• If the barber is sleeping, wake the barber. 
+• If the barber is working, sit in the waiting room if there’s 
+room (if the waiting room is full, just leave) 
+ 
+– The barber is either working or sleeping. 
+• When the barber finishes a customer, s/he checks the 
+waiting room for the next customer. 
+• If the waiting room is empty, the barber sleeps. 
+void barber() { 
+  while (1) { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  /* Cutting hair */ 
+ 
+ 
+ 
+ 
+ 
+ 
+  } 
+} 
+void customer() { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  /* Hair being cut */ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+Lessons Learned 
+ 
+ 
+ 

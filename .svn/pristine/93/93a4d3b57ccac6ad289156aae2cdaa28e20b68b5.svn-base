@@ -1,0 +1,281 @@
+Map Reduce
+CS 411 Database Systems
+Kevin C. Chang
+• Why MapReduce?
+• Scenarios where MapReduce may excel.
+• MapReduce abstraction.
+• MapReduce architecture.
+• Is MapReduce better, or not? Where and why?
+Concepts You Will Learn
+Query Optimization (1 of 64)Default Section (1 of 2)
+The Big Picture: Where We Are
+Query Optimization (2 of 64)
+Data Access
+Data Modeling
+Data/Query Processing
+Data Acquisition
+Relational NonRelational
+S
+t
+r
+u
+c
+t
+u
+r
+e
+d
+S
+e
+m
+i
+S
+t
+r
+u
+c
+t
+u
+r
+e
+d
+Transaction Management
+N
+o
+S
+Q
+L
+ 
+D
+a
+t
+a
+b
+a
+s
+e
+s
+X
+M
+L
+ 
+D
+a
+t
+a
+b
+a
+s
+e
+s
+U
+n
+t
+r
+u
+c
+t
+u
+r
+e
+d
+Relational Databases
+• SQL
+• Relational Algebra
+• Query Optimization
+• Query Execution
+• Indexing
+• Concurrency Control
+• Logging Recovery
+Database Systems Toolkits
+M
+a
+p
+ 
+R
+e
+d
+u
+c
+e
+(
+P
+a
+r
+a
+l
+l
+e
+l
+)
+S
+t
+o
+r
+m
+ 
+(
+S
+t
+r
+e
+a
+m
+)
+Information Extraction
+ER  Relational Model
+Query Language
+Default Section (2 of 2)
+Big Data, Again!
+People and brands on Twitter send 
+more than 340 million tweets a day.
+People upload 72 hours (259,200 
+seconds) of new video to YouTube a 
+minute.
+Google receives over 2 million 
+search queries a minute.
+Traditional Solution for Big Data:
+Parallel Database
+• Data is distributed in multiple computers.
+• Logically a single machine
+• Featuring well‐defined schemas, declarative query 
+languages (SQL).
+• Have been studied for decades.
+SQL
+Relational 
+Data
+Parallel database is powerful in 
+supporting SQL queries on big data.
+But ...
+Scenario 1: Semi‐Structured Data
+• A lot of Web data are semi‐structured without 
+predefined schema.
+Inconsistent with relational model in RDBMS 
+Scenario 2: ETL (Extraction, Transform 
+and Load) and “read once” Tasks
+Example: Web Logs Processing
+Web Logs
+It is unnecessary to store data  in DBMS for 
+querying.
+Counting Word Distribution
+Aggregated by Users
+Trend Analysis
+Useful 
+Statistics
+Scenario 3: Data Mining Applications
+Data
+Initial 
+Assignment 
+of Clusters
+Find 
+Cluster 
+Center
+Reassign 
+Data
+...
+Could not be structured as single SQL queries.
+Example: K‐Means
+Scenario 4: Limited‐budge and Robust 
+• Open source distributed database 
+systems are not robust enough
+• Commercial distributed database 
+systems are expensive
+What is MapReduce?
+• A Programming model for large‐scale distributed 
+data processing
+• History
+– The actual origins of Mapreduce are arguable, but the 
+paper which is most cited is “MapReduce: Simplified 
+Data Processing on Large Clusters” by Jeffrey Dean 
+and Sanjay Ghemawat in 2004
+– Pioneer of MapReduce implementation: Hadoop
+Framework by Doug Cutting and …
+– Today, numerous independent people and 
+organizations contribute to MapReduce Project
+MapReduce in Google
+• “Googlers’ Hammer for 80% of our
+Data crunching”
+– Large scale web search indexing
+– Clustering problems for Google News
+– Produce reports for  popular queries
+– Large‐scale machine learning problems.
+– ...
+Existing MapReduce and Similar 
+Systems
+• Google MapReduce
+– Support C++, Java, Python, Sawzall, ...
+– Based on Proprietary infrastructres
+• GFS, Sawzall, Chubby, BigTable
+• And some open source libraries
+• Hadoop Map‐Reduce
+– Open Source (Kudos to Doug and the team)
+– Plus the whole equivalent package, and more
+• HDFS, Map‐Reduce, Pig, Zookeeper, Hbase, Hive
+– Used by Yahoo!, Facebook, Amazon, ...
+• Dryad
+– Proprietary, based on Microsoft SQL Servers
+– Dyrad, DyradLINQ
+Intuition behind MapReduce
+• Many tasks are composed of a Map procedure 
+and a Reduce procedure
+– Map: Categorize the data.
+– Reduce: Aggregate the data.
+• Ex: Counting Number of Keywords in Text Corpus
+– Map: Categorize the keyword occurrence by its 
+content.
+– Reduce: Count the number of occurrences of each 
+keyword
+MapReduce Framework
+Data
+Map(): Categorize the 
+data to re‐distribute the 
+workload.
+Reduce(): Aggregate the 
+Categorized data
+Use WordCount() as Example
+• Problem: Counting the frequency of each 
+keyword.
+• Input: List of documents.
+• Output: <Keyword_1, Frequency_1>, 
+<Keyword_2, Frequency_2>, ...
+Example: Map() in WordCount()
+Map() List( ,  )
+Abstraction of Map()
+Map()
+Doc0, “A bad 
+beginning 
+makes a bad 
+ending”.  
+[<“a”, 1>,
+<“bad”, 2>,
+<“makes”, 1>,
+<“ending”, 1> 
+...]
+Abstraction of Reduce()
+Example: Reduce() in WordCount()
+Reduce(), ,
+Reduce()
+“bad”, 
+[2,1,1,1] “bad”, 5 
+Workflow of WordCount()
+Data
+“A bad beginning 
+makes a bad ending”.  ”I have a bad news.”
+<“bad”, 3> <“a”, 3>
+<“bad”, 2>
+<“a”, 2> <“bad”, 1><“a”, 1>
+Map Phase
+Reduce Phase
+Example 2: Average Income
+• Problem: Compute average income in a city for a 
+given year (e.g., 2007)
+• Input:
+– Personal Information: <SSN, Personal Info>
+• E.g. <“12345”, {John Smith, Sunnyvale, CA}>
+– Income Information: <SSN, {year, income}>
+• E.g. <“12345”, {2007, $72000}>, <“98765”, {2013, $12344}>
+• Output: Average income in each city in 2007
+– E.g. <Sunnyvale, 12000>, <Champaign, 2000>, ...
+Example From  Zhao et al. :”MapReduce: The Programming Model and Practice”
+How to Design Map() & Reduce()?
+Solution

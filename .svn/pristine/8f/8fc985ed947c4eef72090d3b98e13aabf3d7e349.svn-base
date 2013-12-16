@@ -1,0 +1,217 @@
+Kevin C. Chang
+Transaction Management
+Database Systems
+• Transaction
+• Transaction management
+• ACID
+• Recovery
+• Log
+• Undo logging
+• Redo logging
+• Undo/redo logging
+Concepts You Will Learn
+Transaction Management (1 of 61)Default Section (1 of 2)
+The Big Picture: Where We Are
+Data Access
+Data Modeling
+Data/Query Processing
+Data Acquisition
+Relational NonRelational
+S
+t
+r
+u
+c
+t
+u
+r
+e
+d
+S
+e
+m
+i
+S
+t
+r
+u
+c
+t
+u
+r
+e
+d
+Transaction Management
+N
+o
+S
+Q
+L
+ 
+D
+a
+t
+a
+b
+a
+s
+e
+s
+X
+M
+L
+ 
+D
+a
+t
+a
+b
+a
+s
+e
+s
+U
+n
+t
+r
+u
+c
+t
+u
+r
+e
+d
+Relational Databases
+• SQL
+• Relational Algebra
+• Query Optimization
+• Query Execution
+• Indexing
+• Concurrency Control
+• Logging Recovery
+Database Systems Toolkits
+M
+a
+p
+ 
+R
+e
+d
+u
+c
+e
+(
+P
+a
+r
+a
+l
+l
+e
+l
+)
+S
+t
+o
+r
+m
+ 
+(
+S
+t
+r
+e
+a
+m
+)
+Information Extraction
+ER  Relational Model
+Query Language
+Why Do We Learn This?
+Transaction Management (3 of 61)Why Do We Learn This? (0 of 2)
+Why Do We Learn This?
+Transaction Management (4 of 61)
+5
+Why Do We Learn This? (1 of 2)
+• End users don't see the DB directly
+• They are only vaguely aware of its design
+• SQL is not a suitable end‐user interface
+• End users interact with DB programs
+• May need more than one query
+• May need to do calculations, realize “business rules”, etc.
+• Executing DB programs:
+• May be many users simultaneously
+• Thus many simultaneous executions of these programs
+• Expect “correct” operation
+• A user should not have to wait forever
+• A user should not be affected by errors of others
+Users and DB Programs 
+Transaction Managements
+Transaction Management (5 of 61)Why Do We Learn This? (2 of 2)
+Transactions
+Transaction Management (6 of 61)Transactions (0 of 4)
+Definition: A transaction is the execution of a DB 
+program.
+• DB applications are designed as a set of 
+transactions
+• Typical transaction
+• starts with data from user or from another transaction
+• includes DB reads/writes
+• ends with display of data or form, or with request to start 
+another transaction
+Definition of "Transaction"
+Transaction Management (7 of 61)Transactions (1 of 4)
+• Edgar Codd?
+• Jim Gray?
+• Al Gore?
+Behind the Scene: 
+Who invented Transaction?
+Transaction Management (8 of 61)Transactions (2 of 4)
+Transaction Management (9 of 61)Transactions (3 of 4)
+And He is a Key Contributor
+Transaction Management (10 of 61)
+From: Jim Gray at IBM: the transaction processing revolution. Bruce G. Lindsay.
+ACM SIGMOD Record. 37(2). June 2008.Transactions (4 of 4)
+Correctness of Transactions
+Transaction Management (11 of 61)Correctness of Transactions (0 of 12)
+• Transactions must be "atomic"
+• Their effect is all or none
+• DB must be consistent before and after the transaction 
+executes (not necessarily during!)
+• EITHER
+• a transaction executes fully and "commits" to all the 
+changes it makes to the DB 
+• OR it must be as though that transaction never executed 
+at all
+Atomicity
+Transaction Management (12 of 61)Correctness of Transactions (1 of 12)
+• User view: “Transfer money from savings to 
+checking”
+• Program: 
+• read savings; 
+• verify balance is adequate;
+• update savings balance; 
+• read checking;
+• update checking balance;
+A Typical Transaction
+Transaction Management (13 of 61)Correctness of Transactions (2 of 12)
+• A transactions which only READs expects DB to be 
+consistent, and cannot cause it to become 
+otherwise.
+• When a transaction which does any WRITE finishes, 
+it must either
+• COMMIT: "I'm done and the DB is consistent again" OR
+• ABORT (ROLLBACK): "I'm done but I goofed: my changes 
+must be undone."
+"Commit" and "Abort"
+Transaction Management (14 of 61)Correctness of Transactions (3 of 12)
+• A DB may have many simultaneous users
+• simultaneous users implies simultaneous transactions 
+implies simultaneous DB access
+• multiprogramming/multiprocessing
+• Things can go wrong!
+• transactions can conflict with one another
+• programs may crash, OS may crash, disk may crash
+• company loses customer, gets sued, goes bankrupt, etc.
+Complications
+Transaction Management (15 of 61)Correctness of Transactions (4 of 12)

@@ -1,0 +1,246 @@
+1 NFA vs. DFA
+Expressive Power of NFAs and DFAs
+• Is there a language that is recognized by a DFA but not by any NFAs? No!
+• Is there a language that is recognized by an NFA but not by any DFAs? No!
+Main Theorem
+Theorem 1. A language L is recognized by a DFA if and only if there is an NFA N such that
+L(N) = L.
+In other words:
+• For any DFA D, there is an NFA N such that L(N) = L(D), and
+• For any NFA N , there is a DFA D such that L(D) = L(N).
+2 NFAs for Regular Languages
+Converting DFAs to NFAs
+Proposition 2. For any DFA D, there is an NFA N such that L(N) = L(D).
+Proof. Is a DFA an NFA? Essentially yes! Syntactically, not quite. The formal definition of DFA
+has δDFA : Q× Σ→ Q whereas δNFA : Q× (Σ ∪ {})→ P(Q).
+For DFA D = (Q,Σ, δD, q0, F ), define an “equivalent” NFA N = (Q,Σ, δN , q0, F ) that has the
+exact same set of states, initial state and final states. Only difference is in the transition function.
+δN (q, a) = {δD(q, a)}
+for a ∈ Σ and δN (q, ) = ∅ for all q ∈ Q.
+3 NFAs recognize Regular Languages
+3.1 Simulating an NFA
+Simulating an NFA on Your Computer
+NFA Acceptance Problem
+Given an NFA N and an input string w, does N accept w?
+1
+How do we write a computer program to solve the NFA Acceptance problem?
+Two Views of Nondeterminsm
+Guessing View
+At each step, the NFA “guesses” one of the choices available; the NFA will guess an “accepting
+sequence of choices” if such a one exists.
+Very useful in reasoning about NFAs and in designing NFAs.
+Parallel View
+At each step the machine “forks” threads corresponding to each of the possible next states.
+Very useful in simulating/running NFA on inputs.
+Algorithm for Simulating an NFA
+Algorithm
+Keep track of the current state of each of the active threads.
+Example 3.
+q0 q1
+0, 1
+1
+0, 1
+Figure 1: Example NFA N
+Consider the input w = 111. The execution (listing only the states of currently active threads)
+is
+〈q0〉 1−→ 〈q0, q1〉 1−→ 〈q0, q1, q1〉
+1−→ 〈q0, q1, q1, q1〉
+Algorithm
+With optimizations
+Observations
+• Exponentially growing memory: more threads for longer inputs. Can we do better?
+• Exact order of threads is not important
+– It is unimportant whether the 5th thread or the 1st thread is in state q.
+• If two threads are in the same state, then we can ignore one of the threads
+– Threads in the same state will “behave” identically; either one of the descendent threads
+of both will reach a final state, or none of the descendent threads of both will reach a
+final state
+2
+Parsimonious Algorithm in Action
+Example 4.
+q0 q1
+0, 1
+1
+0, 1
+Figure 2: Example NFA N
+Consider the input w = 111. The execution (listing only the states of currently active threads)
+is
+{q0} 1−→ {q0, q1} 1−→ {q0, q1}
+1−→ {q0, q1}
+3.2 DFAs equivalent to NFAs
+Revisiting NFA Simulation Algorithm
+• Need to keep track of the states of the active threads
+– Unordered: Without worrying about exactly which thread is in what state
+– No Duplicates: Keeping only one copy if there are multiple threads in same state
+• How much memory is needed?
+– If Q is the set of states of the NFA N , then we need to keep a subset of Q!
+– Can be done in |Q| bits of memory (i.e., 2|Q| states), which is finite!!
+Constructing an Equivalent DFA
+• The DFA runs the simulation algorithm
+• DFA remembers the current states of active threads without duplicates, i.e., maintains a
+subset of states of the NFA
+• When a new symbol is read, it updates the states of the active threads
+• Accepts whenever one of the threads is in a final state
+Example of Equivalent DFA
+3
+q0 q1
+0, 1
+1
+0, 1
+Figure 3: Example NFA N
+{q0} {q0, q1}
+{q1} {}
+0
+0, 1
+0, 10, 1
+1
+Figure 4: DFA D equivalent to N
+Recall . . .
+Definition 5. For an NFA M = (Q,Σ, δ, q0, F ), string w, and state q1 ∈ Q, we say δˆM (q1, w) to
+denote states of all the active threads of computation on input w from q1. Formally,
+δˆM (q1, w) = {q ∈ Q | q1 w−→M q}
+Formal Construction
+Given NFA N = (Q,Σ, δ, q0, F ), construct DFA det(N) = (Q
+′,Σ, δ′, q′0, F ′) as follows.
+• Q′ = P(Q)
+• q′0 = δˆN (q0, )
+• F ′ = {A ⊆ Q |A ∩ F 6= ∅}
+• δ′({q1, q2, . . . qk}, a) = δˆN (q1, a) ∪ δˆN (q2, a) ∪ · · · ∪ δˆN (qk, a) or more concisely,
+δ′(A, a) =
+⋃
+q∈A
+δˆN (q, a)
+4
+Correctness
+Lemma 6. For any NFA N , the DFA det(N) is equivalent to it, i.e., L(N) = L(det(N)).
+Proof Idea
+Need to show
+∀w ∈ Σ∗. det(N) accepts w iff N accepts w
+∀w ∈ Σ∗.δˆdet(N)(q′0, w) ∩ F ′ 6= ∅ iff δˆN (q0, w) ∩ F 6= ∅
+∀w ∈ Σ∗. for {A} = δˆdet(N)(q′0, w), A ∩ F 6= ∅ iff δˆN (q0, w) ∩ F 6= ∅
+We will instead prove a stronger claim. There are two possible ways to strengthen this:
+(a) ∀w ∈ Σ∗. δˆdet(N)(q′0, w) = {A} iff δˆN (q0, w) = A. In other words, this says that the state
+of the DFA after reading some string is exactly the set of states the NFA could be in after
+reading the same string.
+(b) ∀w ∈ Σ∗., for all -closed sets A ⊆ Q (-closed to be defined later), δˆdet(N)(A,w) ∩ F ′ 6= ∅
+iff for some q ∈ A, δˆN (q, w) ∩ F 6= ∅. In other words, (ignoring the technical condition of
+-closed sets) this says that the DFA det(N) accepts w from a state A iff the NFA N accepts
+w from some state in A.
+Notice that both statements (a) and (b) (modulo the notion of -closure), if proved, would prove
+that the construction is correct. Both the strengthenings (a) and (b) can be proved by induction,
+and their proofs have subtle differences. We, therefore, present both proofs completely.
+Correctness Proof I
+Lemma 7. ∀w ∈ Σ∗. δˆdet(N)(q′0, w) = {A} iff δˆN (q0, w) = A.
+Proof. By induction on |w|
+• Base Case |w| = 0: Then w = . Now
+δˆdet(N)(q
+′
+0, ) = {q′0} = {δˆN (q0, )} defn. of δˆdet(N) and defn. of q′0
+• Induction Hypothesis: Assume inductively that the statement holds ∀w. |w| < n
+• Induction Step: If |w| = n then w = ua with |u| = n− 1 and a ∈ Σ.
+δˆdet(N)(q
+′
+0, ua) = {A} iff q′0 ua−→det(N) A
+defn. of δˆ and det(N) is deterministic
+iff ∃B. q′0 u−→det(N) B and B a−→det(N) A
+property of −→ proved in lecture 3
+iff ∃B. δˆdet(N)(q′0, u) = {B} and B a−→det(N) A
+det(N) is deterministic and defn. of δˆ
+iff ∃B. δˆN (q0, u) = B and A = ∪q∈B δˆN (q, a)
+ind. hyp. and defn. of transition in det(N)
+iff δˆN (q0, ua) = A
+see Lemma below
+5
+To complete the proof, we need to prove the following lemma
+Lemma 8. ∃B. δˆN (q0, u) = B and A = ∪q∈B δˆN (q, a) iff δˆN (q0, ua) = A.
+Proof. Observe that A = ∪q∈B δˆN (q, a) iff (q ∈ A iff ∃q′ ∈ B s.t. q′ a−→N q). Thus we have,
+δˆN (q0, u) = B and A = ∪q∈B δˆN (q, a)
+iff
+(q ∈ A iff ∃q′. q0 u−→N q′ and q′ a−→N q)
+Now since we know that q1
+uv−→N q2 iff there is q′ s.t. q1 u−→N q′ and q′ v−→N q2, we can conclude
+δˆN (q0, u) = B and A = ∪q∈B δˆN (q, a)
+iff
+(q ∈ A iff ∃q′. q0 u−→N q′ and q′ a−→N q)
+iff
+(q ∈ A iff q0 ua−→N q)
+iff
+δˆN (q0, ua) = A
+where the last step is a consequence of the definition of δˆN .
+Correctness Proof II
+Definition 9. Let Q be the states of NFA N and let A ⊆ Q. A is said to be -closed iff for every
+q ∈ A, δˆN (q, ) ⊆ A. In other words, any state that can be reached from a state in A by following
+only -transitions, again belongs to A.
+Example 10. Trivial examples of -closed sets include ∅ and Q. An important example (that will
+be critical to this proof of correctness) is the initial state of DFA det(N) q′0 = δˆN (q0, ).
+Lemma 11. For every string w ∈ Σ∗, for every A ⊆ Q that is -closed, δˆdet(N)(A,w) ∩ F ′ 6= ∅ iff
+for some q ∈ A, δˆN (q, w) ∩ F 6= ∅.
+Discussion
+Before proving the lemma, let us highlight one point about the lemma. Ideally, we would have liked
+to prove the above lemma without the condition on -closure, i.e., we would have liked to prove
+that for every string w, for every A ⊆ Q, δˆdet(N)(A,w)∩F ′ 6= ∅ iff for some q ∈ A, δˆN (q, w)∩F 6= ∅.
+Unfortunately, this stronger condition does not hold, as you will see in the proof of the base case
+below. However, inspite of this, when A is taken to be q′0, which we pointed out is an -closed set,
+the above lemma specializes to the statement establishing the correctness of the DFA construction
+which is good enough for our purposes.
+Proof. We will prove this by induction on |w|.
+6
+• Base Case |w| = 0: Then w = . Now for any set A, δˆdet(N)(A, ) = {A}. Thus, δˆdet(N)(A, )∩
+F ′ 6= ∅ iff A ∩ F 6= ∅. If A is -closed then δˆN (A, ) = A and so we have
+δˆdet(N)(A, ) ∩ F ′ 6= ∅ iff A(= δˆN (A, )) ∩ F 6= ∅
+Thus, we have established the base case.
+Notice that the crucial step where -closedness is used — it is in arguing that δˆN (A, ) = A.
+Without this the base case cannot be proved, and in fact does not hold.
+• Induction Hypothesis: Assume inductively that the statement holds ∀w. |w| < n
+• Induction Step: If |w| = n then w = au with |u| = n− 1 and a ∈ Σ 1.
+Now δˆdet(N)(A,w = au) = {C} iff there is a B s.t. δ′(A, a) = B and δˆdet(N)(B, u) = {C}.
+The first important observation we make is that if A is -closed then so is B; we will prove
+this later after completing this proof. Thus, we can use the induction hypothesis on the
+computation on string u from state B.
+δˆdet(N)(A,w = au) = {C} and C ∈ F ′
+iff
+∃B. δ′(A, a) = B, δˆdet(N)(B, u) = {C} and C ∈ F ′ defn. of δˆdet(N)
+iff
+∃B. δ′(A, a) = B, ∃q ∈ B. δˆN (q, u) ∩ F 6= ∅ B is -closed and ind. hyp. on u
+iff
+∃B. δ′(A, a) = B, ∃q ∈ B. ∃q2 ∈ F. q u−→N q2 defn. of δˆN
+iff
+∃q1 ∈ A.∃q.∃q2 ∈ F. q1 a−→N q and q u−→N q2 defn. of δ′ transition of det(N)
+iff
+∃q1 ∈ A.∃q2 ∈ F. q1 w=au−→ N q2
+iff
+∃q1 ∈ A. δˆN (q, w) ∩ F 6= ∅
+To complete this proof we need to show
+Lemma 12. If A is -closed and δ′(A, a) = B then B is -closed.
+Proof. Let q ∈ B be an arbitrary element of B. Need to show that if q −→N q′ then q′ ∈ B.
+Observe that from the definition of δ′, we have q ∈ B implies there is q1 ∈ A such that q1 a−→N q.
+Now if q
+−→N q′ then we have q1 a=a−→N q′. Again by the definition of δ′ this means that q′ ∈ B,
+which completes the proof.
+Relevant States
+1Notice the difference in the form of w when compared to proof I. In proof I we took w = ua in the induction step.
+7
+The formal definition of the DFA has many states, several of which are unreachable from the initial
+state. To make the algorithm simpler for a human to implement (and for the resulting DFA to be
+readable), one can include only the reachable states. To do this,
+1. Start by drawing the initial state of the DFA.
+2. While there are states with missing transitions, draw the missing transitions creating any new
+states that maybe needed.
+3. Step 2 is repeated until transitions from every state has been drawn.
+4. Figure out which states are final, and mark them appropriately.
+Another Example
+q0
+q1
+q2
+q3
+ 0
+1 
+Figure 5: Example NFA N
+{q0, q1} {q2, q3}
+{q3} {}
+1
+0 0, 1
+0, 1
+0, 1
+Figure 6: DFA D′ for N (only relevant states)
+8

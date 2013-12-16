@@ -1,0 +1,191 @@
+1 Pumping Lemma
+1.1 Non-context-free languages
+Non-Context Free Languages
+Question
+Are there languages that are not context-free? What about L = {anbncn | n ≥ 0}?
+Answer
+L is not context-free, because
+• Recognizing if w ∈ L requires remembering the number of as seen, bs seen and cs seen
+• We can remember one of them on the stack (say as) , and compare them to another (say bs)
+by popping, but not to both bs and cs
+The precise way to capture this intuition is through the pumping lemma
+1.2 The Statement
+Pumping Lemma for CFLs
+Informal Statement
+For all sufficiently long strings z in a context free language L, it is possible to find two substrings,
+not too far apart, that can be simultaneously pumped to obtain more words in L.
+Lemma 1. If L is a CFL, then ∃p (pumping length) such that ∀z ∈ L, if |z| ≥ p then ∃u, v, w, x, y
+such that z = uvwxy
+1. |vwx| ≤ p
+2. |vx| > 0
+3. ∀i ≥ 0. uviwxiy ∈ L
+Proof
+Defered to later in the lecture.
+Two Pumping Lemmas side-by-side
+Context-Free Languages
+If L is a CFL, then ∃p (pumping length) such that ∀z ∈ L, if |z| ≥ p then ∃u, v, w, x, y such that
+z = uvwxy
+1. |vwx| ≤ p
+2. |vx| > 0
+1
+3. ∀i ≥ 0. uviwxiy ∈ L
+Regular Languages
+If L is a regular language, then ∃p (pumping length) such that ∀z ∈ L, if |z| ≥ p then ∃u, v, w such
+that z = uvw
+1. |uv| ≤ p
+2. |v| > 0
+3. ∀i ≥ 0. uviw ∈ L
+Pumping Lemma for CFLs
+Game View Game between Defender, who claims L satisfies the pumping condition, and Chal-
+lenger, who claims L does not.
+Defender Challenger
+Pick pumping length p
+p−→
+z←− Pick z ∈ L s.t. |z| ≥ p
+Divide z into u, v, w, x, y
+s.t. |vwx| ≤ p, and |vx| > 0 u,v,w,x,y−→
+i←− Pick i, s.t. uviwxiy 6∈ L
+Pumping Lemma: If L is CFL, then there is always a winning strategy for the defender (i.e.,
+challenger will get stuck).
+Pumping Lemma (in contrapositive): If there is a winning strategy for the challenger, then L
+is not CFL.
+Consequences of Pumping Lemma
+• If L is context-free then L satisfies the pumping lemma.
+• If L satisfies the pumping lemma that does not mean L is context-free
+• If L does not satisfy the pumping lemma (i.e., challenger can win the game, no matter what
+the defender does) then L is not context-free.
+1.3 Examples
+Example I
+Proposition 2. Lanbncn = {anbncn | n ≥ 0} is not a CFL.
+Proof. Suppose Lanbncn is context-free. Let p be the pumping length.
+2
+• Consider z = apbpcp ∈ Lanbncn.
+• Since |z| > p, there are u, v, w, x, y such that z = uvwxy, |vwx| ≤ p, |vx| > 0 and uviwxiy ∈ L
+for all i ≥ 0.
+• Since |vwx| ≤ p, vwx cannot contain all three of the symbols a, b, c, because there are p bs.
+So vwx either does not have any as or does not have any bs or does not have any cs. Suppose,
+(wlog) vwx does have any as. Then uv0wx0y = uwy contains more as than either bs or cs.
+Hence uwy 6∈ L.
+Example II
+Proposition 3. La=c∧b=d = {aibjcidj | i, j ≥ 0} is not a CFL.
+Proof. Suppose La=c∧b=d is context-free. Let p be the pumping length.
+• Consider z = apbpcpdp ∈ L.
+• Since |z| > p, there are u, v, w, x, y such that z = uvwxy, |vwx| ≤ p, |vx| > 0 and uviwxiy ∈ L
+for all i ≥ 0.
+• Since |vwx| ≤ p, v, x cannot contain both as and cs, nor can it contain both bs and ds.
+Further |vx| > 0. Now uv0wx0y = uwy 6∈ L, because it either contains fewer as than cs, or
+fewer cs than as, or fewer bs than ds, or fewer ds than bs.
+Example III
+Wrong Proof
+Proposition 4. E = {ww | w ∈ {0, 1}∗} is not a CFL.
+Proof. Suppose E is context-free. Let p be the pumping length.
+• Consider z = 0p10p1 ∈ L.
+• z can be pumped if we make the following division.
+0p1︷ ︸︸ ︷
+00 · · · 00︸ ︷︷ ︸
+u
+0︸︷︷︸
+v
+1︸︷︷︸
+w
+0p1︷ ︸︸ ︷
+0︸︷︷︸
+x
+00 · · · 001︸ ︷︷ ︸
+y
+• So is E CFL? No! Does E satisfy the pumping lemma? No!
+Example III
+Corrected Proof
+Proposition 5. E = {ww | w ∈ {0, 1}∗} is not a CFL.
+3
+Proof. Suppose E is context-free. Let p be the pumping length.
+• Consider z = 0p1p0p1p ∈ L.
+• Since |z| > p, there are u, v, w, x, y such that z = uvwxy, |vwx| ≤ p, |vx| > 0 and uviwxiy ∈ L
+for all i ≥ 0.
+• vwx must straddle the midpoint of z.
+– Suppose vwx is only in the first half. Then in uv2wx2y the second half starts with 1.
+Thus, it is not of the form ww.
+– Case when vwx is only in the second half. Then in uv2wx2y the first half ends in a 0.
+Thus, it is not of the form ww.
+– Suppose vwx straddles the middle. Then uv0wx0y must be of the form 0p1i0j1p, where
+either i or j is not p. Thus, uv0wx0y 6∈ E.
+1.4 Proof of the Pumping Lemma: Informal Ideas
+Proof of Pumping Lemma
+Lemma 6. If L is a CFL, then ∃p (pumping length) such that ∀z ∈ L, if |z| ≥ p then ∃u, v, w, x, y
+such that z = uvwxy
+1. |vwx| ≤ p
+2. |vx| > 0
+3. ∀i ≥ 0. uviwxiy ∈ L
+Let G be a CFG such that L(G) = L. Let z be a “very long” string in L (“very long” made precise
+later).
+S
+z
+A
+A
+u v w x y
+Figure 1: Parse Tree for z
+• Since z ∈ L there is a parse tree for z
+• Since z is very long, the parse tree must be “very tall”
+4
+• The longest path in the tree, by pigeon hole principle, must have some variable (say) A repeat.
+Let u, v, w, x, y be as shown.
+Pumping down and up
+S
+A
+u
+w
+y
+Figure 2: Pumping zero times
+S
+A
+A
+u v
+A
+v w x
+x y
+Figure 3: Pumping two times
+• Thus, uviwxiy has a parse tree, for any i.
+1.5 Formal Proof
+Proof of Pumping Lemma
+Proof. Let G be a grammar with k variables such that the length of the right-hand side of any rule
+has at most length ` and L(G) = L. Take p = `k+1. Consider z ∈ L such that |z| ≥ p = `k+1.
+• Consider a parse tree for z, which is an `-ary tree (i.e., each internal node has at most `
+children). Height of this tree is at least k+ 1, since an `-ary of height h has at most `h leaves.
+• Repeated Variables:
+5
+– A parse tree for z has a path of length k + 1
+– A path of length k+ 1 has k+ 2 vertices, out of which the last one is leaf that is labelled
+by a terminal; thus, there are at least k + 1 internal vertices on path.
+– Thus, there must be two vertices n1 and n2 on this path such that n1 and n2 have the
+same label (say A) and n1 is an ancestor of n2.
+– Let the yield of tree rooted at n2 be w, and yield of n1 be vwx. Yield of the root = z is
+say uvwxy.
+• Properties of u, v, w, x, y
+– Height of n1 can be assumed to be at most k+ 1; thus, the yield of n1 (vwx) is at most
+`k+1 = p.
+– n1 6= n2. Since the grammar has no -productions and no unit-productions, vwx 6= w.
+i.e., |vx| > 0.
+• Pumping the strings: Based on the parse tree for z, and definitions of u, v, w, x, y, we have
+– There is a parse tree with yield uAy and root S, obtained by not expanding n1. Thus,
+S
+∗⇒ uAy.
+– There is a parse tree with yield vAx and root A, obtained from n1 and not expanding
+n2. Thus, A
+∗⇒ vAx.
+– There is a parse tree with yield w and root A; this is the tree rooted at n2. Thus, A
+∗⇒ w.
+Putting it together, we have
+S
+∗⇒ uAy ∗⇒ uvAxy ∗⇒ uvvAxxy ∗⇒ · · · ∗⇒ uviAxiy ∗⇒ uviwxiy
+2 Closure Properties
+Proving Non-context-freeness
+Like in the case of regular languages, one can use closure properties to show that a language is
+non-contextfree. To prove L is not context-free, we construct a language L′ from L using only
+operations under which context-free languages are known to be closed. If L′ is known to be not
+context free (like Lanbncn) then one can conclude that L is not context-free.
+Example 7. Here is a proof that E = {ww | w ∈ {0, 1}∗} is not a CFL using closure properties.
+Consider h : {a, b, c, d}∗ → {0, 1}∗ such that h(a) = 0, h(b) = 1, h(c) = 0, h(d) = 1. Observe
+that
+h−1(E) ∩ L(a∗b∗c∗d∗) = La=c∧b=d
+Thus, E is not context-free.
+6

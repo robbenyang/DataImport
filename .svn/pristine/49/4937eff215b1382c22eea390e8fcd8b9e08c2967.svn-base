@@ -1,0 +1,333 @@
+1 
+Combina(onal  Logic  Design  
+  
+	  
+2 
+Today’s  lecture  
+  Combina(onal  Logic  
+  Different	  Representa-ons	  of	  Boolean	  Func-ons	  (review)	  
+  How  to  design  any  circuit  
+  Write	  a	  truth	  table	  
+  Sum-­‐of-­‐Products	  implementa-on	  
+  Example	  
+  Other  gates  you  should  know  about  (XOR,  NAND,  NOR)  
+  Divide-­‐and-­‐Conquer  design  
+3 
+Combina(onal  Logic  
+  Defini(on:  Boolean  circuits  where  the  output  is  a  pure  
+func(on  of  the  present  input  only.  
+  Circuits  made  up  of  gates,  that  don’t  have  any  feedback  
+  No	  feedback:	  outputs	  are	  not	  connected	  to	  inputs  
+  If	  you	  change	  the	  inputs,	  and  wait  for  a  while,	  the	  
+correct	  outputs	  show	  up.	  
+  Real	  circuits	  have	  delays	  (more	  on	  this	  later)	  
+  Can  be  represented  by  Boolean  Algebra  
+4 
+Four  representa(ons  of  Boolean  func(ons  
+  Equivalent  func(onality  
+  Rela(vely  mechanical  to  translate  between  these  formats  
+Expressions Truth Tables 
+HDLs (Verilog) Gates (Schematics) 
+5 
+A  fiOh  representa(on  
+  An  English  descrip(on/specifica(on  
+  
+Example:	  A	  sandwich	  shop	  has	  the	  following	  rules	  for	  making	  a	  good	  
+(meat)	  sandwich:	  	  
+	  (1)	  All	  sandwiches	  must	  have	  at	  least	  one	  type	  of	  meat.	  
+	  (2)	  Don’t	  put	  both	  roast	  beef	  and	  ham	  on	  the	  same	  sandwich.	  	  
+	  (3)	  Cheese	  only	  goes	  on	  sandwiches	  that	  include	  turkey.	  	  
+	  
+Write	  a	  Boolean	  expression	  for	  the	  allowed	  combina-ons	  of	  sandwich	  
+ingredients	  using	  the	  following	  variables:	  	  
+	  c	  =	  cheese	  
+	  h	  =	  ham	  
+	  t	  =	  turkey	  	  
+	  r	  =	  roast	  beef	  	  
+  
+6 
+English  	  	  Truth  Table  example  
+  Most  reliable  method  
+1.  Write	  a	  truth	  table	  
+2.  Every	  row	  evalua-ng	  to	  1	  becomes	  a	  term	  
+3.  OR	  all	  the	  terms	  together	  
+  This  will  give  an  un-­‐op(mized  expression  
+  (we	  can	  write	  computer	  programs	  to	  op-mize	  expressions)	  
+  (or	  beTer	  yet,	  use	  the	  ones	  that	  other	  people	  wrote…)	  
+  (we	  can’t	  write	  programs	  to	  design	  circuits	  for	  us.)	  
+  
+7 
+Sum  of  Products  (SOP)  form  
+  A  useful  way  to  represent  any  Boolean  expression  
+  A  sum  of  products  (SOP)  expression  contains:  
+  only	  OR	  (sum)	  opera-ons	  at	  the	  “outermost”	  level	  
+  Each	  term	  that	  is	  summed	  must	  be	  a	  product	  of	  literals	  
+  The  advantage  is  that  any  sum  of  products  expression  can  be  
+implemented  using  a  two-­‐level  circuit  
+  literals	  and	  complements	  at	  “0th”	  level	  
+  AND	  gates	  at	  the	  first	  level	  
+  a	  single	  OR	  gate	  at	  the	  second	  level	  
+f(x,y,z) = y’ + x’yz’ + xz 
+8 
+Truth  tables  to  Boolean  expressions  
+1.   For  each  row  in  truth  table  where  output  is  1  
+  Write	  a	  product	  term	  that	  is	  true	  for	  that	  set	  of	  inputs	  
+  And	  only	  for	  that	  set	  of	  inputs	  
+  This	  product	  will	  include	  each	  terminal	  exactly	  once	  
+2.   OR  all  the  product  terms  together  
+     product-­‐term1	  +	  product-­‐term2	  +	  product-­‐term3	  +	  …  
+  
+xy’z  
+9 
+Truth  table  -­‐>  Boolean  -­‐>  gates  example  
+Rules:    
+(1)	  must	  have	  at	  least	  one	  meat.	  
+(2)	  not	  both	  roast	  beef	  and	  ham.	  	  
+	  (3)	  cheese	  only	  if	  turkey.	  	  
+	  
+Ingredients:	   	  c	  =	  cheese	  
+	   	  h	  =	  ham	  
+	   	  t	  =	  turkey	  	  
+	   	  r	  =	  roast	  beef	    
+c h t r f(..) 
+0 0 0 0  
+0 0 0 1  
+0 0 1 0  
+0 0 1 1  
+0 1 0 0  
+0 1 0 1  
+0 1 1 0  
+0 1 1 1  
+1 0 0 0  
+1 0 0 1  
+1 0 1 0  
+1 0 1 1  
+1 1 0 0  
+1 1 0 1  
+1 1 1 0  
+1 1 1 1  
+ 
+Step 1. Write a truth table 
+Step 2. Every 1 becomes a term  
+a b c d e 
+0 0 1 0 0 
+1 0 1 0 0 
+1 1 0 1 1 
+1 1 0 0 1 
+10 
+Truth  table  -­‐>  Boolean  -­‐>  gates  example  
+c h t r f(..)  
+0 0 0 0 0  
+0 0 0 1 1 c'h’t’r 
+0 0 1 0 1 c'h’tr’  
+0 0 1 1 1 c'h’tr 
+0 1 0 0 1 c'ht’r’ 
+0 1 0 1 0  
+0 1 1 0 1 c'htr’ 
+0 1 1 1 0  
+1 0 0 0 0  
+1 0 0 1 0  
+1 0 1 0 1 ch’tr’ 
+1 0 1 1 1 ch’tr 
+1 1 0 0 0  
+1 1 0 1 0  
+1 1 1 0 1 chtr’ 
+1 1 1 1 0  
+ 
+Rules:    
+(1)	  must	  have	  at	  least	  one	  meat.	  
+(2)	  not	  both	  roast	  beef	  and	  ham.	  	  
+	  (3)	  cheese	  only	  if	  turkey.	  	  
+	  
+Ingredients:	   	  c	  =	  cheese	  
+	   	  h	  =	  ham	  
+	   	  t	  =	  turkey	  	  
+	   	  r	  =	  roast	  beef	    
+Step 1. Write a truth table 
+Step 2. Every 1 becomes a term  
+11 
+Truth  table  -­‐>  Boolean  -­‐>  gates  example  
+	    c h t r f(..)  
+0 0 0 0 0  
+0 0 0 1 1 c'h’t’r 
+0 0 1 0 1 c'h’tr’  
+0 0 1 1 1 c'h’tr 
+0 1 0 0 1 c'ht’r’ 
+0 1 0 1 0  
+0 1 1 0 1 c'htr’ 
+0 1 1 1 0  
+1 0 0 0 0  
+1 0 0 1 0  
+1 0 1 0 1 ch’tr’ 
+1 0 1 1 1 ch’tr 
+1 1 0 0 0  
+1 1 0 1 0  
+1 1 1 0 1 chtr’ 
+1 1 1 1 0  
+ 
+Step 3. OR all the terms together 
+12 
+Truth  table  -­‐>  Boolean  -­‐>  gates  example  
+	    c’h’t’r  +  c’h’tr’  +  c’h’tr  +  c’ht’r’  +  c’htr’  +  ch’tr’  +  ch’tr  +  chtr’  
+NOT
+c
+NOT
+h
+NOT
+t
+NOT
+r
+sandwich
+13 
+Truth  table  -­‐>  Boolean  -­‐>  gates  example  
+	    c’h’t’r  +  c’h’tr’  +  c’h’tr  +  c’ht’r’  +  c’htr’  +  ch’tr’  +  ch’tr  +  chtr’  
+NOT
+c
+NOT
+h
+NOT
+t
+NOT
+r
+sandwich
+AND
+AND
+AND
+AND
+AND
+AND
+AND
+AND
+OR
+14 
+Three  other  notable  2-­‐input  func(ons  
+  Remember  this  table?  
+  
+  
+  
+x y f0 f1 f2 f3 f4 f5 f6 f7 f8 f9 f10 f11 f12 f13 f14 f15 
+0 0 0 0 0 0 0 0 0 0 1 1 1 1 1 1 1 1 
+0 1 0 0 0 0 1 1 1 1 0 0 0 0 1 1 1 1 
+1 0 0 0 1 1 0 0 1 1 0 0 1 1 0 0 1 1 
+1 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 0 1 
+ 
+AND   OR  
+15 
+Addi(onal  Boolean  opera(ons    
+x y (xy)’
+0 0 1
+0 1 1
+1 0 1
+1 1 0
+x y (x+y)’
+0 0 1
+0 1 0
+1 0 0
+1 1 0
+NAND 
+(NOT-AND) 
+NOR 
+(NOT-OR) 
+XOR 
+(eXclusive OR) 
+(xy)’ = x’+ y’ (x + y)’ = x’y’ x ⊕ y = x’y + xy’ 
+Operation: 
+Expressions: 
+Truth table: 
+Logic gates: 
+x y x⊕y
+0 0 0
+0 1 1
+1 0 1
+1 1 0
+16 
+XOR  gates  
+  A  two-­‐input  XOR  gate  outputs  true  when  exactly  one  of  its  inputs  is  true:  
+  XOR  corresponds  more  closely  to  typical  English  usage  of  “either  …  or,”  
+either  of  the  two,  but  not  neither  nor  both.    
+  Several  fascina(ng  proper(es  of  the  XOR  opera(on:  
+x y x⊕y 
+0 0 0 
+0 1 1 
+1 0 1 
+1 1 0 
+ 
+ 
+x ⊕ y = x’y + xy’ 
+x ⊕ 0 = x x ⊕ 1 = x’
+x ⊕ x = 0 x ⊕ x’ = 1
+x ⊕ (y ⊕ z) = (x ⊕ y) ⊕ z [ Associative ]
+x ⊕ y = y ⊕ x [ Commutative ]
+17 
+x  XOR  y  =  x’  XOR  y’  
+  
+a)  True    
+b)  False  
+  
+	  
+18 
+Divide-­‐and-­‐Conquer  Design  
+  Consider  the  following  problem  
+  You	  are	  building	  system	  to	  help	  avoid	  train	  collisions	  on	  subways.	  	  
+  Each	  of	  the	  28	  segments	  of	  track:	  
+  Senses	  if	  there	  is	  a	  train	  on	  it	  (T	  =	  1)	  or	  no	  train	  (T	  =	  0)	  
+  Has	  a	  red/yellow/green	  stoplight,	  where	  exactly	  1	  light	  is	  on	  at	  a	  -me	  
+–  The	  red	  light	  is	  on	  (R	  =	  1)	  if	  there	  is	  a	  train	  in	  the	  next	  segment	  
+–  Otherwise,	  yellow	  is	  on	  (Y	  =	  1)	  if	  a	  train	  is	  2	  segments	  away	  
+–  Else,	  green	  is	  on	  (G	  =	  1)	  
+  We  could  implement  this  as  one  big  circuit.  
+28
+T
+28
+28
+28 G
+Y
+R
+19 
+Proximity  
+sensor  
+20 
+Why  would  that  be  a  bad  idea?  
+21 
+Divide-­‐and-­‐Conquer  Design  
+  Instead  build  a  module:  
+  And  replicate:  
+Xin
+Yin
+Xout
+Yout
+T R Y G
+Xin
+Yin
+Xout
+Yout
+T R Y G
+Xin
+Yin
+Xout
+Yout
+T R Y G
+Xin
+Yin
+Xout
+Yout
+T R Y G
+22 
+What  is  Y(Xin,  Yin)?  
+  
+              a)     Xin  ⊕  Yin  
+              b)     Xin  +  Yin’  
+              c)     Xin’  +  Yin  
+              d)   Xin    Yin’  
+              e)     Xin’    Yin  
+  
+  
+23 
+What  is  G(Xin,  Yin)?  
+  
+a)  Xin  OR  Yin  
+b)  Xin  NOR  Yin  
+c)  Xin  AND  Yin  
+d)  Xin  NAND  Yin  
+e)  Xin  XOR  Yin  
+  

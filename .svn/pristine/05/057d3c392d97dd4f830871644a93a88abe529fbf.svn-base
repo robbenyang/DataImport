@@ -1,0 +1,139 @@
+  What  is  likely  to  be  the  longest  path  through  this  circuit?  
+  From	  any	  data	  input	  (A,	  B)	  bit	  to	  any	  output	  bit	  	  
+  
+  
+  How  long  will  it  take?  
+  
+Propaga8on  Delay:   NOTA	   B	  
+(input)	   (output)	  
+A
+0
+1
+B
+0
+1
+Time
+propogationtNOT NOTNOT
+0
+1
+0
+1
+Time
+0
+1
+Assume:	  	  
+Inverter:	  	  
+	  	  	  10ps	  delay	  
+2-­‐input	  gate:	  	  
+	  	  	  20ps	  delay	  
+4-­‐input	  gate:	  	  
+	  	  	  30ps	  delay	  
+In   Out   Delay  
+X	   S	  
+Y	   S	  
+Cin	   S	  
+X	   Cout	  
+Y	   Cout	  
+Cin	   Cout	  
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+  A	  memory	  should	  have	  at	  least	  three	  properFes.	  
+1. 	  It	  should	  be	  able	  to	  hold	  a	  value.	  
+2. 	  You	  should	  be	  able	  to	  read	  the	  value	  that	  was	  saved.	  
+3. 	  You	  should	  be	  able	  to	  change	  the	  value	  that’s	  saved.	  
+SR	  Latch	   NOR
+NOR
+Q
+Q'
+reset
+set
+Qt=x	  	  =	  	  
+Q’t=x	  =	  	  
+S" R" Q"
+0" 0" No"change"
+0" 1" 0"(reset)"
+1" 0" 1"(set)"
+"
+"
+Inputs' Current' Next'
+S' R' Q' Q’' Q' Q’'
+0' 0' 0' ''1' 0' 1'
+0' 0' 1' 0' 1' 0'
+0' 1' 0' 1' 0' 1'
+0' 1' 1' 0' 0' 1'
+1' 0' 0' 1' 1' 0'
+1' 0' 1' 0' 1' 0'
+'
+'
+ 
+0
+1
+Time
+clk
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+0
+1
+0
+1
+Time
+Q
+D
+0
+1clk
+The  D  Flip  Flop  
+QD
+Q'
+enable
+QS
+Q'
+enable
+R
+NOT
+D
+clk
+Q
+Master
+(D Latch w/Enable)
+Slave
+(SR Latch w/Enable)
+Copies	  D	  input	  to	  Q	  on	  
+rising	  edge	  of	  clock.	  
+Synchronous  Design:  

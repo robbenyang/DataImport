@@ -1,0 +1,219 @@
+MP7 available, due 12/10, 11:59p.
+Student Projects Expo - Siebel 0216, 12/11, 7p.
+Code Challenge #4 - Siebel 0224, 12/11, 9p.
+ 
+Today’s announcements:
+How do we get from here to there?
+Need:
+1.  Common Vocabulary
+2. Graph implementation
+3. Traversal
+4. Algorithms.
+Algorithm BFS(G)
+     Input: graph G
+     Output:  labeling of the edges of G 
+as discovery edges and cross edges
+For all u in G.vertices()
+   setLabel(u, UNVISITED)
+For all e in G.edges()
+   setLabel(e, UNEXPLORED)
+For all v in G.vertices()
+   if getLabel(v) = UNVISITED
+      BFS(G,v)
+Algorithm BFS(G,v)
+     Input: graph G and start vertex v
+     Output:  labeling of the edges of G in the connected 
+component of v as discovery edges and cross edges
+queue q;
+setLabel(v, VISITED)
+q.enqueue(v);
+While !(q.isEmpty)
+   q.dequeue(v)
+   For all w in G.adjacentVertices(v)
+        if getLabel(w) = UNVISITED
+              setLabel((v,w),DISCOVERY)
+              setLabel(w, VISITED)
+              q.enqueue(w)
+        else if getLabel((v,w)) = UNEXPLORED
+              setLabel((v,w),CROSS)
+CB
+A
+E
+D
+F
+BFS:  Running time??
+Makes an assumption about the graph implementation...
+Pause for an example:
+Minimum Spanning Tree Algorithms:
+•Input:  connected, undirected graph G with unconstrained edge weights
+•Output:  a graph G’ with the following characteristics - 
+•G’ is a spanning subgraph of G
+•G’ is connected and acyclic (a tree)
+•G’ has minimal total weight among all such spanning trees - 
+_________________________
+CB
+A
+E
+D
+F
+48
+7 1
+2
+5
+2
+3 9
+Kruskal’s Algorithm
+a
+b
+c
+f
+g
+h
+ed
+5 15
+5 16
+10
+11 12
+9
+2812
+1317
+2
+16
+4
+(a,d)
+(e,h)
+(f,g)
+(a,b)
+(b,d)
+(g,e)
+(g,h)
+(e,c)
+(c,h)
+(e,f)
+(f,c)
+(d,e)
+(b,c)
+(c,d)
+(a,f)
+(d,f)
+Kruskal’s Algorithm (1956)
+a
+b
+c
+f
+g
+h
+ed
+5 15
+5 16
+10
+11 12
+9
+2812
+1317
+2
+16
+4
+(a,d)
+(e,h)
+(f,g)
+(a,b)
+(b,d)
+(g,e)
+(g,h)
+(e,c)
+(c,h)
+(e,f)
+(f,c)
+(d,e)
+(b,c)
+(c,d)
+(a,f)
+(d,f)
+1. Initialize graph T whose purpose is to be our output.  Let it consist 
+of all n vertices and no edges.
+2.  Initialize a disjoint sets structure where each vertex is represented 
+by a set.
+3.  RemoveMin from PQ.  If that edge connects 2 vertices from 
+different sets, add the edge to T and take Union of the vertices’ two 
+sets, otherwise do nothing.  Repeat until ______ edges are added to T.
+a b c d
+e f g h
+Kruskal’s Algorithm - preanalysis
+a
+b
+c
+f
+g
+h
+ed
+5 15
+5 16
+10
+11 12
+9
+2812
+1317
+2
+16
+4
+Algorithm KruskalMST(G)
+    disjointSets forest;
+ for each vertex v in V do
+  forest.makeSet(v);
+ priorityQueue Q;
+ Insert edges into Q, keyed by weights
+ graph T = (V,E) with E = ∅;
+ while T has fewer than n-1 edges do 
+  edge e = Q.removeMin()
+  Let u, v be the endpoints of e
+  if forest.find(v) ≠ forest.find(u) then
+   Add edge e to E
+   forest.smartUnion
+    (forest.find(v),forest.find(u))
+ return T
+Priority 
+Queue: Heap
+Sorted 
+Array
+To build
+Each 
+removeMin
+Kruskal’s Algorithm - analysis
+a
+b
+c
+f
+g
+h
+ed
+5 15
+5 16
+10
+11 12
+9
+2812
+1317
+2
+16
+4
+Algorithm KruskalMST(G)
+    disjointSets forest;
+ for each vertex v in V do
+  forest.makeSet(v);
+ priorityQueue Q;
+ Insert edges into Q, keyed by weights
+ graph T = (V,E) with E = ∅;
+ while T has fewer than n-1 edges do 
+  edge e = Q.removeMin()
+  Let u, v be the endpoints of e
+  if forest.find(v) ≠ forest.find(u) then
+   Add edge e to E
+   forest.smartUnion
+    (forest.find(v),forest.find(u))
+ return T
+Priority 
+Queue: Total Running time:
+Heap
+Sorted 
+Array

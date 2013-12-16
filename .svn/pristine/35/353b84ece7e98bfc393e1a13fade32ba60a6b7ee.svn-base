@@ -1,0 +1,288 @@
+1 
+Finite  State  Machine  
+	  
+2 
+Today’s  lecture  
+  Goal:  Build  a  sequen9al  circuit  from  a  state  diagram  
+  Step	  0:	  Problem	  specifica3on	  
+  Step	  1:	  Build	  the	  state	  diagram	  
+  Setp	  2:	  Build	  the	  state	  table	  
+  Step	  3:	  Build	  the	  sequen3al	  circuit	  using	  D	  flip-­‐flops	  
+  Timing  diagram  
+  Another  example:  Sequence  recognizer  
+  
+  
+If  a  combina+onal  logic  circuit  is  an  implementa+on  of  a  Boolean  func+on,  then  a      sequen+al  
+logic  circuit  can  be  considered  an  implementa+on  of  a  finite  state  machine.  
+  
+3 
+Step  0:  Problem  Specifica9on  
+  
+  We	  have	  a	  candy	  machine	  that	  dispenses	  candies	  that	  cost	  
+15-­‐cents	  
+  Accepts	  
+  	  nickels	  (5-­‐cents)	  	  
+  dimes	  (10-­‐cents)	  
+  Dispenses	  a	  candy	  if	  the	  balance	  is	  ≥	  15-­‐cents	  
+  When	  the	  customer	  overpays	  
+  the	  machine	  does	  not	  return	  change,	  but	  
+  keeps	  the	  balance	  for	  future	  transac3ons	  
+4 
+Step  1:  Build  the  State  Diagram  
+  Inputs  
+  Ouputs  
+  State  iden9fica9on  
+d	  n	  
+c	  
+5 
+Step  1:  Build  the  State  Diagram  
+Inputs:  d’n’,	  d’n,	  dn’	  
+Got-­‐0	  
+Got-­‐5	   Got-­‐10	  
+Got-­‐15	   Got-­‐20	  
+6 
+Step  2:  Build  a  State  Table  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  
+A  d’n  
+A  dn’  
+B  d’n’  
+B  d’n  
+B  dn’  
+C  d’n’  
+C  d’n  
+C  dn’  
+D  d’n’  
+D  d’n  
+D dn’  
+E  d’n’  
+       E  d’n  
+       E  dn’  
+Why  do  we  need    
+a  sequen9al  logic  to    
+build  this  circuit?  
+  
+7 
+Step  2:  Build  Sequen9al  Circuit    
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  
+A  d’n  
+A  dn’  
+B  d’n’  
+B  d’n  
+B  dn’  
+C  d’n’  
+C  d’n  
+C  dn’  
+D  d’n’  
+D  d’n  
+D dn’  
+E  d’n’  
+       E  d’n  
+       E  dn’  
+State  Encoding:  
+  
+5  states:  How  many  bits?  
+  
+8 
+Step  2:  Build  Sequen9al  Circuit  
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+AnextA
+B
+C
+D
+E
+nextB
+nextC
+nextD
+nextE
+State	  A	  =	  10000	  
+State	  B	  =	  01000	  
+State	  C	  =	  00100	  
+State	  D	  =	  00010	  
+State	  E	  =	  00001	  
+  
+One  hot  encoding  
+	  0	            
+	  1	  	  	  	  	  
+	  
+D  flip-­‐flop  
+0	          
+1	  
+Current    
+State  
+Next    
+State  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  
+A  d’n  
+A  dn’  
+B  d’n’  
+B  d’n  
+B  dn’  
+C  d’n’  
+C  d’n  
+C  dn’  
+D  d’n’  
+D  d’n  
+D dn’  
+E  d’n’  
+       E  d’n  
+       E  dn’  
+9 
+Step  3:  Sequen9al  circuit  with  D  flip-­‐flops  
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+N AnextA
+B
+C
+D
+E
+nextB
+nextC
+nextD
+nextE
+clk
+d	  
+n	  
+10 
+Step  3:  Sequen9al  circuit  with  D  flip-­‐flops  
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+N
+AnextA
+B
+C
+D
+E
+nextB
+nextC
+nextD
+nextE
+clk
+Candy
+11 
+Timing  Diagram  
+  
+clk	  
+D	  
+N	  
+A	  
+B	  
+C	  
+D	  
+E	  
+Output	  
+Time  
+12 
+Another  example:  Sequence  recognizer  
+  A	  sequence	  recognizer	  is	  a	  special	  kind	  of	  sequen3al	  circuit	  that	  looks	  for	  a	  
+special	  bit	  paTern	  in	  some	  input.	  
+  The	  recognizer	  circuit	  has	  one	  input,	  X.	  
+  There	  is	  one	  output,	  Z,	  which	  is	  1	  when	  the	  desired	  paTern	  is	  found.	  
+  Our	  example	  will	  detect	  the	  bit	  paTern	  “1001”:	  
+	   	  Inputs: 	  1	  1	  1	  0	  0	  1	  1	  0	  1	  0	  0	  1	  0	  0	  1	  1	  0	  …	  	  
+	   	  Outputs: 	  0	  0	  0	  0	  0	  0	  1	  0	  0	  0	  0	  0	  1	  0	  0	  1	  0	  …	  	  
+	  Here,	  one	  input	  and	  one	  output	  bit	  appear	  every	  clock	  cycle.	  
+	  
+  This	  requires	  a	  sequen3al	  circuit	  because	  the	  circuit	  has	  to	  “remember”	  the	  
+inputs	  from	  previous	  clock	  cycles,	  in	  order	  to	  determine	  whether	  or	  not	  a	  
+match	  was	  found.	  
+13 
+State  diagram  
+State Meaning 
+A None of the desired pattern (1001) has been input yet. 
+B We’ve already seen the first bit (1) of the desired pattern. 
+C We’ve already seen the first two bits (10) of the desired pattern. 
+D 
+E 
+We’ve already seen the first three bits (100) of the desired pattern. 
+We’ve seen the pattern (1001)  
+ 
+ 
+14 
+State  diagram  
+A B C D 1 0 0 
+State Meaning 
+A None of the desired pattern (1001) has been input yet. 
+B We’ve already seen the first bit (1) of the desired pattern. 
+C We’ve already seen the first two bits (10) of the desired pattern. 
+D 
+E 
+We’ve already seen the first three bits (100) of the desired pattern. 
+We’ve seen the pattern (1001)  
+ 
+ 
+E 1 

@@ -1,0 +1,619 @@
+1 
+Flip  Flops,  Registers,  and  Register  Files	  
+2 
+Today’s  lecture  
+  Storing  State  
+  Finishing	  up	  the	  SR	  Latch	  
+  Synchronous  Design  
+  Clocks	  
+  D	  Flip	  Flops	  
+  MIPS  ISA  introduc=on  
+  Register  Files  
+  Registers	  
+  Decoders	  
+3 
+Timing  diagram  of  an  SR  Latch  
+0
+1
+0
+1
+Time
+0
+1
+0
+1
+R
+S
+Q'
+Q
+NOR
+NOR
+Q
+Q'
+reset
+set
+NOR
+NOR
+Q
+Q'
+reset
+set
+4 
+SR  Latches  are  a  useful  storage  mechanism  
+  An  SR  latch  provides  the  three  features:    
+  It	  holds	  its	  value	  
+  We	  can	  read	  its	  value	  
+  We	  can	  change	  its	  value	  
+  We  call  the  data  stored  (Q)  the  state  of  the  latch.  
+  1	  bit	  of	  informa?on	  is	  stored	  
+  
+Inputs' Current' Next'
+S' R' Q' Q’' Q' Q’'
+0' 0' 0' 1' 0' 1'
+0' 0' 1' 0' 1' 0'
+0' 1' 0' 1' 0' 1'
+0' 1' 1' 0' 0' 1'
+1' 0' 0' 1' 1' 0'
+1' 0' 1' 0' 1' 0'
+'
+'
+ 
+  We  the  behavior  as  a  state  table,  
+which  explicitly  shows  that  the  next  
+values  of  Q  and  Q’  depend  on  their  
+current  values,  as  well  as  on  the  
+inputs  S  and  R.  
+S" R" Q"
+0" 0" No"change"
+0" 1" 0"(reset)"
+1" 0" 1"(set)"
+"
+"
+5 
+Aside:  SR  Latches  are  not  combina6onal  circuits  
+  In  the  2nd  lecture  we  defined  Comina=onal  Logic  as:    
+  Boolean  circuits  where  the  output  is  a  pure  func=on  of  
+the  present  input  only.  
+  Below  we  can  see  this  doesn’t  hold  for  the  SR  Latch  
+  When	  S  =  R  =  0  we	  can	  have	  two	  different	  outputs	  
+  The  SR  Latch  is  a  Sequen=al  circuit  
+Inputs' Current' Next'
+S' R' Q' Q’' Q' Q’'
+0' 0' 0' 1' 0' 1'
+0' 0' 1' 0' 1' 0'
+0' 1' 0' 1' 0' 1'
+0' 1' 1' 0' 0' 1'
+1' 0' 0' 1' 1' 0'
+1' 0' 1' 0' 1' 0'
+'
+'
+ 
+The outputs of a sequential circuit 
+depend on not only the inputs, but 
+also the state, or the current contents 
+of some memory. 
+6 
+Synchronous  Design  
+  The  easiest  (and  most  common)  way  to  build  computers  
+  All  state  elements  get  updated  at  the  same  =me  
+  Using	  a	  clock	  signal	  
+  Clock  signal  
+  A	  square	  wave	  with	  a	  constant	  period	  
+  We  always  update  state  at  the  same  point  in  wave  
+  E.g.,	  the	  rising	  edge	  
+0
+1
+Time
+clk
+clock period
+7 
+Synchronous  Design,  cont.  
+  Alternate  between  computa=on  and  upda=ng  state.  
+Computation
+(combinational
+logic)
+State
+(memory)
+0
+1
+Time
+clk
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+8 
+The  state  element  that  we  really  want…  
+  The  D  flip  flop  
+  Holds	  1	  bit	  of	  state	  
+  Output	  as	  Q.	  
+  Inputs	  
+  Copies	  D	  input	  into	  state	  on	  rising	  edge	  of	  clock.	  
+QD
+0
+1
+0
+1
+Time
+Q
+D
+0
+1clk
+9 
+Implemen=ng  the  D-­‐type  Flip  Flop  
+  Remember  the  SR  Latch?  
+  We’re  going  to  two  special  kinds  of  latches.  
+  SR	  Latch	  with	  enable	  
+  D	  Latch	  with	  enable	  
+NOR
+NOR
+Q
+Q'
+reset
+set
+S" R" Q"
+0" 0" No"change"
+0" 1" 0"(reset)"
+1" 0" 1"(set)"
+"
+"
+10 
+SR  Latch  with  Enable  
+  Take  SR  Latch,  make  it  ignore  input  when  enable  =  0  
+NOR
+NOR
+Q
+Q'
+reset
+set
+AND
+AND
+enable
+SR Latch
+11 
+D-­‐Latch  with  Enable  
+  Take  SR  Latch  with  Enable,  make  reset  =  !set  
+  State	  get	  set	  to	  whatever	  D	  is.	  
+NOR
+NOR
+Q
+Q'
+D
+AND
+AND
+enable
+SR Latch
+NOT
+Enable D Q 
+0 X No change 
+1 0 0 
+1 1 1 
+12 
+The  D  Flip  Flop  
+  Only  one  of  the  latches  is  enabled  at  a  =me  
+  When	  clk=0,	  the	  master	  is	  transparent;	  slave	  holds	  its	  value	  
+  When	  clk=1,	  the	  master	  holds	  its	  value;	  slave	  transparent	  
+  On  rising  edge,  value  at  master’s  input  passed  to  slaves  output.  
+QD
+Q'
+enable
+QS
+Q'
+enable
+R
+NOT
+D
+clk
+Q
+Master
+(D Latch w/Enable)
+Slave
+(SR Latch w/Enable)
+13 
+The  D  Flip  Flop  
+QD
+Q'
+enable
+QS
+Q'
+enable
+R
+NOT
+D
+clk
+Q
+Master
+(D Latch w/Enable)
+Slave
+(SR Latch w/Enable)
+0
+1
+0
+1
+Time
+Q
+D
+0
+1clk
+0
+1E
+E  
+14 
+Flip  flop  with  asynchronous  reset  
+  Asynchronous  =  pertaining  to  opera=on  without  the  use  
+of  fixed  =me  intervals  (opposed  to  synchronous).  
+  Processed	  immediately,	  ignores	  clock.	  	  
+  Reset  =  set  the  value  to  zero  
+QD
+reset
+0
+1
+0
+1
+Time
+Q
+D
+0
+1clk
+0
+1reset
+15 
+Asynchronous  Reset  implementa=on     
+One  example  possible  implementa=on  
+Forces  Q  output  to  zero.  Ignores  inputs  and  current  state.  
+(Not  required  material)  
+NOR
+NOR
+Q
+Q'
+reset
+set
+AND
+AND
+SR Latch w/Enable
+NOR
+NORD
+AND
+AND
+enable
+D Latch w/Enable
+NOT
+enable
+NOT
+clk
+NOT
+16 
+Flip  flop  with  enable  
+  When  enable=0,  Q  output  doesn’t  change  on  rising  edge  
+  Behaves	  normally	  when	  enable=1	  
+0
+1
+0
+1
+Time
+Q
+D
+0
+1clk
+0
+1enable
+QD
+en
+17 
+How  can  we  store  more  than  1  bit?  
+  We  build  registers  out  of  flip  flops.  
+  Example	  4-­‐bit	  register	  made	  of	  four	  D	  flip	  flops	  
+  1	  data	  input,	  1	  data	  output	  per	  flip	  flop	  
+  All	  control	  signals	  use	  the	  same	  input	  
+QD
+reseten
+QD
+reseten
+QD
+reseten
+QD
+reseten
+reset
+clk
+enable
+D3 D2 D1 D0
+Q3 Q2 Q1 Q0
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+18 
+Introduc=on  to  RAM  
+  To  provide  lots  of  storage  we  use  Random-­‐access  memory,  or  RAM.    
+  Remember  the  basic  capabili=es  of  a  memory:    
+  It	  should	  be	  able	  to	  store	  a	  value.	  
+  You	  should	  be	  able	  to	  read	  the	  value	  that	  was	  saved.	  
+  You	  should	  be	  able	  to	  change	  the	  stored	  value.	  
+  A  RAM  is  similar,  except  that  it  can  store  many  values.  
+  An	  address	  will	  specify	  which	  memory	  value	  we’re	  interested	  in.	  
+  Each	  value	  can	  be	  a	  mul?ple-­‐bit	  word	  (e.g.,	  32	  bits).	  
+  We’ll  refine  the  memory  proper=es  as  follows:  
+A  RAM  should  be  able  to:  
+-­‐  Store  many  words,  one  per  address  
+-­‐  Read  the  word  that  was  saved  at  a  par=cular  address  
+-­‐  Change  the  word  that’s  saved  at  a  par=cular  address  
+19 
+Random Access Memory 19 
+A  picture  of  memory  
+  You  can  think  a  memory  as  being  an  array  of  data.  
+  The	  address	  serves	  as	  an	  array	  index.	  
+  A	  k-­‐bit	  address	  can	  specify	  one	  of	  2k	  words	  
+  Each	  address	  refers	  to	  one	  word	  of	  data.	  
+  Each	  word	  can	  store	  N	  bits	  
+  
+  You  can  read  or  modify  the  data  at  any  given  memory  
+address,  just  like  you  can  read  or  modify  the  contents  of  
+an  array  at  any  given  index.  
+  This	  is	  what	  “random	  access”	  means.	  
+  Address Data
+00000000
+00000001
+00000002
+.
+.
+.
+.
+.
+.
+.
+.
+.
+.
+FFFFFFFD
+FFFFFFFE
+FFFFFFFF
+20 
+Register  File:  a  special  kind  of  memory  
+  We’ll  focus  first  on  a  special  kind  of  RAM:  a  register  file  
+  Our  register  file  will  have:  
+  2	  read	  ports,	  so	  we	  can	  read	  two	  values	  simultaneously	  
+  1	  write	  port	  
+  This  will  allow  us  to:  
+  Read	  2	  numbers	  
+  Add	  them	  together	  
+  Store	  the	  result	  back	  in	  the	  register	  file	  
+A data
+B data
+A address
+B address
+k
+k
+n
+n
+write data
+write addressk
+n
+write enable
+2  x N
+register file
+k
+21 
+Register  file  implementa=on  
+  A  register  file  has  3  parts  
+  The  Storage:	  An	  array	  of	  registers	  
+  The  Read  Ports:	  Output	  the	  value	  of	  selected	  register	  
+  The  Write  Port:	  Selec?vely	  write	  one	  of	  the	  registers	  
+  Let’s  consider  a  2  word  memory    
+  with	  4-­‐bit	  words	  
+A data
+B data
+A address
+B address
+1
+1
+4
+4
+write data
+write address1
+4
+write enable
+2  x 4
+register file
+1
+22 
+Step  1:  Alloca=ng  the  storage  
+  We  need  two  4-­‐bit  registers  
+  We’ll	  wire	  their	  clocks	  and	  resets	  together	  
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+23 
+Step  2:  Implemen=ng  the  read  ports  
+  The  read  address  (1  bit)  specifies  which  register  to  read.  
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+24 
+Step  3:  Implemen=ng  the  write  ports  
+  The  write  address  (1  bit)  specifies  which  register  to  write.  
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+25 
+Decoders  
+  This  circuit  is  a  1-­‐to-­‐2  decoder  
+  It	  decodes	  a	  1-­‐bit	  address,	  se`ng	  the	  specified	  output	  to	  1	  
+  Assuming	  the	  circuit	  is	  enabled	  
+AND
+NOT
+AND
+Q1
+Q0
+EN
+S0
+1
+0
+Q1
+Q0
+EN
+S0
+EN S0 (Q1,Q0) 
+0 X (0, 0) 
+1 0 (0, 1) 
+1 1 (1, 0) 
+26 
+Scaling  Decoders  
+  Decoders  can  be  generalized  as  follows  
+  A  1-­‐to-­‐2n  decoder:  
+  Has	  a	  1-­‐bit	  enable	  input,	  and	  an	  n-­‐bit	  select	  input	  	  
+  Has	  2n	  outputs	  
+  All	  the	  outputs	  are	  zero,	  except	  the	  selectth	  if	  enable	  =	  1	  
+  If	  enable	  =	  0,	  all	  outputs	  are	  zero.	  
+  A  1-­‐to-­‐4  decoder:  
+EN S[1:0] Q[3:0] 
+0 X (0,0,0,0) 
+1 (0,0) (0,0,0,1) 
+1 (0,1) (0,0,1,0) 
+1 (1,0) (0,1,0,0) 
+1 (1,1) (1,0,0,0) 
+EN S[4:0] Q[31:0] 
+0 X 0x0000 
+1 0 0x0001 
+1 1 0x0002 
+1 … … 
+1 30 0x4000 
+1 31 0x8000 
+Q1
+Q0
+1
+0
+Q3
+EN
+S[1:0]
+Q2
+2
+3
+Q1
+Q0
+Q31
+EN
+S[4:0]
+Q30
+27 
+A  32  x  32b  Register  File  
+Figure 2: Block diagram of register file internals.
+3
+28 
+Building  a  computer  processor.  
+  The  key  feature  that  dis=nguishes  a  computer  processor  from  
+other  digital  systems  is  programmability.  
+  A  processor  is  a  hardware  system  controlled  by  soaware  
+  
+  An  Instruc=on  Set  Architecture  (ISA)  describes  the  interface  
+between  the  soaware  and  the  hardware.  
+  Specifies	  what	  opera?ons	  are	  available	  
+  Specifies	  the	  effects	  of	  each	  opera?on	  
+  
+Software 
+Hardware 
+ISA 
+29 
+A  MIPS  ISA  processor  
+  Different  processor  families  (x86,  PowerPC,  ARM,  MIPS,  …)  use  
+their  own  instruc=on  set  architectures.  
+  The  processor  we’ll  build  will  execute  a  subset  of  the  MIPS  ISA  
+  Of	  course,	  the	  concepts	  are	  not	  MIPS-­‐specific	  
+  MIPS	  is	  just	  convenient	  because	  it	  is	  real,	  yet	  simple	  
+  The  MIPS  ISA  is  widely  used.  Primarily  in  embedded  systems:  
+  Various	  routers	  from	  Cisco	  
+  Game	  machines	  like	  the	  Nintendo	  64	  and	  Sony	  Playsta?on	  2	  
+  
+30 
+MIPS:  a  three  “address”  code  
+  MIPS  uses  three-­‐address  instruc=ons  for  arithme=c.  
+  Each	  ALU	  instruc?on	  contains	  a	  des?na?on	  and	  two	  
+sources.	  
+  For	  example,	  an	  addi?on	  instruc?on	  (a	  =	  b	  +	  c)	  has	  the	  form:	  
+add  a,  b,  c 
+operation 
+destination sources 
+operands 
+31 
+MIPS  uses  registers  to  hold  values  
+  MIPS  uses  three-­‐address  instruc=ons  for  arithme=c.  
+  Each	  ALU	  instruc?on	  contains	  a	  des?na?on	  and	  two	  
+sources.	  
+  For	  example,	  an	  addi?on	  instruc?on	  (a	  =	  b	  +	  c)	  has	  the	  form:	  
+add  a,  b,  c 
+operation 
+destination sources 
+operands 

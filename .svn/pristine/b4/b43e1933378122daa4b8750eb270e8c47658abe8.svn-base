@@ -1,0 +1,739 @@
+1 
+MIPS	  control	  flow	  instruc1ons:	  
+Jumps,	  Branches,	  and	  Loops	  
+2 
+Today’s	  lecture	  
+  Control	  Flow	  
+  Programma(cally	  upda(ng	  the	  program	  counter	  (PC)	  
+  Jumps	  
+  Uncondi(onal	  control	  flow	  
+  How	  is	  it	  implemented?	  
+  Branches	  
+  Loops	  
+  If/then/else	  
+  How	  implemented?	  
+3 
+Control	  Flow	  
+  So	  far,	  only	  considered	  sequences	  of	  arithme1c	  instruc1ons	  
+mul !$14, $13, $20!
+addi !$14, $14, 4!
+sub !$15, $14, $15!
+	  
+  These	  are	  executed	  one	  aEer	  another	  
+  Stored	  sequen(ally	  in	  memory	  
+  Program	  counter	  is	  incremented	  by	  4	  each	  cycle.	  
+b) 0x400012! d) 0x40000c!a) 0x400010! c) 0x40000b!
+4 
+Control	  Flow	  in	  high-­‐level	  languages	  
+  In	  high-­‐level	  languages,	  we	  can:	  
+  Repeat	  statements	  with	  loops	  
+!
+  Selec(vely	  execute	  statements	  with	  if/then/else	  
+  Need	  ways	  to	  control	  which	  instruc1on	  is	  executed	  next.	  
+for (int i = 0 ; i < N ; i ++) {!
+   sum += i;!
+}!
+if (x < 0) {!
+   x = -x;!
+}!
+5 
+Uncondi1onal	  Jumps	  
+  The	  simplest	  control	  flow	  instruc1on	  is	  jump:	  
+  Uncondi(onal	  control	  flow	  transfer	  
+  	  always	  taken,	  much	  like	  a	  goto	  statement	  in	  C	  	  
+j target_label!
+	  
+  Uses	  a	  “label”	  to	  tell	  where	  in	  the	  code	  to	  jump	  to:	  
+  Example:	  
+Loop: !j Loop!
+	  
+  What	  does	  this	  code	  do?	  
+6 
+Encoding	  Jumps	  
+  To	  encode	  jumps	  we	  use	  the	  J-­‐type	  instruc1on	  format:	  
+  This	  format	  provides	  a	  very	  long	  immediate	  
+  But,	  not	  quite	  long	  enough	  to	  specify	  a	  whole	  32-­‐bit	  PC	  
+  Where	  do	  the	  other	  6	  bits	  come	  from?	  
+  Last	  two	  bits	  are	  always	  00,	  because	  PC	  value	  is	  always	  word	  aligned	  
+  4	  most	  significant	  bits	  come	  from	  exis(ng	  PC	  value.	  
+op address 
+6 bits 26 bits 
+7 
+Example	  encoding	  
+  The	  infinite	  loop:	  
+  AEer	  assigning	  instruc1ons	  to	  memory	  addresses	  
+op address 
+Loop: !j Loop!
+0x400024: !j 0x400024!
+0x400024! 0000 0000 0100 0000 0000 0000 0010 0100!
+8 
+Limita1ons	  
+  Top	  4	  bits	  coming	  from	  current	  PC	  means:	  
+  Memory	  is	  cut	  into	  16	  regions	  
+  Can	  only	  jump	  within	  current	  region	  
+with	  j	  instruc(on.	  
+  A	  26-­‐bit	  address	  field	  lets	  you	  jump	  to	  any	  
+address	  from	  0	  to	  228.	  
+  your	  Lab	  solu(ons	  had	  beVer	  be	  smaller	  
+than	  256MB	  
+	  
+9 
+Implemen1ng	  Jumps	  
+2 (Add)
+32
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+reset
+enable
+Q[31:0]
+D[31:0]
+PC Register
+Sign 
+Extender
+out[31:0]
+in[15:0]
+data[31:0]
+addr[29:0]
+Instruction
+Memory
+4
+inst[31:0]
+PC[31:0]
+ALU1
+nextPC[31:0]
+0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+PC
+[3
+1:
+2]
+Rt
+Rd
+imm16
+imm32
+32
+30
+32
+3
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+3
+jump_target[31]PC[31]
+jump_target[30]PC[30]
+jump_target[29]PC[29]
+jump_target[28]PC[28]
+jump_target[27]inst[25]
+jump_target[26]inst[24]
+jump_target[25]inst[23]
+jump_target[24]inst[22]
+jump_target[23]inst[21]
+jump_target[22]inst[20]
+jump_target[21]inst[19]
+jump_target[20]inst[18]
+jump_target[19]inst[17]
+jump_target[18]inst[16]
+jump_target[17]inst[15]
+jump_target[16]inst[14]
+jump_target[15]inst[13]
+jump_target[14]inst[12]
+jump_target[13]inst[11]
+jump_target[12]inst[10]
+jump_target[11]inst[9]
+jump_target[10]inst[8]
+jump_target[9]inst[7]
+jump_target[8]inst[6]
+jump_target[7]inst[5]
+jump_target[6]inst[4]
+jump_target[5]inst[3]
+jump_target[4]inst[2]
+jump_target[3]inst[1]
+jump_target[2]inst[0]
+jump_target[1]0
+jump_target[0]0
+10 
+Condi1onal	  Branches	  
+  For	  our	  loops	  to	  exit,	  we	  need	  condi1onal	  control	  flow.	  
+  Branch	  if	  EQual	  (BEQ):	  	  	  
+  If	  (R[rs] == R[rt]),	  then	  branch	  to	  target_label!
+  Otherwise	  execute	  next	  instruc(on	  
+  Also,	  Branch	  if	  Not	  Equal	  (BNE):	  
+  Same,	  but	  branch	  when	  (R[rs] != R[rt])	  
+beq rs, rt, target_label!
+11 
+Using	  beq/bne	  to	  implement	  loops:	  
+  How	  could	  we	  use	  branches	  to	  implement	  the	  following?	  
+int sum = 0, i = 0;!
+do {!
+!sum += i;!
+!i++!
+} while (i != 10) !
+12 
+Using	  beq/bne	  and	  j	  to	  implement	  loops:	  
+  Let’s	  implement	  the	  for	  version	  of	  the	  loop?	  
+int sum = 0;!
+for (int i = 0 ; i != x ; i ++) {!
+!sum += i;!
+}!
+13 
+Using	  beq/bne	  to	  implement	  if/then:	  
+  How	  could	  we	  use	  branches	  to	  implement	  the	  following?	  
+  Hint: Sometimes it’s easier to invert the original condition. 
+  Change “continue if x < 0” to “skip if x >= 0”.	  
+if (x == 0) {!
+   x = 1;!
+}!
+14 
+Encoding	  Branches	  
+  For branch instructions, the constant field is not an address, but 
+an offset from the current program counter (PC) to the target 
+address.       !
+   beq  $1, $0, L 
+   add  $1, $3, $0 
+   add  $2, $3, $3 
+   j  Somewhere 
+  L:  add  $2, $3, $3 
+  Since the target L is 3 instructions past the beq, the address field 
+would contain 3. The whole beq instruction would be stored as: 
+ 
+SPIM’s encoding of branch offsets is off by one, so its code would contain an 
+address of 4. (But it has a compensating error when it executes branches.) 
+op rs rt address 
+15 
+  Empirical studies of real programs show that most branches go to 
+targets less than 32,767 instructions away 
+  branches are mostly used in loops and conditionals, and 
+programmers are taught to make code bodies short. 
+  If you do need to branch further, you can use a jump with a 
+branch. For example, if “Far” is far away, then the effect of: 
+   beq  $s0, $s1, Far 
+   ... 
+ can be simulated with the following actual code. 
+   bne  $s0, $s1, Next 
+   j  Far 
+  Next:  ... 
+  The MIPS designers have taken care of the common case first. 
+Larger branch constants 
+16 
+Implemen1ng	  Branches	  
+2 (Add)
+32
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+reset
+enable
+Q[31:0]
+D[31:0]
+PC Register
+Sign 
+Extender
+out[31:0]
+in[15:0]
+data[31:0]
+addr[29:0]
+Instruction
+Memory
+4
+inst[31:0]
+PC[31:0]
+ALU1
+nextPC[31:0]
+0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+PC
+[3
+1:
+2]
+Rt
+Rd
+imm16
+imm32
+32
+30
+32
+3
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+3
+17 
+Jump	  Register	  
+  j	  instruc1ons	  allow	  you	  to	  jump	  within	  a	  256MB	  range	  
+  What	  if	  you	  want	  to	  go	  outside	  that	  range	  
+	  
+jr $3	  
+  Jump	  Register	  (JR)	  
+  Copy	  the	  32-­‐bit	  contents	  of	  a	  register	  into	  the	  PC.	  
+PC=R[rs] 	  
+  That	  value	  beVer	  be	  word	  aligned	  (i.e.,	  divisible	  by	  4)	  
+  We’ll	  see	  how	  this	  is	  used	  later.	  
+18 
+Encoding	  Jump	  Register	  
+  Jump	  register	  only	  needs	  1	  register	  specifier	  
+  Use	  R-­‐type	  encoding,	  because	  it	  is	  cheapest	  opcode-­‐wise.	  
+!
+jr $rs	  
+	  
+  Example:	  
+jr $3	  
+op rs rt rd shamt func 
+6 bits 5 bits 5 bits 5 bits 5 bits 6 bits 
+19 
+Implemen1ng	  Jump	  Register	  
+2 (Add)
+32
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+reset
+enable
+Q[31:0]
+D[31:0]
+PC Register
+Sign 
+Extender
+out[31:0]
+in[15:0]
+data[31:0]
+addr[29:0]
+Instruction
+Memory
+4
+inst[31:0]
+PC[31:0]
+ALU1
+nextPC[31:0]
+0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+PC
+[3
+1:
+2]
+Rt
+Rd
+imm16
+imm32
+32
+30
+32
+3
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+3
+20 
+Control	  Implemented	  
+2 (Add)
+32
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+reset
+enable
+Q[31:0]
+D[31:0]
+PC Register
+Sign 
+Extender
+out[31:0]
+in[15:0]
+data[31:0]
+addr[29:0]
+Instruction
+Memory
+4
+inst[31:0]
+PC[31:0]
+ALU
+1
+nextPC[31:0]
+0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+PC
+[3
+1:
+2]
+Rt
+Rd
+imm16
+imm32
+32
+30
+32
+3
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+3
+control_type
+0 1 2 3
+2 (Add)
+ALU
+3
+Shift Left 2
+out[31:0]
+in[29:0]30 32
+inst[25:21] 00 (for LSBs)
+PC[31:28] (for MSBs)
+branch
+offset
+branch
+offset
+32
+control_type control_type
+21 
+How	  do	  we	  put	  a	  32-­‐bit	  value	  into	  a	  register?	  
+  I-­‐type	  instruc1ons	  can	  do	  a	  16-­‐bit	  immediate:	  
+  Many	  instruc(ons	  are	  useful	  for	  seZng	  the	  low	  16b,	  e.g.,	  	  
+!
+addi  $12, $0, 0xbeef   # $12 = 0x0000beef!
+  Would	  be	  useful	  to	  be	  able	  to	  set	  the	  top	  16b.	  
+  MIPS	  provides	  the	  Load	  Upper	  Immediate	  (lui)	  instruc1on	  	  
+  lui	  loads	  the	  highest	  16	  bits	  of	  a	  register	  with	  a	  constant,	  and	  clears	  the	  
+lowest	  16	  bits	  to	  0s.	  
+     lui $12, 0xdead   # $12 = 0xdead0000!
+22 
+ 
+  lui $12, 0x3D   
+  ori $12, $12, 0x900   
+  This	  illustrates	  the	  principle	  of	  making	  the	  common	  case	  fast.	  
+  Most	  of	  the	  (me,	  16-­‐bit	  constants	  are	  enough.	  
+  It’s	  s(ll	  possible	  to	  load	  32-­‐bit	  constants,	  but	  at	  the	  cost	  of	  
+two	  instruc(ons	  and	  one	  temporary	  register.	  
+Load	  Upper	  Immediate	  
+a)   0x0000093d!
+b)   0x0003d900!
+c)   0x003d0900!
+d)   0x0009003d!
+e)   0x0900003d!
+	  	  
+23 
+LUI	  is	  an	  I-­‐type	  instruc1on	  
+  R[rt] = {imm, 16’b0}!
+op rs rt imm 
+ lui $12, 0xdead   # $12 = 0xdead0000 
+24 
+lui	  Implemented	  
+2 (Add)
+32
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+reset
+enable
+Q[31:0]
+D[31:0]
+PC Register
+Sign 
+Extender
+out[31:0]
+in[15:0]
+data[31:0]
+addr[29:0]
+Instruction
+Memory
+4
+inst[31:0]
+PC[31:0]
+ALU
+1
+nextPC[31:0]
+0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+PC
+[3
+1:
+2]
+Rt
+Rd
+imm16
+imm32
+32
+30
+32
+3
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+3
+control_type
+0 1 2 3
+2 (Add)
+ALU
+3
+Shift Left 2
+out[31:0]
+in[29:0]30 32
+inst[25:21] 00 (for LSBs)
+PC[31:28] (for MSBs)
+branch
+offset
+branch
+offset
+32
+control_type control_type
+25 
+Using	  beq/bne	  to	  implement	  if/then:	  
+  How	  could	  we	  use	  branches	  to	  implement	  the	  following?	  
+if (x < 0) {!
+   x = -x;!
+}!
+26 
+Set	  if	  Less	  Than	  (slt)	  
+  Set	  a	  register	  to	  a	  Boolean	  (1	  or	  0)	  based	  on	  a	  comparison.	  
+  Use	  R-­‐type	  and	  I-­‐type	  encodings,	  respec1vely	  
+  No	  big	  surprises	  in	  encoding.	  
+ slt rd, rs, rt # R[rd] = (R[rs]<R[rt]) ? 1 : 0!
+ slti rt, rs, imm # R[rt] = (R[rs]<imm) ? 1 : 0!

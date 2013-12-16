@@ -1,0 +1,66 @@
+18 
+Classes  (Object  Orienta0on)  
+  In  Java/C++,  you  can  define  classes.  
+  For	  the	  most	  part,	  objects	  are	  just	  like	  structs	  
+  The	  main	  difference	  is	  that	  objects	  store	  their	  type	  
+in C++!
+class foo {!
+    int x;!
+    int y;!
+    char *z;!
+};!
+in C!
+struct foo {!
+    int x;!
+    int y;!
+    char *z;!
+};!
+19 
+Inheritance  
+  In  Java/C++,  classes  can  “inherit”  from  other  classes.  
+in C++!
+class betterfoo : public foo {!
+    int q;!
+};!
+in C++!
+class foo {!
+    int x;!
+    int y;!
+    char *z;!
+};!
+20 
+Virtual  Func0ons  (Polymorphism)  
+  In  Java/C++,  classes  can  redefine  methods  define  by  parents  
+class betterfoo : ... {!
+    ...!
+    int func() {...};!
+};!
+class foo {!
+    ...!
+   void other_fun() {};!
+   int func() {...};!
+};!
+21 
+Virtual  Func0ons  (cont.)  
+  How  do  we  know  which  should  be  executed?  
+foo *f = (foo *)new betterfoo(...);!
+f->func(); !
+!
+22 
+Virtual  Func0ons  (cont.)  
+  Virtual  Func0on  Dispatch  Tables:  
+class betterfoo : ... {!
+    ...!
+    int func() {...};!
+};!
+class foo {!
+    ...!
+    void other_fun() {};!
+    int func() {...};!
+};!
+23 
+Virtual  Func0ons  (cont.)  
+  Virtual  func0on  dispatch:  
+foo *f = (foo *)new betterfoo(...);!
+f->func(); !
+!

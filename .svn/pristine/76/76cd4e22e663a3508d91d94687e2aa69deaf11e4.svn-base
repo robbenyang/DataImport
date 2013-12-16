@@ -1,0 +1,303 @@
+11/12/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+11/12/13 2 
+Interpreter 
+n  Takes abstract syntax trees as input  
+n  In simple cases could be just strings 
+n  One procedure for each syntactic category 
+(nonterminal) 
+n  eg one for expressions, another for commands 
+n  If Natural semantics used, tells how to 
+compute final value from code 
+n  If Transition semantics used, tells how to 
+compute next “state” 
+n  To get final value, put in a loop 
+11/12/13 3 
+Natural Semantics Example 
+n  compute_exp (Var(v), m) = look_up v m 
+n  compute_exp (Int(n), _) = Num (n) 
+n  … 
+n  compute_com(IfExp(b,c1,c2),m) = 
+       if compute_exp (b,m) = Bool(true) 
+       then compute_com (c1,m) 
+       else compute_com (c2,m) 
+11/12/13 4 
+Natural Semantics Example 
+n  compute_com(While(b,c), m) = 
+      if compute_exp (b,m) = Bool(false) 
+      then m 
+      else compute_com 
+              (While(b,c), compute_com(c,m)) 
+ 
+n  May fail to terminate - exceed stack limits 
+n  Returns no useful information then 
+11/12/13 5 
+Transition Semantics 
+n  Form of operational semantics 
+n  Describes how each program construct transforms 
+machine state by transitions 
+n  Rules look like 
+(C, m) --> (C’, m’)   or    (C,m) --> m’ 
+n  C, C’ is code remaining to be executed 
+n  m, m’ represent the state/store/memory/
+environment  
+n  Partial mapping from identifiers to values 
+n  Sometimes m (or C) not needed 
+n  Indicates exactly one step of computation 
+11/12/13 6 
+Expressions and Values 
+n  C, C’ used for commands; E, E’ for 
+expressions; U,V for values 
+n  Special class of expressions designated as 
+values 
+n  Eg 2, 3 are values, but 2+3 is only an 
+expression 
+n  Memory only holds values 
+n  Other possibilities exist 
+Evaluation Semantics 
+n  Transitions successfully stops when E/C is a 
+value/memory 
+n  Evaluation fails if no transition possible, but 
+not at value/memory 
+n  Value/memory is the final meaning of 
+original expression/command (in the given 
+state) 
+n  Coarse semantics: final value / memory 
+n  More fine grained: whole transition sequence 
+11/12/13 7 
+11/12/13 8 
+Simple Imperative Programming Language 
+n  I ∈ Identifiers 
+n  N ∈ Numerals 
+n  B ::= true | false | B & B | B or B | not B  | E 
+< E | E = E 
+n  E::= N | I | E + E | E * E | E - E | - E 
+n  C::= skip | C;C | I ::= E  
+| if B then C else C fi | while B do C od 
+11/12/13 9 
+Transitions for Expressions 
+n  Numerals are values 
+n  Boolean values = {true, false} 
+n  Identifiers: (I,m) --> (m(I), m) 
+11/12/13 10 
+Boolean Operations:  
+n  Operators: (short-circuit) 
+(false & B, m) --> (false,m)      (B, m) --> (B”, m) 
+(true & B, m) --> (B,m)     (B & B’, m) --> (B” & B’, m) 
+ 
+(true or B, m) --> (true,m)        (B, m) --> (B”, m) 
+(false or B, m) --> (B,m)   (B or B’, m) --> (B” or B’,m) 
+ 
+(not true, m) --> (false,m)       (B, m) --> (B’, m) 
+(not false, m) --> (true,m)    (not B, m) --> (not B’, m) 
+11/12/13 11 
+Relations 
+(E, m) --> (E’’,m)  
+(E ~ E’, m) --> (E’’~E’,m) 
+ 
+(E, m) --> (E’,m)  
+ (V ~ E, m) --> (V~E’,m) 
+(U ~ V, m) --> (true,m) or (false,m) 
+depending on whether U ~ V holds or not 
+11/12/13 12 
+Arithmetic Expressions 
+(E, m) --> (E’’,m)  
+(E op E’, m) --> (E’’ op E’,m) 
+ 
+(E, m) --> (E’,m)  
+ (V op E, m) --> (V op E’,m) 
+(U op V, m) --> (N,m)   where N is the 
+specified value for U op V 
+11/12/13 13 
+Commands - in English 
+n  skip means done evaluating 
+n  When evaluating an assignment, evaluate the 
+expression first 
+n  If the expression being assigned is already a 
+value, update the memory with the new value for 
+the identifier 
+n  When evaluating a sequence, work on the first 
+command in the sequence first 
+n  If the first command evaluates to a new memory 
+(ie completes), evaluate remainder with new 
+memory 
+11/12/13 14 
+Commands 
+(skip, m) --> m 
+ 
+(E,m) --> (E’,m) 
+(I::=E,m) --> (I::=E’,m)  
+ 
+(I::=V,m) --> m[I <-- V ] 
+ 
+(C,m) --> (C”,m’ )             (C,m) --> m’ 
+(C;C’, m) --> (C”;C’,m’)  (C;C’, m) --> (C’,m’ ) 
+11/12/13 15 
+If Then Else Command - in English 
+n  If the boolean guard in an if_then_else 
+is true, then evaluate the first branch 
+n  If it is false, evaluate the second branch 
+n  If the boolean guard is not a value, 
+then start by evaluating it first. 
+11/12/13 16 
+If Then Else Command 
+(if true then C else C’ fi, m) --> (C, m) 
+ 
+(if false then C else C’ fi, m) --> (C’, m) 
+ 
+(B,m) --> (B’,m) 
+(if B then C else C’ fi, m)  
+--> (if B’ then C else C’ fi, m)  
+11/12/13 17 
+While Command 
+ 
+(while B do C od, m)  --> 
+ (if B then C; while B do C od else skip fi, m)  
+ 
+In English: Expand a While into a test of the boolean 
+guard, with the true  case being to do the body 
+and then try the while loop again, and the false 
+case being to stop. 
+11/12/13 18 
+Example Evaluation 
+n  First step: 
+ 
+ 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> ?  
+11/12/13 19 
+Example Evaluation 
+n  First step: 
+ 
+(x > 5, {x -> 7}) --> ? 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> ? 
+11/12/13 20 
+Example Evaluation 
+n  First step: 
+(x,{x -> 7}) --> (7, {x -> 7})  
+(x > 5, {x -> 7}) --> ? 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> ? 
+11/12/13 21 
+Example Evaluation 
+n  First step: 
+(x,{x -> 7}) --> (7, {x -> 7})  
+(x > 5, {x -> 7}) --> (7 > 5, {x -> 7}) 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> ? 
+11/12/13 22 
+Example Evaluation 
+n  First step: 
+(x,{x -> 7}) --> (7, {x -> 7}) 
+(x > 5, {x -> 7}) --> (7 > 5, {x -> 7}) 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> (if 7 > 5 then y:=2 + 3 else y:=3 + 4 fi,  
+{x -> 7}) 
+11/12/13 23 
+Example Evaluation 
+n  Second Step: 
+(7 > 5, {x -> 7}) --> (true, {x -> 7})  
+(if 7 > 5 then y:=2 + 3 else y:=3 + 4 fi, 
+{x -> 7})  
+--> (if true then y:=2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+n  Third Step: 
+(if true then y:=2 + 3 else y:=3 + 4 fi, {x -> 7}) 
+ -->(y:=2+3, {x->7}) 
+11/12/13 24 
+Example Evaluation 
+n  Fourth Step: 
+(2+3, {x-> 7}) --> (5, {x -> 7}) 
+(y:=2+3, {x->7}) --> (y:=5, {x->7}) 
+ 
+•  Fifth Step: 
+(y:=5, {x->7}) --> {y -> 5, x -> 7} 
+11/12/13 25 
+Example Evaluation 
+•  Bottom Line: 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi,            
+{x -> 7}) 
+--> (if 7 > 5 then y:=2 + 3 else y:=3 + 4 fi,       
+{x -> 7}) 
+-->(if true then y:=2 + 3 else y:=3 + 4 fi,         
+{x -> 7}) 
+  -->(y:=2+3, {x->7}) 
+ --> (y:=5, {x->7}) --> {y -> 5, x -> 7} 
+11/12/13 26 
+Transition Semantics Evaluation 
+n  A sequence of steps with trees of  
+justification for each step 
+ 
+(C1,m1) --> (C2,m2) --> (C3,m3) --> … --> m 
+n  Let -->* be the transitive closure of --> 
+n  Ie, the smallest transitive relation  
+containing --> 
+11/12/13 27 
+Adding Local Declarations 
+n  Add to expressions: 
+n  E ::= … | let I = E in E’ | fun I -> E  | E E’ 
+n  fun I -> E is a value 
+n  Could handle local binding using state, but 
+have assumption that evaluating expressions 
+doesn’t alter the environment 
+n  We will use substitution here instead 
+n  Notation: E [E’ / I ] means replace all free 
+occurrence of I by E’ in E 
+11/12/13 28 
+Call-by-value (Eager Evaluation) 
+(let I = V in E, m) --> (E[V/ I ],m) 
+ 
+(E, m) --> (E’’,m) 
+(let I = E in E’, m) --> (let I = E’’ in E’) 
+ 
+((fun I -> E) V, m) --> (E[V / I ],m) 
+ 
+(E’, m) --> (E’’,m) 
+((fun I -> E) E’, m) --> ((fun I -> E) E’’, m)  
+11/12/13 29 
+Call-by-name (Lazy Evaluation) 
+n  (let I = E in E’, m) --> (E’ [E / I ],m) 
+n  ((fun I -> E’ ) E, m) --> (E’ [E / I ],m) 
+n  Question: Does it make a difference? 
+n  It can depending on the language 
+11/12/13 30 
+Church-Rosser Property 
+n  Church-Rosser Property:  If E-->* E1 
+and E-->* E2, if there exists a value V 
+such that E1 -->* V, then E2 -->* V 
+n  Also called confluence or diamond 
+property 
+n  Example:      E= 2 + 3 + 4 
+           E1 = 5 + 4                  E2= 2 + 7 
+                         V =9 
+11/12/13 31 
+Does It always Hold? 
+n  No. Languages with side-effects tend not be 
+Church-Rosser with the combination of call-by-
+name and call-by-value 
+n  Alonzo Church and Barkley Rosser proved in 1936 
+the λ-calculus does have it 
+n  Benefit of Church-Rosser: can check equality of 
+terms by evaluating them (Given evaluation 
+strategy might not terminate, though) 
+11/12/13 32 
+Transition Semantics for λ-Calculus  
+n  Application (version 1) 
+(λ x . E) E’ --> E[E’/x] 
+n  Application (version 2) 
+(λ x . E) V --> E[V/x] 
+ 
+E’ --> E’’ 
+(λ x . E) E’ --> (λ x . E) E’’ 

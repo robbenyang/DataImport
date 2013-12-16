@@ -1,0 +1,68 @@
+MP6 available, due 11/19, 11:59p. EC due 11/12, 11:59p. 
+ 
+ 
+Nearest neighbor(37); 
+ 
+ 
+ 
+  
+ 
+Today’s announcements: 
+Secret mystery data structure  
+ADT - ______________ 
+insert 
+remove 
+getSize 
+Priority Queue ADT: 
+   insert       removeMin  implementation 
+O(n) O(n) 
+O(1) O(n) 
+unsorted 
+sorted 
+O(log n) O(1) 
+O(log n) O(1) 
+6 5 
+15 
+16 25 
+9 
+14 12 
+7 
+11 
+20 
+4 
+Priority Queue: another implementation option 
+Tell me everything you can about this structure: 
+(min)Heap: implementation 
+6 5 
+15 
+16 25 
+9 
+14 12 
+7 
+11 
+20 
+4 
+11 12 14 25 16 20 7 9 15 6 5 4 
+(min)Heap: a quickie… 
+6 5 
+15 
+16 25 
+9 
+14 12 
+7 
+11 
+20 
+4 
+11 12 14 25 16 20 7 9 15 6 5 4 
+What is the max height of a complete tree containing n nodes? 
+(min)Heap: insert 
+6 8 
+15 
+16 25 
+9 
+14 12 
+7 
+11 
+20 
+4 
+11 12 14 25 16 20 7 9 15 6 8 4 

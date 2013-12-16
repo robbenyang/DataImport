@@ -1,0 +1,176 @@
+1 
+HW0 available, due NOW 
+MP2 available,  
+ MP2.1 due ?,  
+ MP2 due 9/17, 11:59p.   
+ 
+ 
+Announcements 
+Pointer variables and dynamic memory allocation: 
+Stack memory 
+loc name type value 
+Heap memory 
+loc name type value 
+a44 x int  5 
+a40 p int * 
+int x=5; 
+ 
+int * p; 
+ 
+*p=6; 
+ 
+cout << p; 
+ 
+cout << *p; 
+ 
+cout << &x; 
+ 
+Fun and games with pointers:  
+int *p, *q; 
+p = new int; 
+q = new int(5); 
+… // some random stuff 
+p = NULL;    
+delete p;     Do you like this?_____________ 
+delete q; 
+q = NULL;    Do you like this?_____________ 
+Memory leak: 
+ 
+Deleting a null pointer: 
+ 
+Dereferencing a null pointer: 
+Fun and games with pointers: 
+int * p; 
+*p = 37; 
+p = NULL; 
+*p = 73; 
+Do you like this?_____________ 
+What kind of error? 
+Compiler      Runtime 
+int * p;  int x; 
+Variable p can be given a target 
+(pointee) in two ways.  Write an 
+example of each. 
+ 
+ 
+ 
+Use the letters S and H in a 
+meaningful way to tell where the 
+pointee exists in memory. 
+int * p; int x; 
+p = x; 
+Do you like this?_____________ 
+What kind of error? 
+Compiler      Runtime 
+int * p, * q; 
+p = new int; 
+q = p; 
+delete p; 
+… // some random stuff 
+cout << *q; 
+Do you like this?_____________ 
+Which of the following snippets are buggy? 
+int *p, *q; 
+p = new int; 
+q = p; 
+*q = 8;  
+q = new int; 
+*q = 9; 
+p = NULL; 
+int *p; 
+int x = 5; 
+p = &x; 
+delete x; 
+p = NULL; 
+int *p, *q; 
+p = new int; 
+q = p; 
+*q = 8;  
+delete q; 
+*p = 12; 
+p = NULL; 
+int *p; 
+int x = 5; 
+*p = x; 
+Stack vs. Heap memory: 
+void fun() { 
+  string s = “hello!”; 
+  cout << s << endl; 
+} 
+int main() { 
+  fun(); 
+  return 0; 
+} 
+void fun() { 
+  string * s = new string; 
+  *s = “hello?”; 
+  cout << *s << endl; 
+  delete s; 
+} 
+int main() { 
+  fun(); 
+  return 0; 
+} 
+System allocates space for s and 
+takes care of freeing it when s goes 
+out of scope. 
+ 
+Data can be accessed directly, rather 
+than via a pointer. 
+Allocated memory must be deleted 
+programmatically. 
+ 
+Data must be accessed by a pointer. 
+Pointers and objects: 
+face a, b; 
+… // init b 
+a = b; 
+a.setName(“ann”); 
+b.getName(); 
+ 
+ 
+ 
+ 
+face * c, * d; 
+… // init *d 
+c = d; 
+c->setName(“carlos”); 
+(*d).getName(); 
+class face { 
+public: 
+void setName(string n); 
+string getName(); 
+… 
+private: 
+string name; 
+PNG pic; 
+boolean done; 
+}; 
+Arrays:  static (stackic) 
+int x[5]; 
+Stack memory 
+loc name type value 
+Arrays:  dynamic (heap) 
+int * x; 
+ 
+int size = 3; 
+x = new int[size]; 
+ 
+for(int i=0, i<size, i++) 
+x[i] = i + 3; 
+ 
+delete [] x; 
+loc name value 
+Stack memory 
+loc name value 
+Heap memory 
+A point to ponder:  How is my garden implemented? 
+class garden{ 
+public: 
+… 
+// all the appropriate public members 
+… 
+private: 
+flower ** plot; 
+// other stuff 
+}; 

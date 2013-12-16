@@ -1,0 +1,93 @@
+MP5 available, due 11/1, 11:59p. Extra credit 11/25, 11:59p 
+ 
+Parallel Lab update: Lab Race due 11/6  
+ 
+Local EWS option without access to network storage  
+ - Use SVN, USB drive or cloud 
+Code Challenge #2: 10/30 9PM in 0224 
+Exam 2: 11/5, 7-9p, locations on website.  
+Class cancelled 11/4. 
+Exam reviews: 11/4, 12-2p in Siebel 1404 
+      11/4, 2-3 in Siebel 0216 
+ 
+Today’s announcements: 
+Classic balanced BST structures: 
+• Red-Black trees – max ht 2log2n. 
+Constant # of rotations for insert, remove, find. 
+• AVL trees – max ht 1.44log2n. 
+O(log n) rotations upon remove. 
+Balanced BSTs, pros and cons: 
+• Pros: 
+- Insert, Remove, and Find are always O(log n) 
+- An improvement over: 
+- Range finding & nearest neighbor 
+• Cons: 
+- Possible to search for single keys faster 
+- If data is so big that it doesn’t fit in memory it must be stored on disk 
+and we require a different structure. 
+B-trees (the only “out of core” data structure we’ll discuss) 
+ 
+Can we always fit data into main memory? 
+ 
+So where do we keep the data? 
+ 
+ 
+Big-O analysis assumes  
+uniform time for all operations. 
+ 
+But… 
+The Story on Disks 
+ 
+2GHz machine gives around 2m instructions per _____. 
+ 
+Seek time around _______ for a current hard disk. 
+Imagine an AVL tree storing US driving records. 
+How many records? 
+How much data, in total? 
+How deep is the AVL tree? 
+ 
+How many disk seeks to find a record? 
+B Trees 
+Suppose we weren’t careful… 
+B Tree of order m 
+1. relevant data 
+2. shallow tree 
+12 18 27 52 58 63 77 89 
+B-tree Goals 
+• Minimize the number of reads from disk 
+• Build a tree that uses 1 disk block per node 
+– Disk block is the fundamental unit of transfer  
+• Nodes will have more than 1 key 
+• Tree should be balanced and shallow 
+– In practice branching factors over 1000 often used 
+ 
+http://people.ksp.sk/~kuko/bak/big/ 
+17 
+3 8 28 48 
+Definition of a B-tree 
+B-tree of order m is an m-way tree  
+• For an internal node, # keys = #children -1  
+• All leaves are on the same level 
+• All leaves hold no more than m-1 keys 
+• All non-root internal nodes have between  m/2  and m 
+children 
+• Root can be a leaf or have between 2 and m children. 
+• Keys in a node are ordered. 17 
+3 8 28 48 
+1 2 6 7 12 14 16 52 53 55 68 25 26 29 45 
+Searching a B-tree 
+bool B-TREE-SEARCH(BtreeNode & x, T key){ 
+   int i = 0; 
+   while ((i < x.numkeys) && (key > x.key[i])) 
+      i++; 
+   if ((i < x.numkeys) && (key == x.key[i])) 
+      return true; 
+   if (x.leaf == true) 
+      return false; 
+   else{ 
+      BtreeNode b=DISK-READ(x.child[i]); 
+      return B-TREE-SEARCH(b,key); 
+   } 
+} 17 
+3 8 28 48 
+1 2 6 7 12 14 16 52 53 55 68 25 26 29 45 

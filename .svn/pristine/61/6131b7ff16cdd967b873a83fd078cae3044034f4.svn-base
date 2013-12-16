@@ -1,0 +1,79 @@
+MP3 available, due 10/8, 11:59p. 
+Possible EWS downtime...
+TODAY:  Intro to trees
+1
+Announcements
+Trees:
+“… most important nonlinear structure in computer science.”
+-- Donald Knuth, Art of Computer Programming Vol 1
+A tree:  _____________________________________
+We’ll study more specific trees:
+Tree terminology:
+•What’s the longest English word you can make using the vertex 
+labels in the tree (repeats allowed)?
+•Find an edge that is not on the longest path in the tree.  Give that 
+edge a reasonable name.
+For the rest of the exercises, assume the tree is rooted. 
+•One of the vertices is called the “root” of the tree.  Guess which one 
+it is.
+•Make an English word containing the names of the vertices that 
+have a parent but no sibling.
+•How many parents does each vertex have?
+•Which vertex has the fewest children?
+•Which vertex has the most ancestors?
+•Which vertex has the most descendants?
+•List all the vertices is b’s left subtree.
+•List all the leaves in the tree.
+A rooted tree:
+Binary tree, recursive definition:
+A binary tree T is either
+• 
+OR
+•  
+An (important) example of a function on a binary tree:
+height(t) --  length of longest path from root to a leaf
+Given a tree T, write a recursive defn of the height of T, height(T): 
+Full Binary tree:  a tree in which every node has 2 or 0 children
+F is a full binary tree if and only if:
+• F={}   OR, 
+• F={r, TL, TR}, and 
+Perfect Binary tree:  
+Check for understanding:  
+How many nodes in a perfect tree of height h?
+P0:                                     P2:                                     
+P1:
+Perfect tree of height h, Ph:
+• P-1 is an empty tree
+• if h > -1, then Ph is {r, TL, TR}, 
+where TL and TR are Ph-1.
+Complete Binary tree:  for any level k in [0,h-1], level k has 2k nodes, 
+and on level h, all nodes are pushed to the left.
+http://xlinux.nist.gov/dads//HTML/completeBinaryTree.html
+Check for understanding:  
+Is every full tree complete?
+Is every complete tree full?
+Complete tree of height h, Ch:
+• an empty tree is C-1
+• if h > -1, then Ch is {r, TL, TR}, and either:
+TL is _______ and TR is ________
+OR
+TL is _______ and TR is ________
+Rooted, directed, ordered, binary trees
+Tree ADT:
+   insert
+   remove
+   traverse
+template <class T>
+class tree{
+public:
+…
+private:
+   struct treeNode{
+      T data;
+      treeNode * left;
+      treeNode * right;
+   };
+   treeNode * root
+…
+};
+Theorem:  if there are n data items in a binary tree, then there are ______ null pointers.

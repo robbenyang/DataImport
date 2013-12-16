@@ -1,0 +1,781 @@
+1 
+Finite	  State	  Machine	  
+	  
+2 
+Today’s	  lecture	  
+  Goal:	  Build	  a	  sequen9al	  circuit	  from	  a	  state	  diagram	  
+  Step	  0:	  Problem	  specifica3on	  
+  Step	  1:	  Build	  the	  state	  diagram	  
+  Setp	  2:	  Build	  the	  state	  table	  
+  Step	  3:	  Build	  the	  sequen3al	  circuit	  using	  D	  flip-­‐flops	  
+  Timing	  diagram	  
+  Another	  example:	  Sequence	  recognizer	  
+	  
+	  
+If	  a	  combina+onal	  logic	  circuit	  is	  an	  implementa+on	  of	  a	  Boolean	  func+on,	  then	  a	  	  	  sequen+al	  
+logic	  circuit	  can	  be	  considered	  an	  implementa+on	  of	  a	  finite	  state	  machine.	  
+	  
+3 
+Step	  0:	  Problem	  Specifica9on	  
+	  
+  We	  have	  a	  candy	  machine	  that	  dispenses	  candies	  that	  cost	  
+15-­‐cents	  
+  Accepts	  
+  	  nickels	  (5-­‐cents)	  	  
+  dimes	  (10-­‐cents)	  
+  Dispenses	  a	  candy	  if	  the	  balance	  is	  ≥	  15-­‐cents	  
+  When	  the	  customer	  overpays	  
+  the	  machine	  does	  not	  return	  change,	  but	  
+  keeps	  the	  balance	  for	  future	  transac3ons	  
+4 
+Step	  1:	  Build	  the	  State	  Diagram	  
+  Inputs	  
+  Ouputs	  
+  State	  iden9fica9on	  
+d	  n	  
+c	  
+5 
+Step	  1:	  Build	  the	  State	  Diagram	  
+Inputs:	  d’n’,	  d’n,	  dn’	  
+Got-­‐0	  
+Got-­‐5	   Got-­‐10	  
+Got-­‐15	   Got-­‐20	  
+6 
+Step	  1:	  Build	  the	  State	  Diagram	  
+Inputs:	  d’n’,	  d’n,	  dn’	  
+Got-­‐0	  
+Got-­‐5	   Got-­‐10	  
+Got-­‐15	   Got-­‐20	  
+d’n’	  
+dn’	  d’n	  
+d’n	  
+d’n’	  
+dn’	  
+What	  are	  the	  transi9ons	  	  
+for	  state	  Got-­‐15?	  
+	  
+A:	  d’n’:	  Got0;	  d’n:	  Got20;	  dn’:	  Got20	  
+	  
+B:	  d’n’:	  Got0;	  d’n:	  Got0;	  dn’:	  Got0	  
+	  
+C:	  d’n’:	  Got0;	  d’n:	  Got5;	  dn’:	  Got10	  	  
+	  
+D:	  d’n’:	  Got15;	  d’n:	  Got5;	  dn’:	  Got10	  
+	  
+	  
+7 
+Step	  1:	  Build	  the	  State	  Diagram	  
+Inputs:	  d’n’,	  d’n,	  dn’	  
+Got-­‐0	  
+Got-­‐5	   Got-­‐10	  
+Got-­‐15	   Got-­‐20	  
+d’n	  
+d’n’	  
+dn’	  
+d’n	  
+d’n	  
+dn’	  d’n	  
+d’n’	  
+d’n’	  
+d’n’	  
+d’n’	  
+dn’	  
+dn’	   d’n	  
+dn’	  
+8 
+Step	  1:	  Build	  the	  State	  Diagram	  
+Output:	  c	  or	  c’	  
+Got-­‐0/c’	  
+Got-­‐5/c’	   Got-­‐10/c’	  
+Got-­‐15/c	   Got-­‐20/c	  
+d’n	  
+d’n’	  
+dn’	  
+d’n	  
+d’n	  
+dn’	  d’n	  
+d’n’	  
+d’n’	  
+d’n’	  
+d’n’	  
+dn’	  
+dn’	   d’n	  
+dn’	  
+9 
+Step	  2:	  Build	  a	  State	  Table	  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  
+A  d’n  
+A  dn’  
+B  d’n’  
+B  d’n  
+B  dn’  
+C  d’n’  
+C  d’n  
+C  dn’  
+D  d’n’  
+D  d’n  
+D dn’  
+E  d’n’  
+       E  d’n  
+       E  dn’  
+A/c’	  
+B/c’	   C/c’	  
+D/c	   E/c	  
+d’n	  
+d’n’	  
+dn’	  
+d’n	  
+d’n	  
+dn’	  d’n	  
+d’n’	  
+d’n’	  
+d’n’	  
+d’n’	  
+dn’	  
+dn’	   d’n	  
+dn’	  
+Second	  3	  entries	  of	  the	  table:	  
+	  
+A:	  A,	  B,	  C	  
+B:	  B,	  C,	  D	  
+C:	  B,	  C,	  E	  
+D:	  B,	  D,	  A	  
+E:	  C,	  D,	  E	  
+	  
+10 
+Step	  2:	  Build	  a	  State	  Table	  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  A 
+A  d’n  B 
+A  dn’  C 
+B  d’n’  B 
+B  d’n  C 
+B  dn’  D 
+C  d’n’  C 
+C  d’n  D 
+C  dn’  E 
+D  d’n’  A 
+D  d’n  B 
+D dn’  C 
+E  d’n’  B 
+       E  d’n  C 
+       E  dn’  D 
+A/c’	  
+B/c’	   C/c’	  
+D/c	   E/c	  
+d’n	  
+d’n’	  
+dn’	  
+d’n	  
+d’n	  
+dn’	  d’n	  
+d’n’	  
+d’n’	  
+d’n’	  
+d’n’	  
+dn’	  
+dn’	   d’n	  
+dn’	  
+11 
+Step	  2:	  Build	  a	  State	  Table	  
+A/c’	  
+B/c’	   C/c’	  
+D/c	   E/c	  
+d’n	  
+d’n’	  
+dn’	  
+d’n	  
+d’n	  
+dn’	  d’n	  
+d’n’	  
+d’n’	  
+d’n’	  
+d’n’	  
+dn’	  
+d’n	   d’n	  
+dn’	  
+ 
+Output 
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  A 
+A  d’n  B 
+A  dn’  C 
+B  d’n’  B 
+B  d’n  C 
+B  dn’  D 
+C  d’n’  C 
+C  d’n  D 
+C  dn’  E 
+D  d’n’  A 
+D  d’n  B 
+D dn’  C 
+E  d’n’  B 
+       E  d’n  C 
+       E  dn’  D 
+12 
+Step	  2:	  Build	  a	  State	  Table	  
+A/c’	  
+B/c’	   C/c’	  
+D/c	   E/c	  
+d’n	  
+d’n’	  
+dn’	  
+d’n	  
+d’n	  
+dn’	  d’n	  
+d’n’	  
+d’n’	  
+d’n’	  
+d’n’	  
+dn’	  
+dn’	   d’n	  
+dn’	  
+ 
+Output 
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  A 
+A  d’n  B 
+A  dn’  C 
+B  d’n’  B 
+B  d’n  C 
+B  dn’  D 
+C  d’n’  C 
+C  d’n  D 
+C  dn’  E 
+D  d’n’  A 
+D  d’n  B 
+D dn’  C 
+E  d’n’  B 
+       E  d’n  C 
+       E  dn’  D 
+Why	  do	  we	  need	  	  
+a	  sequen9al	  logic	  to	  	  
+build	  this	  circuit?	  
+	  
+13 
+Step	  2:	  Build	  Sequen9al	  Circuit	  	  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  A 
+A  d’n  B 
+A  dn’  C 
+B  d’n’  B 
+B  d’n  C 
+B  dn’  D 
+C  d’n’  C 
+C  d’n  D 
+C  dn’  E 
+D  d’n’  A 
+D  d’n  B 
+D dn’  C 
+E  d’n’  B 
+       E  d’n  C 
+       E  dn’  D 
+State	  Encoding:	  
+	  
+5	  states:	  How	  many	  bits?	  
+	  
+14 
+Step	  2:	  Build	  Sequen9al	  Circuit	  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  A 
+A  d’n  B 
+A  dn’  C 
+B  d’n’  B 
+B  d’n  C 
+B  dn’  D 
+C  d’n’  C 
+C  d’n  D 
+C  dn’  E 
+D  d’n’  A 
+D  d’n  B 
+D dn’  C 
+E  d’n’  B 
+       E  d’n  C 
+       E  dn’  D 
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+AnextA
+B
+C
+D
+E
+nextB
+nextC
+nextD
+nextE
+State	  A	  =	  10000	  
+State	  B	  =	  01000	  
+State	  C	  =	  00100	  
+State	  D	  =	  00010	  
+State	  E	  =	  00001	  
+	  
+One	  hot	  encoding	  
+	  0	  	  	  	  	  	  
+	  1	  	  	  	  	  
+	  
+D	  flip-­‐flop	  
+0	  	  	  	  	  
+1	  
+Current	  	  
+State	  
+Next	  	  
+State	  
+15 
+Step	  2:	  Build	  Sequen9al	  Circuit	  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  A 
+A  d’n  B 
+A  dn’  C 
+B  d’n’  B 
+B  d’n  C 
+B  dn’  D 
+C  d’n’  C 
+C  d’n  D 
+C  dn’  E 
+D  d’n’  A 
+D  d’n  B 
+D dn’  C 
+E  d’n’  B 
+       E  d’n  C 
+       E  dn’  D 
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+AnextA
+B
+C
+D
+E
+nextB
+nextC
+nextD
+nextE
+State	  A	  =	  10000	  
+State	  B	  =	  01000	  
+State	  C	  =	  00100	  
+State	  D	  =	  00010	  
+State	  E	  =	  00001	  
+	  
+One	  hot	  encoding	  
+next	  D?	  
+	  
+A:	  nextD	  =	  Ad’n’+	  Dd’n’	  
+B:	  nextD=	  Ad’n	  +	  Bd’n’	  +	  Dd’n	  	  
+C:	  nextD	  =	  Bdn’	  +	  Cd’n	  +	  Edn’	  
+D:	  nextD	  =1	  
+16 
+Step	  2:	  Build	  Sequen9al	  Circuit	  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  A 
+A  d’n  B 
+A  dn’  C 
+B  d’n’  B 
+B  d’n  C 
+B  dn’  D 
+C  d’n’  C 
+C  d’n  D 
+C  dn’  E 
+D  d’n’  A 
+D  d’n  B 
+D dn’  C 
+E  d’n’  B 
+       E  d’n  C 
+       E  dn’  D 
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+AnextA
+B
+C
+D
+E
+nextB
+nextC
+nextD
+nextE
+17 
+Step	  2:	  Build	  a	  State	  Table	  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ A  d’n’  A 
+A  d’n  B 
+A  dn’  C 
+B  d’n’  B 
+B  d’n  C 
+B  dn’  D 
+C  d’n’  C 
+C  d’n  D 
+C  dn’  E 
+D  d’n’  A 
+D  d’n  B 
+D dn’  C 
+E  d’n’  B 
+       E  d’n  C 
+       E  dn’  D 
+nextA	  =	  Ad’n’+	  Dd’n’	  
+nextB	  =	  Ad’n	  +	  Bd’n’	  +	  Dd’n	  +	  Edn’	  
+nextC	  =	  And’	  +	  Bd’n	  +	  Cd’n’	  +	  Ddn’	  +	  Ed’n	  
+nextD	  =	  Bdn’	  +	  Cd’n	  +	  Edn’	  
+nextE	  =	  Cdn’	  
+	  
+Output:	  Candy	  =	  D	  +	  E	  
+18 
+Step	  3:	  Sequen9al	  circuit	  with	  D	  flip-­‐flops	  
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+N AnextA
+B
+C
+D
+E
+nextB
+nextC
+nextD
+nextE
+clk
+nextA	  =	  Ad’n’+	  Dd’n’	  
+nextB	  =	  Ad’n	  +	  Bd’n’	  +	  Dd’n	  +	  Edn’	  
+nextC	  =	  And’	  +	  Bd’n	  +	  Cd’n’	  +	  Ddn’	  +	  Ed’n	  
+nextD	  =	  Bdn’	  +	  Cd’n	  +	  Edn’	  
+nextE	  =	  Cdn’	  
+	  
+Output:	  c	  =	  D	  +	  E	  
+d	  
+n	  
+19 
+Step	  3:	  Sequen9al	  circuit	  with	  D	  flip-­‐flops	  
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+Clk
+Q
+Q
+D
+N
+AnextA
+B
+C
+D
+E
+nextB
+nextC
+nextD
+nextE
+clk
+Candy
+nextA	  =	  Ad’n’+	  Dd’n’	  
+nextB	  =	  Ad’n	  +	  Bd’n’	  +	  Dd’n	  +	  Edn’	  
+nextC	  =	  And’	  +	  Bd’n	  +	  Cd’n’	  +	  Ddn’	  +	  Ed’n	  
+nextD	  =	  Bdn’	  +	  Cd’n	  +	  Edn’	  
+nextE	  =	  Cdn’	  
+	  
+Output	  =	  Candy	  =	  D	  +	  E	  
+20 
+Timing	  Diagram	  
+	  
+clk	  
+D	  
+N	  
+A	  
+B	  
+C	  
+D	  
+E	  
+Output	  
+Time	  
+21 
+Timing	  Diagram	  
+	  
+clk	  
+D	  
+N	  
+A	  
+B	  
+C	  
+D	  
+E	  
+Output	  
+Time	  
+22 
+Another	  example:	  Sequence	  recognizer	  
+  A	  sequence	  recognizer	  is	  a	  special	  kind	  of	  sequen3al	  circuit	  that	  looks	  for	  a	  
+special	  bit	  paXern	  in	  some	  input.	  
+  The	  recognizer	  circuit	  has	  one	  input,	  X.	  
+  There	  is	  one	  output,	  Z,	  which	  is	  1	  when	  the	  desired	  paXern	  is	  found.	  
+  Our	  example	  will	  detect	  the	  bit	  paXern	  “1001”:	  
+	   	  Inputs: 	  1	  1	  1	  0	  0	  1	  1	  0	  1	  0	  0	  1	  0	  0	  1	  1	  0	  …	  	  
+	   	  Outputs: 	  0	  0	  0	  0	  0	  0	  1	  0	  0	  0	  0	  0	  1	  0	  0	  1	  0	  …	  	  
+	  Here,	  one	  input	  and	  one	  output	  bit	  appear	  every	  clock	  cycle.	  
+	  
+  This	  requires	  a	  sequen3al	  circuit	  because	  the	  circuit	  has	  to	  “remember”	  the	  
+inputs	  from	  previous	  clock	  cycles,	  in	  order	  to	  determine	  whether	  or	  not	  a	  
+match	  was	  found.	  
+23 
+State	  diagram	  
+State Meaning 
+A None of the desired pattern (1001) has been input yet. 
+B We’ve already seen the first bit (1) of the desired pattern. 
+C We’ve already seen the first two bits (10) of the desired pattern. 
+D 
+E 
+We’ve already seen the first three bits (100) of the desired pattern. 
+We’ve seen the pattern (1001)  
+ 
+ 
+24 
+State	  diagram	  
+A B C D 1 0 0 
+State Meaning 
+A None of the desired pattern (1001) has been input yet. 
+B We’ve already seen the first bit (1) of the desired pattern. 
+C We’ve already seen the first two bits (10) of the desired pattern. 
+D 
+E 
+We’ve already seen the first three bits (100) of the desired pattern. 
+We’ve seen the pattern (1001)  
+ 
+ 
+E 1 
+25 
+State	  diagram	  
+  We	  need	  two	  outgoing	  arrows	  for	  each	  node,	  to	  account	  
+for	  the	  possibili3es	  of	  X=0	  and	  X=1.	  
+A B C D 1 0 0 E 
+1 
+Transi9ons	  for	  E:	  
+A:	  x=0-­‐>	  A;	  x=1	  -­‐>	  B	  
+B:	  x=0-­‐>	  C;	  x=1	  -­‐>	  B	  
+C:	  x=0-­‐>	  B;	  x=1	  -­‐>	  A	  
+D:	  x=0-­‐>	  D;	  x=1	  -­‐>	  B	  
+	  
+	   	  Inputs: 	  1	  1	  1	  0	  0	  1	  1	  0	  1	  0	  0	  1	  0	  0	  1	  1	  0	  …	  	  
+	   	  Outputs: 	  0	  0	  0	  0	  0	  0	  1	  0	  0	  0	  0	  0	  1	  0	  0	  1	  0	  …	  	  
+	  	  
+26 
+State	  diagram	  
+  We	  need	  two	  outgoing	  arrows	  for	  each	  node,	  to	  account	  
+for	  the	  possibili3es	  of	  X=0	  and	  X=1.	  
+A B C D 
+1 0 0 
+1 
+0 
+0 
+1 
+1 
+E 
+1 
+0 
+27 
+State	  diagram	  
+  Need	  to	  determine	  the	  output	  
+A/0 B/0 C/0 D/0 
+1 0 0 
+1 
+0 
+0 
+1 
+1 
+E/1 
+1 
+0 
+28 
+State	  Table	  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ 
+Output 
+A 0 A 0 
+A 1 B 0 
+B 0 C 0 
+B 1 B 0 
+C 0 D 0 
+C 1 B 0 
+D 0 A 0 
+D 1 E 1 
+E 0 C 0 
+E 1 B 0 
+ 
+A/0 B/0 C/0 D/0 
+1 0 0 
+1 
+0 
+0 
+1 
+1 
+E/1 
+1 
+0 
+29 
+State	  Table	  
+A/0 B/0 C/0 D/0 
+1 0 0 
+1 
+0 
+0 
+1 
+1 
+E/1 
+1 
+Anext	  =	  Ax’	  +	  Dx’	  	  
+Bnext	  =	  Ax	  +	  Bx	  +	  Cx	  +	  Ex	  
+Cnext	  =	  Bx’	  +	  Ex’	  
+Dnext	  =	  Cx’	  	  
+Enext	  =	  Dx	  
+	  
+Output	  =	  E	  
+	  
+	  
+Current 
+State 
+ 
+Input 
+Next 
+State 
+ 
+Output 
+A 0 A 0 
+A 1 B 0 
+B 0 C 0 
+B 1 B 0 
+C 0 D 0 
+C 1 B 0 
+D 0 A 0 
+D 1 E 1 
+E 0 C 0 
+E 1 B 0 
+ 
+0 

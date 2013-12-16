@@ -1,0 +1,129 @@
+MP6 available, due 11/19, 11:59p. EC due 11/12, 11:59p.
+Exam 2: returned in section this week.
+ 
+Today’s announcements:
+(min)Heap: buildHeap - 3 alternatives
+IU
+L
+A P
+D
+N O
+H
+W
+E
+B
+template <class T>
+void Heap<T>::buildHeap(){
+   for (int i=2;i<=size;i++)
+      heapifyUp(i)
+}
+template <class T>
+void Heap<T>::buildHeap(){
+   for (int i=parent(size);i>0;i--)
+      heapifyDown(i)
+}
+1. Sort the array:
+2. 3.
+B U I L D H E A P N O W
+(min)Heap: buildHeap
+EB
+L
+U P
+D
+N O
+H
+W
+I
+A
+WONPUIHDLEBA
+Thm:  The running time of buildHeap on 
+an array of size n is ________. 
+Instead of focussing specifically on 
+running time, we observe that the time is 
+proportional to the sum of the heights of 
+all of the nodes, which we denote by S(h).
+S(h) = 
+S(0) = 
+Soln S(h) = 
+level   height
+Proof of solution to the recurrence:
+But running times are reported in terms of n, the number of nodes...
+ 
+(min)Heap: heapSort
+EB
+L
+U P
+D
+N O
+H
+W
+I
+A
+WONPUIHDLEBA
+Running time?
+Why do we need another 
+sorting algorithm?
+•  
+•   
+1 
+2  
+3
+   
+ 4
+This image reminds us of a __heap__, 
+which is one way we can implement ADT __priority queue__, 
+whose functions include __insert_ and _removeMin__,
+whose running times are _O(h) = O(log n)_.
+This structure can be built in time ____________,
+which helps us do a worst case time ___________ sort, in place.
+An example:
+Let R be an equivalence relation on the set of students in this room, where 
+(s,t) ∈ R if s and t have the same favorite among {AB, TR, CC, MC, ____}.
+Notation from  math: [ ___ ]R = {x : xR___}
+One big goal for us:  Given s and t we want to determine if sRt.
+A Disjoint Sets example:
+Let R be an equivalence relation on the set of students in this room, where 
+(s,t) ∈ R if s and t have the same favorite among {AB, TR, CC, MC, ____}.
+0 1 4 82 5 9 3 67
+1.  Find(4)
+2.  Find(4)==Find(8)
+3.  If (!(Find(7)==Find(2)) then Union(Find(7),Find(2))
+Disjoint Sets ADT
+We will implement a data structure in support of “Disjoint Sets”:
+•  Maintains a collection S = {s0, s1, … sk} of disjoint sets.
+•  Each set has a representative member.
+•  Supports functions:
+A first data structure for Disjoint Sets:
+Find:
+Union:
+void MakeSet(const T & k);
+void Union(const T & k1, const T & k2);
+T & Find(const T & k);
+3 5 60 1 4 2 7
+0 1 2 3 4 5 6 7
+0 0 2 3 0 3 3 2
+0 1 2 3 0 1 2 3
+0 1 2 3
+A better data structure for Disjoint Sets:  UpTrees
+• if array value is -1, then we’ve found a root, o/w value is index of parent.
+• x and y are in the same tree iff they are in the same set.
+A Disjoint Sets example:
+Let R be an equivalence relation on the set of students in this room, where 
+(s,t) ∈ R if s and t have the same favorite among {AB, FN, DJ, ZH, PvZ}.
+0 1 4 82 5 9 3 67
+0 1 2 3 4 5 6 7 8 9
+4 8 5 6 -1 -1 -1 -1 4 5
+1.  Find(4)
+2.  Find(4)==Find(8)
+3.  If (!(Find(7)==Find(2)) then Union(Find(7),Find(2))
+A better data structure for Disjoint Sets:
+int DS::Find(int i) {
+   if (s[i] < 0) return i;
+   else return Find(s[i]);
+}
+void DS::Union(int root1, int root2) {
+   ________________________;
+}
+Running time depends on ___________.
+Worst case?
+What’s an ideal tree?

@@ -1,0 +1,671 @@
+1 
+Building	  an	  Arithme0c	  Machine	  &	  
+Decoding	  
+2 
+Today’s	  lecture	  
+  The	  Arithme0c	  Machine	  
+  Programmable	  hardware	  
+  Instruc4on	  Set	  Architectures	  (ISA)	  
+  Instruc4ons	  &	  Registers	  
+  Assembly	  Language	  
+  Machine	  Language	  
+  Instruc0on	  Encoding	  
+  R-­‐type	  &	  I-­‐type	  encodings	  
+  Instruc0on	  Decoding	  
+  Operands	  
+  Sign-­‐extending	  the	  immediate	  
+  Decoding	  the	  ALU	  opera4on	  
+3 
+Building	  an	  “arithme0c	  machine”	  
+  With	  an	  ALU	  and	  a	  register	  file,	  we	  can	  build	  a	  calculator	  
+  Here	  are	  the	  essen4al	  parts.	  
+A[31:0]
+control[2:0]
+out[31:0]
+B[31:0]
+ALU
+dataAregA
+reset
+w_en
+dataBregB
+w_reg
+w_data
+Register 
+File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+4 
+Building	  a	  computer	  processor.	  
+  The	  key	  feature	  that	  dis0nguishes	  a	  computer	  processor	  from	  
+other	  digital	  systems	  is	  programmability.	  
+  A	  processor	  is	  a	  hardware	  system	  controlled	  by	  soIware	  
+	  
+  An	  Instruc0on	  Set	  Architecture	  (ISA)	  describes	  the	  interface	  
+between	  the	  soIware	  and	  the	  hardware.	  
+  Specifies	  what	  opera4ons	  are	  available	  
+  Specifies	  the	  effects	  of	  each	  opera4on	  
+	  
+Software 
+Hardware 
+ISA 
+5 
+A	  MIPS	  ISA	  processor	  
+  Different	  processor	  families	  (x86,	  PowerPC,	  ARM,	  MIPS,	  …)	  use	  
+their	  own	  instruc0on	  set	  architectures.	  
+  The	  processor	  we’ll	  build	  will	  execute	  a	  subset	  of	  the	  MIPS	  ISA	  
+  Of	  course,	  the	  concepts	  are	  not	  MIPS-­‐specific	  
+  MIPS	  is	  just	  convenient	  because	  it	  is	  real,	  yet	  simple	  
+  The	  MIPS	  ISA	  is	  widely	  used.	  Primarily	  in	  embedded	  systems:	  
+  Various	  routers	  from	  Cisco	  
+  Game	  machines	  like	  the	  Nintendo	  64	  and	  Sony	  Playsta4on	  2	  
+	  
+6 
+Programming	  and	  CPUs	  
+  Programs	  wriVen	  in	  a	  high-­‐level	  
+language	  like	  C++	  must	  be	  
+compiled	  to	  produce	  an	  
+executable	  program.	  
+  The	  result	  is	  a	  CPU-­‐specific	  
+machine	  language	  program.	  This	  
+can	  be	  loaded	  into	  memory	  and	  
+executed	  by	  the	  processor.	  
+  Machine	  language	  serves	  as	  the	  
+interface	  between	  hardware	  
+and	  soIware.	   Datapath 
+High-level program 
+Executable file 
+Control signals 
+Compiler 
+Control Unit 
+Hardware 
+Software 
+7 
+High-­‐level	  languages	  vs.	  machine	  language	  
+  High-­‐level	  languages	  are	  designed	  for	  human	  usage:	  
+  Useful	  programming	  constructs	  (for	  loops,	  if/else)	  
+  Func4ons	  for	  code	  abstrac4on;	  variables	  for	  naming	  data	  
+  Safety	  features:	  type	  checking,	  garbage	  collec4on	  
+  Portable	  across	  plaYorms	  
+  Machine	  language	  is	  designed	  for	  efficient	  hardware	  
+implementa0on	  
+  Consists	  of	  very	  simple	  statements,	  called	  instruc0ons	  
+  Data	  is	  named	  by	  where	  it	  is	  being	  stored	  
+  Loops,	  if/else	  implemented	  by	  branch	  and	  jump	  instruc4ons	  
+  LiZle	  error	  checking	  provided;	  no	  portability	  
+8 
+Assembly	  Language	  &	  Instruc0ons	  
+  Machine	  language	  is	  a	  binary	  representa0on	  of	  instruc0ons	  
+  Assembly	  language	  is	  a	  human-­‐readable	  version	  
+  There	  is	  an	  (almost)	  one-­‐to-­‐one	  correspondence	  between	  
+assembly	  and	  machine	  languages;	  we’ll	  see	  the	  rela0on	  later.	  
+  Instruc0ons	  consist	  of:	  
+  Opera4on	  code	  (opcode):	  names	  the	  opera4on	  to	  perform	  
+  Operands:	  names	  the	  data	  to	  operate	  on	  
+  Example:	  
+ADD  $17,  $6,  $15 
+operation operands 
+9 
+MIPS: register-to-register, “three address” 
+  MIPS uses three-address instructions for arithmetic. 
+  Each ALU instruction contains a destination and two sources. 
+  MIPS is a register-to-register architecture. 
+  For arithmetic instructions, the destination and sources must all 
+be registers (or constants). 
+  Special instructions move values between the register file and 
+memory.  
+  For example, an addition (a = b + c) might look like: 
+ADD  $17,  $6,  $15 
+operation 
+destination sources 
+operands $6	  =	  register	  #6	  
+10 
+Basic arithmetic and logic operations 
+  MIPS provides basic integer arithmetic operations:  
+     add    sub    mul*    div* 
+  And logical operations: 
+and    or    nor    xor     not 
+  Remember that these all require three register 
+operands; for example: 
+  add  $14, $18, $3  # $14 = $18 + $3 
+  mul  $22, $22, $11  # $22 = $22 x $11 
+ 
+ 
+Note: a full MIPS ISA reference can be found in Appendix A 
+(linked from website) *	  We	  won’t	  implement	  these	  in	  our	  implementa3on	  
+11 
+  More complex arithmetic expressions may require 
+multiple operations at the instruction level. 
+$4 = ($1 + $2) × ($3 - $4)  
+  add  $4, $1, $2  # $4 contains $1 + $2 
+  sub  $5, $3, $4  # Temporary value $5 = $3 - $4 
+  mul  $4, $4, $5  # $4 contains the final product 
+  Temporary registers may be necessary, since each 
+MIPS instructions can access only two source registers 
+and one destination. 
+  could have re-used $3 instead of introducing $5. 
+  But be careful not to modify registers that are 
+needed again later. 
+Larger expressions 
+12 
+Immediate operands 
+  So far, the instructions expect register operands. How 
+do you get data into registers in the first place? 
+  Some instructions allow you to specify a signed 
+constant, or “immediate” value, for the second source 
+instead of a register.  
+  For example, here is the immediate add instruction, 
+addi: 
+  addi $15, $1, 4  # $15 = $1 + 4 
+  Immediate operands can be used in conjunction with 
+the $zero register to write constants into registers: 
+   addi $15, $0, 4  # $15 = 4 
+13 
+September 20, 2013 Introduction to CS232 13 
+A more complete example 
+  What if we wanted to compute the following? 
+1 + 2 + 3 + 4 
+14 
+September 20, 2013 Introduction to CS232 14 
+A more complete example 
+  What if we wanted to compute the following? 
+1 + 2 + 3 + 4 
+II!
+addi $1, $0, 1!
+addi $1, $1, 2!
+addi $1, $1, 3!
+addi $1, $1, 4!
+III!
+addi $1, $0, 1!
+addi $2, $0, 2!
+addi $3, $0, 3!
+addi $4, $0, 4!
+add  $1, $1, $2!
+add  $3, $3, $4!
+add  $1, $1, $3!
+I!
+addi $1, 1, 2!
+addi $2, 3, 4!
+add  $1, $1, $2!
+A:  none of the above!
+B:  I and II!
+C:  I and III!
+D:  II and III!
+E:  all of the above!
+15 
+September 20, 2013 Introduction to CS232 15 
+Writing an arithmetic program 
+  Write MIPS code to compute the following expression? 
+z = 4 + x*y – z; 
+ 
+  Assume the following register allocation: 
+  $13 = x, $20 = y, $15 = z 
+ 
+16 
+How	  do	  instruc0ons	  control	  the	  datapath?	  
+  First	  step	  is	  to	  learn	  how	  instruc0ons	  are	  encoded	  
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+dataAregA
+reset
+w_en
+dataBregB
+w_reg
+w_data
+Register 
+File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+17 
+Machine	  Language	  
+  Machine language is a binary format that can be stored 
+in memory and decoded by the CPU. 
+  MIPS machine language is designed to be easy to decode 
+  Each MIPS instruction is the same length, 32 bits. 
+  There are only three different instruction formats, 
+which are very similar to each other. 
+  We’ll see two of them today 
+18 
+R-type format 
+  Register-to-register arithmetic instructions use the R-type format. 
+ 
+  This format includes six different fields. 
+— op is an operation code or opcode that selects a specific operation. 
+— rs and rt are the first and second source registers. 
+— rd is the destination register. 
+— shamt is only used for shift instructions. 
+— func is used together with op to select an arithmetic instruction.  
+ 
+op rs rt rd shamt func 
+6 bits 5 bits 5 bits 5 bits 5 bits 6 bits 
+19 
+R-type format 
+  Register-to-register arithmetic instructions use the R-type format. 
+ 
+  Example:  
+op rs rt rd shamt func 
+6 bits 5 bits 5 bits 5 bits 5 bits 6 bits 
+add  $5, $10, $4!
+20 
+I-type format 
+  Instructions with immediates all use the I-type format. 
+ 
+  For uniformity, op, rs and rt are in the same positions as in R-type 
+  The meaning of the register fields depends on the exact 
+instruction. 
+— For arithmetic instructions, rt is the destination and rs a source. 
+  The imm field is a 16-bit signed two’s-complement value. 
+  It can range from -32,768 to +32,767. 
+op rs rt imm 
+6 bits 5 bits 5 bits 16 bits 
+21 
+I-type format 
+  Instructions with immediates all use the I-type format. 
+ 
+  Example 
+op rs rt imm 
+6 bits 5 bits 5 bits 16 bits 
+ori  $7, $2, 0xff!
+22 
+How	  do	  instruc0ons	  control	  the	  datapath?	  
+  Some	  of	  the	  fields	  come	  directly	  from	  instruc0ons.	  
+16
+11
+op
+rs
+rt
+rd
+-
+func
+imm
+31
+0
+5
+6
+10
+15
+20
+21
+25
+26 A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+dataAregA
+reset
+w_en
+dataBregB
+w_reg
+w_data
+Register 
+File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+23 
+Sign	  Extension	  
+  Remember	  how	  to	  do	  sign-­‐extension?	  
+Sign 
+Extender
+out[31:0]
+in[15:0]imm16
+imm32
+16
+32
+15	  
+31	   0	  
+0	  
+24 
+What	  about	  the	  alu_op?	  
+  It	  is	  a	  func0on	  of	  the	  opcode	  /	  func	  field.	  
+Instruction opcode func alu_op itype wr_enable 
+add 
+sub 
+and 
+or 
+xor 
+nor 
+addi 
+andi 
+ori 
+xori 
+25 
+Instruc0on	  Decoder	  
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+wr_enable
+itype
+alu_op[2:0]
+inst[5:0]
+inst[31:26]
+except
+6
+6
+3
+imm-val!
+26 
+Arithme0c	  Machine	  Datapath	  
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+Sign 
+Extender
+out[31:0]
+in[15:0]
+inst[31:0] 0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+Rt
+Rd
+imm16
+imm32
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+3
+27 
+How	  do	  instruc0ons	  control	  the	  datapath?	  
+  First	  step	  is	  to	  learn	  how	  instruc0ons	  are	  encoded	  
+A[31:0]
+control[2:0]
+out[31:0]
+B[31:0]
+ALU
+dataAregA
+reset
+w_en
+dataBregB
+w_reg
+w_data
+Register 
+File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+28 
+Machine	  Language	  
+  Machine language is a binary format that can be stored 
+in memory and decoded by the CPU. 
+  MIPS machine language is designed to be easy to decode 
+  Each MIPS instruction is the same length, 32 bits. 
+  There are only three different instruction formats, 
+which are very similar to each other. 
+  We’ll see two of them today 
+29 
+R-type format 
+  Register-to-register arithmetic instructions use the R-type format. 
+ 
+  This format includes six different fields. 
+— op is an operation code or opcode that selects a specific operation. 
+— rs and rt are the first and second source registers. 
+— rd is the destination register. 
+— shamt is only used for shift instructions. 
+— func is used together with op to select an arithmetic instruction.  
+op rs rt rd shamt func 
+6 bits 5 bits 5 bits 5 bits 5 bits 6 bits 
+30 
+R-type format 
+  Register-to-register arithmetic instructions use the R-type format. 
+ 
+  Example:  
+op rs rt rd shamt func 
+6 bits 5 bits 5 bits 5 bits 5 bits 6 bits 
+add  $5, $10, $4!
+31 
+September 20, 2013 Machine Language and Pointers 31 
+I-type format 
+  Instructions with immediates all use the I-type format. 
+ 
+  For uniformity, op, rs and rt are in the same positions as in R-type 
+  The meaning of the register fields depends on the exact 
+instruction. 
+— For arithmetic instructions, rt is the destination and rs a source. 
+  The address is a 16-bit signed two’s-complement value. 
+  It can range from -32,768 to +32,767. 
+op rs rt address 
+6 bits 5 bits 5 bits 16 bits 
+32 
+I-type format 
+  Instructions with immediates all use the I-type format. 
+ 
+  Example 
+op rs rt imm 
+6 bits 5 bits 5 bits 16 bits 
+ori  $7, $2, 0xff!
+33 
+I-type format 
+  Instructions with immediates all use the I-type format. 
+ 
+  Example 
+op rs rt imm 
+6 bits 5 bits 5 bits 16 bits 
+ori  $7, $2, 0xff!
+22 
+How	  do	  instruc-ons	  control	  the	  datapath?	  
+  Some	  of	  the	  fields	  come	  directly	  from	  instruc-ons.	  
+16
+11
+op
+rs
+rt
+rd
+-
+func
+imm
+31
+0
+5
+6
+10
+15
+20
+21
+25
+26 A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+dataAregA
+reset
+w_en
+dataBregB
+w_reg
+w_data
+Register 
+File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+23 
+Sign	  Extension	  
+  Remember	  how	  to	  do	  sign-­‐extension?	  
+Sign 
+Extender
+out[31:0]
+in[15:0]imm16
+imm32
+16
+32
+15	  
+31	   0	  
+0	  
+24 
+What	  about	  the	  alu_op?	  
+  It	  is	  a	  func-on	  of	  the	  opcode	  /	  func	  field.	  
+Instruction opcode func alu_op imm_val wr_enable 
+add 
+sub 
+and 
+or 
+xor 
+nor 
+addi 
+andi 
+ori 
+xori 
+25 
+Instruc-on	  Decoder	  
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+wr_enable
+itype
+alu_op[2:0]
+inst[5:0]
+inst[31:26]
+except
+6
+6
+3
+imm_val!
+26 
+Arithme-c	  Machine	  Datapath	  
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+Sign 
+Extender
+out[31:0]
+in[15:0]
+inst[31:0] 0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+Rt
+Rd
+imm16
+imm32
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+3
+imm_val	  
+imm_val	  
+imm_val	  

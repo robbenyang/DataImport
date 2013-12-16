@@ -1,0 +1,231 @@
+Abstraction of Reduce()
+Example: Reduce() in WordCount()
+Reduce(), ,
+Reduce()
+“bad”, 
+[2,1,1,1] “bad”, 5 
+Workflow of WordCount()
+Data
+“A bad beginning 
+makes a bad ending”.  ”I have a bad news.”
+<“bad”, 3> <“a”, 3>
+<“bad”, 2>
+<“a”, 2> <“bad”, 1><“a”, 1>
+Map Phase
+Reduce Phase
+Example 2: Average Income
+• Problem: Compute average income in a city for a 
+given year (e.g., 2007)
+• Input:
+– Personal Information: <SSN, Personal Info>
+• E.g. <“12345”, {John Smith, Sunnyvale, CA}>
+– Income Information: <SSN, {year, income}>
+• E.g. <“12345”, {2007, $72000}>, <“98765”, {2013, $12344}>
+• Output: Average income in each city in 2007
+– E.g. <Sunnyvale, 12000>, <Champaign, 2000>, ...
+Example From  Zhao et al. :”MapReduce: The Programming Model and Practice”
+How to Design Map() & Reduce()?
+Solution
+Map Reduce Architecture
+(0) Shards the input file.
+A bad beginning 
+makes a bad ending
+I have a 
+bad news
+Each shard is typically 
+16~64MB in size.
+(1) The user program creates processes on 
+the Master and worker threads.
+A bad beginning 
+makes a bad ending
+I have a 
+bad news
+(2) Master pick idle workers to assignmap 
+or reduce tasks
+A bad beginning 
+makes a bad ending
+I have a 
+bad news
+(3) Each map worker reads assigned input 
+shard and output <key, value> pairs.
+<bad, 2>
+<a, 1>
+<ending, 1>
+...
+<bad, 1>
+<a, 1>
+<news, 1>
+...
+A bad beginning 
+makes a bad ending
+I have a 
+bad news
+(4) Write Intermediate <key, value> pairs 
+to local disk.
+<bad, 2>
+<a, 1>
+<ending, 1>
+...
+<bad, 1>
+<a, 1>
+<news, 1>
+...
+(5) Reduce worker reads intermediate data 
+sort by key
+<bad, 2>
+<a, 1>
+<ending, 1>
+...
+<bad, 1>
+<a, 1>
+<news, 1>
+...
+<bad, (2, 1)>
+<ending, 1>
+...
+<a, (1, 1)>
+<news, 1>
+...
+(6) Reduce workers write the result.
+<bad, (2, 1)>
+<ending, 1>
+...
+<a, (1, 1)>
+<news, 1>
+...
+<bad, 3>
+<ending, 
+1>
+...
+<a, 2>
+<news, 1>
+...
+Scenarios where MapReduce
+outperforms Parallel Databases
+• Scenario 1: Semi‐Structured Data
+– The data model of MapReduce use “key‐value 
+pair” data.
+• Scenario 2 & 3: ETL Tasks and Data Mining 
+Applications
+– Fast data loading time.
+– Flexible User‐defined map() and reduce() 
+functions in MapReduce.
+Scenarios where MapReduce
+outperforms Distributed Databases
+• Scenario 4: Limited‐budget and Robust.
+–Most MapReduce projects are open source and 
+free.
+–MapReduce supports mid‐query fault tolerance.
+• If a node fails, the query does not need to be restarted.
+– DBMSs typical don’t support it.
+• Only important as the number of nodes increases
+• 1 failure/month, 1 hour/query
+– Pr(mid_query_failure|10 nodes) = 1%
+– Pr(mid_query_failure|100 nodes) = 13%
+– Pr(mid_query_failure|1000 nodes) = 75%
+Benchmark (Madden 2009)
+• Goals
+– Understand efficiency differences between 
+MapReduce and distributed databases
+• Software
+–MapReduce: Hadoop
+– Distributed Databases:  DBMS‐X and Vertica
+• Ran on 100 node Linux cluster
+• Dataset: Grep (used in original MapReduce
+paper, 1TB of data)
+Load Times
+0
+5000
+10000
+15000
+20000
+25000
+30000
+25*40GB 50*20GB 100*10GB
+T
+i
+m
+e
+ 
+(
+s
+e
+c
+o
+n
+d
+s
+)
+Hadoop
+Vertica
+DBMS‐X
+Databases don’t scale linearly; Hadoop does
+Query Time
+0
+200
+400
+600
+800
+1000
+1200
+1400
+1600
+25*40GB 50*20GB 100*10GB
+T
+i
+m
+e
+ 
+(
+s
+e
+c
+o
+n
+d
+s
+)
+Hadoop
+Vertica
+DBMS‐X
+Vertica’s compression works better than DBMS‐X
+Aggregation Task
+0
+200
+400
+600
+800
+1000
+1200
+1400
+25*40GB 50*20GB 100*10GB
+T
+i
+m
+e
+ 
+(
+s
+e
+c
+o
+n
+d
+s
+)
+Hadoop
+Vertica
+DBMS‐X
+DBMS perform better because 1. No parsing 
+overheads; 2. Compression.
+Experimental Conclusion
+• Hadoop load times are faster
+– Very important for one‐off processing tasks
+• Hadoop Query and aggregation times are a lot 
+slower.
+– Parsing, compression and indexing in RDBMS
+• No compelling reason to choose MapReduce
+over a database for traditional database 
+workload.
+The Future of MapReduce and 
+Parallel Database: Friend or Foe?

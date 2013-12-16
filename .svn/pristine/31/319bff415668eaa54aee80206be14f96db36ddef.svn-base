@@ -1,0 +1,612 @@
+Information	  Extraction
+Vincent	  Zheng
+	  
+Information Extraction(IE) 
+Quick Summary:  
+Learn how to extract information from 
+Structured/Semistructred sources(like webpages). 
+ 
+Wrapper: A target schema and an extraction 
+program. 
+Target Schema: This is not necessarily the same 
+as the source schema but it contains the names of 
+attributes that we care about 
+ 
+The	  Big	  Picture:	  Where	  We	  Are
+Data	  Access
+Data	  Modeling
+Data/Query	  Processing
+Data	  Acquisition
+Relational NonRelational
+St
+ru
+ct
+ur
+ed
+Se
+m
+iS
+tr
+uc
+tu
+re
+d
+Transaction	  Management
+N
+oS
+Q
+L	  
+Da
+ta
+ba
+se
+s
+XM
+L	  
+Da
+ta
+ba
+se
+s
+U
+nt
+ru
+ct
+ur
+ed
+Relational	  Databases
+• SQL
+• Relational	  Algebra
+• Query	  Optimization
+• Query	  Execution
+• Indexing
+• Concurrency	  Control
+• Logging	  Recovery
+Database	  Systems Toolkits
+M
+ap
+	  R
+ed
+uc
+e
+(P
+ar
+al
+le
+l)
+St
+or
+m
+	  
+(S
+tr
+ea
+m
+)
+Information	  Extraction
+ER	  à Relational	  Model
+Query	  Language
+Default	  Section	  (1	  of	  3) 2 	  
+Extraction Program: The program that parses a 
+web page to retrieve information for the attributes 
+for the target schema.  
+3 mentioned methods to make wrappers:  
+Manual Solution-Give target schema, write own 
+extraction program(REGEX) 
+ 
+Learning Based Solution-Give target schema, 
+automatically generate extraction program.(HLRT) 
+ 
+Automatic Solution- Automatically generate target 
+schema and extraction program(ROAD RUNNER)	  
+Information	  Extraction	  As	  Data	  Acquisition
+Joel	  is	  now	  23	  years	  old,	  
+male,	  …
+Micah	  is	  39,	  male	  ..
+Joel	  is	  now	  23	  years	  old,	  
+male,	  …
+Micah	  is	  39,	  male	  ..
+Joel	  is	  now	  23	  years	  old,	  
+male,	  …
+Micah	  is	  39,	  male	  ..
+Joel	  is	  now	  23	  years	  old,	  
+male,	  …
+Micah	  is	  39,	  male	  ..
+Image	  from	  www.homozygositymapper.org
+Unstructured	  source:	  
+e.g.,	  free	  text
+Structured/Semi-­‐structured	  source:	  
+e.g.,	  Web	  pages	  from	  a	  single	  site
+Default	  Section	  (2	  of	  3) 3 	  
+ 
+ 
+Slide 3)  
+We will cover information extraction from Structured/Semi-
+structured sources using web pages as examples.  
+ 
+ 
+Concepts	  You	  Will	  Learn
+• Information	  extraction	  from	  structured	  Web	  data
+– Parsing	  Web	  pages	  from	  one	  source	  with	  template
+• Different	  methods	  for	  IE	  with	  structured	  Web	  data
+– Manual	  solution
+– Learning-­‐based	  solution
+– Automatic	  solution
+Slide	  reference:	  Principles	  of	  Data	  Integration,	  by	  Anhai Doan,	  Alon Halevy	  and	  Zachary	  Ives.
+Default	  Section	  (3	  of	  3) 4 	  
+ 
+ 
+WHY	  DO	  WE	  LEARN	  THIS?
+Why  Do  We  Learn  This?  (0  of  4) 5 	  
+Why	  do	  we	  care?	  
+Web	  pages	  can	  contain	  valuable	  information	  that	  we	  care	  
+about	  and	  therefore	  we	  want	  to	  extract	  it.	  	  	  
+Many	  Web	  Data	  Are	  Generated	  from	  
+the	  Hidden	  Databases
+• Web	  pages	  from	  same	  data	  
+source	  S
+– Powered	  by	  a	  database	  
+– E.g.,	  S =	  Amazon	  book	  database
+• An	  HTML	  page	  rendered	  by	  a	  
+schema and	  a	  format
+– Schema =	  <#title,	  #author,	  
+#price,	  ..>
+– Format =	  #title	  followed	  by	  
+#author
+6Why	  Do	  We	  Learn	  This?	  (1	  of	  4) 	  
+A	  dynamically	  rendered	  web	  page	  (like	  an	  Amazon	  product	  
+item	  page)is	  often	  formatted.	  It	  can	  contain	  information	  
+that	  we	  care	  about	  like	  title,author,price,	  ASIN	  etc	  
+…(Schema)	  
+	  
+These	  are	  often	  displayed	  in	  an	  particular	  order(Format)	  
+	  
+	  
+What’s	  an	  ASIN??	  -­‐	  
+http://en.wikipedia.org/wiki/Amazon_Standard_Identification_Number	  
+If	  we	  need	  data	  from	  such	  a	  source	  …
+• A	  wrapper	  to	  extract	  attributes	  from	  pages	  of	  S	  
+– Formally,	  a	  wrapper	  is	  a	  tuple	  of	  <target	  schema,	  
+extraction	  program>
+• A target	  schema
+– This	  needs	  not	  be	  the	  same	  as	  the	  source	  schema,	  because	  we	  
+may	  only	  want	  some	  of	  the	  attributes
+• Plus	  an	  extraction	  program	  that	  uses	  the	  format
+– It	  parses	  a	  page	  of	  S	  and	  extracts	  the	  target	  schema	  attributes
+– Typically	  written	  as	  some	  script	  
+Why	  Do	  We	  Learn	  This?	  (2	  of	  4) 7 	  
+Wrapper: A target schema and an extraction 
+program. 
+Target Schema: This is not necessarily the same 
+as the source schema but it contains the names of 
+attributes that we care about 
+Extraction Program: The program that parses a 
+web page to retrieve information for the attributes 
+for the target schema.  
+	  
+Example	  Wrapper
+• Consider	  a	  wrapper	  that	  extracts
+all the	  attributes	  from	  pages	  of	  
+countries.com
+– Target	  schema	  equals	  to	  the	  source	  
+schema	  as	  (#country,	  #capital,	  
+#population,	  #continent)
+– Extraction	  program	  may	  be	  a	  
+Perl	  script	  specifying	  that	  given	  a	  page	  from	  source	  S
+• Return	  the	  first	  fully	  capitalized	  string	  as	  #country
+• Return	  the	  string	  immediately	  following	  “Capital:”	  as	  #capital
+• Etc.
+Why	  Do	  We	  Learn	  This?	  (3	  of	  4) 8 	  
+Example	  of	  a	  manual	  solution	  wrapper	  we	  want	  to	  make	  
+Given	  target	  Schema:	  (#country,#capital,	  
+#population,#continent)	  
+Given	  extraction	  Program:	  A	  perl	  script	  that	  will	  parse	  the	  
+web	  page.	  
+Different	  Settings
+• Manual	  wrapper	  construction
+– Given	  a	  target	  schema,	  manually	  construct	  extraction	  
+program
+• Learning-­‐based	  wrapper	  construction
+– Given	  a	  target	  schema,	  automatically	  learn	  the	  extraction	  
+program	  from	  examples	  
+• Automatic	  wrapper	  construction
+– Automatically	  induce	  both	  target	  schema	  and	  extraction	  
+program
+Why	  Do	  We	  Learn	  This?	  (4	  of	  4) 9 	  
+Manual	  Solution	  –	  manual	  target	  schema,	  manual	  extraction	  
+program(Regex)	  
+	  
+Learning-­‐based-­‐	  manual	  target	  schema,	  automatic	  
+extraction	  program	  (HRLT)	  
+	  
+Automatic(Road	  Runner)automatic	  target	  schema,	  
+automatic	  extraction	  program	  
+MANUAL	  WRAPPER	  
+CONSTRUCTION
+Manual  Wrapper  Construction  (0  of  
+4)
+10 	  
+Manual	  wrapper	  construction	  is	  easy	  when	  we	  know	  exactly	  
+how	  the	  web	  page	  is	  formatted.	  We	  just	  need	  to	  know	  what	  
+information	  we	  want(target	  schema)	  and	  write	  a	  program	  to	  
+go	  line	  by	  line	  and	  extract	  the	  information(Extraction	  
+program).	  
+Manual	  Wrapper	  Construction
+• Developer	  examines	  a	  set	  of	  Web	  pages
+– Manually	  creates	  the	  target	  schema	  and	  the	  extraction	  
+program
+– Often	  writes	  extraction	  program	  using	  a	  script	  (e.g.,	  perl)
+Manual	  Wrapper	  Construction	  (1	  of	  
+4)
+11 	  
+ 
+	  
+Example <HTML><TITLE>Countries	  in	  Australia	  (Continent)</TITLE>
+<BODY>
+<B>Countries	  in	  Australia	  (Continent)</B><P>
+<B>Australia</B>	  <I>61</I><BR>
+<B>East	  Timor</B>	  <I>670</I><BR>
+<B>Papua	  New	  Guinea</B>	  <I>675</I><BR>
+<HR>
+<B>Copyright	  easycalls.com</B>
+</BODY>
+</HTML>
+#!/usr/bin/perl
+open(INFILE,	  $ARGV[0])	  or	  die	  "cannot	  open	  file\n";
+while	  ($line	  =	  <INFILE>)	  {
+if	  ($line	  =~	  m/<B>(.+?)<\/B>\s+?<I>(\d+?)<\/I><BR>/)	  {
+print	  "\#country	  =	  $1,	  \#code	  =	  $2\n";
+}
+}
+close(INFILE);
+Manual	  Wrapper	  Construction	  (2	  of	  
+4)
+12 	  
+On	  the	  top	  right	  is	  the	  html	  of	  the	  web	  page	  that	  we	  are	  
+parsing,	  on	  the	  bottom	  right	  is	  the	  Perl	  script	  that	  parses	  the	  
+html	  page	  and	  prints	  out	  the	  country	  and	  the	  country	  code.	  
+	  
+The	  Perl	  script	  goes	  through	  line	  by	  line	  and	  prints	  out	  the	  
+country	  name	  (between	  <B>	  and	  </B>)	  and	  the	  code	  
+(between	  <I>	  and	  </I>)	  	  
+Want	  to	  learn	  more	  about	  Perl’s	  regular	  expressions?	  
+http://perldoc.perl.org/perlre.html#Regular-­‐Expressions	  
+Different	  Ways	  to	  View	  A Page
+• For	  example:
+– As	  a	  string	  à can	  write	  wrapper	  as	  Perl	  program	  	  
+– As	  a	  DOM	  tree	  à can	  write	  wrapper	  using	  Xpath
+– As	  a	  visual	  page,	  consisting	  of	  blocks
+Manual	  Wrapper	  Construction	  (3	  of	  
+4)
+13 	  
+Alternatively,	  we	  can	  use	  Xpath	  to	  go	  through	  the	  DOM	  tree	  
+and	  get	  the	  information	  that	  we	  want.	  (Instead	  of	  going	  line	  
+by	  line	  with	  a	  Perl	  script)	  
+Summary	  for	  Manual	  Wrapper	  
+Construction
+• Regardless	  of	  page	  model	  (string,	  DOM	  tree,	  visual,	  
+etc.),	  manually	  writing	  up	  a	  wrapper	  extraction	  
+program	  can	  be	  very	  laborious
+• Suppose	  we	  are	  given	  a	  set	  of	  labeled	  pages	  (i.e.,	  we	  
+know	  which	  part	  is	  #country,	  which	  part	  is	  #code,	  
+etc.),	  can	  we	  automate	  the	  process	  of	  getting	  the	  
+extraction	  program?
+Manual	  Wrapper	  Construction	  (4	  of	  
+4)
+14 	  
+This	  slide	  is	  for	  transitioning	  to	  the	  next	  topic,	  learning	  
+based	  wrapper	  construction.	  	  
+A	  disadvantage	  of	  using	  manual	  wrapper	  construction	  is	  that	  
+it	  can	  be	  laborious.	  You	  would	  have	  to	  make	  an	  extraction	  
+program	  for	  each	  type	  of	  web	  page.	  But	  what	  if	  we	  are	  given	  
+several	  web	  pages	  that	  follow	  a	  similar	  template	  and	  we	  are	  
+too	  lazy	  to	  write	  an	  extraction	  program?	  Then	  we	  can	  
+automate	  the	  extraction	  program	  by	  using	  a	  learning-­‐based	  
+wrapper	  construction.	  	  
+LEARNING-­‐BASED	  WRAPPER	  
+CONSTRUCTION
+Learning-­‐based  Wrapper  
+Construction  (0  of  4)
+15 	  
+Learning-­‐Based	  wrapper	  construction:	  	  
+Given	  target	  schema,	  auto	  generate	  an	  extraction	  program.	  	  	  
+Uses	  HLRT(Head	  Left	  Right	  Tail)	  	  
+Looking	  for	  Patterns
+• Use	  delimiters	  to	  extract	  tuples	  from	  one	  page
+– E.g.,	  extract	  (#country,	  #code)
+<HTML>
+<TITLE>Countries	  in	  Australia	  (Continent)</TITLE>
+<BODY>
+<B>Countries	  in	  Australia	  (Continent)</B><P>
+<B>Australia</B>	  <I>61</I><BR>
+<B>East	  Timor</B>	  <I>670</I><BR>
+<B>Papua	  New	  Guinea</B>	  <I>675</I><BR>
+<HR>
+<B>Copyright	  easycalls.com</B>
+</BODY>
+</HTML>
+Learning-­‐based	  Wrapper	  
+Construction	  (1	  of	  4)
+16 	  
+Here	  is	  the	  page	  that	  we	  want	  to	  extract	  information	  from.	  
+Observe	  that	  the	  information	  that	  we	  want	  is	  in	  the	  middle	  
+of	  the	  page.	  
+HLRT	  Wrapper
+• Head-­‐Left-­‐Right-­‐Tail	  wrapper
+Learning-­‐based	  Wrapper	  
+Construction	  (2	  of	  4)
+17 	  
+ 
+There	  is	  the	  head,	  data	  region,	  and	  tail.	  We	  only	  care	  about	  
+the	  data	  region.	  But	  how	  do	  we	  find	  the	  data	  region?	  Find	  
+the	  head	  and	  tail	  and	  between	  them	  is	  the	  data	  region.	  	  
+HLRT	  Wrapper	  Construction
+• Goal: for	  n	  fields,	  want	  to	  construct	  an	  HLRT	  wrapper	  
+as	  a	  tuple	  of	  (2n+2)	  strings	  (h,	  t,	  l1,	  r1,	  …,	  ln,	  rn)
+• Approach:	  a	  learning	  module	  to	  construct	  a	  wrapper	  
+for	  multiple	  pages
+– E.g.,	  consider	  finding	  all	  possible	  values	  for	  h	  from	  k	  pages
+ExampleLearningModule(p1,	  …,	  pk,	  a1,	  …,	  an)
+• Let	  xi be	  the	  string	  from	  the	  beginning	  of	  page	  pi to	  the	  
+first	  occurrence	  of	  the	  very	  first	  attribute	  a’1	  	  
+• Return	  the	  common	  substring	  of	  {x1,	  x2,	  …,	  xk}	  as	  h
+Learning-­‐based	  Wrapper	  
+Construction	  (3	  of	  4)
+18 	  
+HLRT	  wrapper	  is	  a	  tuple	  of	  (2n+2)	  strings	  
+-­‐	  2n	  (l’s	  and	  r’s)	  and	  a	  head	  and	  a	  tail.	  	  
+To	  find	  the	  head:	  
+First	  compare	  all	  the	  web	  pages	  that	  we	  will	  be	  parsing.	  	  
+For	  each	  web	  page	  i,	  there	  will	  be	  a	  string	  x_i	  that	  is	  a	  prefix	  
+to	  the	  first	  attribute	  of	  the	  page.	  	  
+Now	  compare	  all	  x_i’s	  and	  the	  common	  substring	  will	  be	  the	  
+head.	  The	  tail	  can	  be	  found	  similarly.	  	  
+Summary	  for	  HLRT	  Wrapper
+• Easy	  to	  understand	  and	  implement
+• Have	  limited	  applicability
+– Assume	  a	  flat	  tuple	  schema	  (a	  parallel	  list	  of	  <li,	  ri>’s)
+– Assume	  all	  attributes	  can	  be	  extracted	  with	  delimiters
+• In	  practice,	  things	  are	  more	  complicated
+– May	  have	  nested	  schema
+• #Book	  =	  (#title,	  #authors,	  #price),	  where	  #authors	  =	  a	  list	  of	  
+(#first_name,	  #last_name)	  tuples
+– May	  not	  be	  able	  to	  extract	  with	  delimiters
+• Extract	  zip	  code	  from	  “40	  Colfax,	  Phoenix,	  AZ	  85258”
+Learning-­‐based	  Wrapper	  
+Construction	  (4	  of	  4)
+19 	  
+The	  HLRT	  wrapper	  is	  easier	  to	  understand	  and	  implement	  
+when	  compared	  to	  the	  Road	  Runner	  wrapper.	  
+	  
+To	  use	  the	  HLRT	  wrapper,	  we	  must	  assume	  that	  the	  target	  
+schema	  is	  a	  flat	  tuple(a	  parallel	  list	  of	  l_i	  and	  r_i).	  And	  that	  
+the	  information	  is	  easily	  extractable	  with	  the	  use	  of	  
+delimiters.	  	  
+	  
+Most	  webpages	  are	  not	  this	  nice	  and	  so	  we	  must	  try	  a	  
+different	  method,	  automatic	  wrapper	  construction.	  
+AUTOMATIC	  WRAPPER	  
+CONSTRUCTION
+Automatic  Wrapper  Construction  (0  
+of  12)
+20 	  
+	  
+Automatic	  Wrapper	  Construction:	  Automatic	  target	  schema	  
+and	  extraction	  program.	  (Road	  Runner)	  
+Wrapper	  Learning	  without	  Schema
+• Also	  called	  automatic	  approach	  for	  wrapper	  learning
+– Input	  a	  set	  of	  Web	  pages	  of	  source	  S
+– Examine	  similarities/dissimilarities	  
+across	  pages
+– Automatically	  infer	  
+• Schema	  of	  pages:	  
+which	  fields	  are	  aligned	  (as	  attributes)
+• Extraction	  program:	  
+how	  to	  extract	  the	  fields	  (as	  attributes)
+Automatic	  Wrapper	  Construction	  (1	  
+of	  12)
+21 	  
+ 
+The	  basics:	  
+You	  have	  a	  set	  of	  web	  pages.	  
+Compare	  them	  	  
+Automatically	  generate	  the	  target	  schema	  by	  checking	  
+which	  fields	  align	  across	  all	  web	  pages.	  
+Automatically	  generate	  the	  extraction	  program	  by	  making	  a	  
+generic	  regex	  program	  that	  can	  be	  run	  across	  all	  pages.	  	  
+Example
+<HTML>
+<B>The	  Elements	  of	  Style</B><P>
+<U>William	  Strunk Jr.</U><BR>
+<U>E.	  B.	  White</U><BR>
+<I>Price:</I>$9.95<BR>
+<I>Publisher:</I>Longman<BR>
+</HTML>
+Automatic	  Wrapper	  Construction	  (2	  
+of	  12)
+22
+<HTML><B>#PCDATA</B><P>(<U>#PCDATA</U><BR>)+
+<I>Price:</I>#PCDATA<BR><I>Publisher:</I>#PCDATA<BR></HTML>
+	  
+We	  start	  with	  the	  first	  page	  and	  generalize	  the	  page	  into	  a	  
+regular	  expression.	  	  
+	  
+Note:	  The	  “+”	  means	  that	  the	  block	  of	  text	  may	  be	  iterated.	  
+You	  may	  have	  several	  blocks	  of	  texts	  that	  follow	  the	  same	  
+pattern	  that	  follow	  each	  other.	  	  
+Example
+<HTML>
+<B>The	  Elements	  of	  Style</B><P>
+<U>William	  Strunk Jr.</U><BR>
+<U>E.	  B.	  White</U><BR>
+<I>Price:</I>$9.95<BR>
+<I>Publisher:</I>Longman<BR>
+</HTML>
+<HTML>
+<B>The	  Snow	  of	  Kilimanjaro</B><P>
+<U>Emest Hemingway</U><BR>
+<I>Publisher:</I>Scribner<BR>
+</HTML>
+Automatic	  Wrapper	  Construction	  (3	  
+of	  12)
+23
+<HTML><B>#PCDATA</B><P>(<U>#PCDATA</U><BR>)+
+(<I>Price:</I>#PCDATA<BR>)?<I>Publisher:</I>#PCDATA<BR></HTML>
+	  
+Now	  we	  compare	  the	  second	  page	  with	  the	  regular	  
+expression	  that	  we	  got	  from	  the	  first	  page.	  Now	  we	  
+generate	  a	  new	  regular	  expression	  from	  both	  pages.	  
+	  
+Note:The	  	  “?”	  means	  that	  the	  block	  of	  text	  may	  be	  optional.	  
+Each	  web	  page	  may	  not	  contain	  the	  same	  attributes	  and	  
+fields	  as	  the	  other	  web	  pages.	  	  
+RoadRunner:	  Inferring	  Schema	  and	  
+Program
+• Given	  a	  set	  of	  Web	  pages	  P	  =	  {p1,…,pk}
+– Examine	  P	  to	  infer	  extraction	  program	  (as	  a	  REGEX)
+– Then	  infer	  the	  schema	  from	  the	  extraction	  results
+• To	  infer	  extraction	  program,	  iterate
+– Initialize	  a	  REGEX	  to	  page	  p1
+– Generalize	  it to	  match	  p2,	  and	  so	  on
+– Return	  a	  REGEX	  that	  has	  been	  generalized	  (minimally)	  to	  
+match	  all	  the	  pages	  in	  P
+Automatic	  Wrapper	  Construction	  (4	  
+of	  12)
+24 	  
+ 
+We	  repeat	  the	  previous	  steps	  from	  the	  example	  to	  all	  web	  
+pages	  so	  that	  in	  the	  end	  we	  have	  a	  REGEX	  that	  can	  be	  
+matched	  on	  all	  web	  pages.	  	  
+The	  Generalization	  Step
+• Given	  a	  REGEX	  to	  page	  p1, generalize	  it	  to	  match	  p2
+– Tokenize	  pages	  into	  tokens	  (strings	  or	  HTML	  tags)
+– Compare	  two	  pages,	  starting	  from	  the	  first	  token
+– Eventually,	  will	  likely	  to	  run	  into	  a	  mismatch	  (of	  tokens)
+• String	  mismatch:	  “William	  Strunk Jr.”	  vs.	  “Emest Hemingway”
+• Tag	  mismatch:	  2	  tags,	  or	  1	  tag	  and	  1	  string
+• Resolving	  a	  string	  mismatch	  is	  not	  too	  hard
+• Resolving	  a	  tag	  mismatch	  is	  far	  more	  difficult
+Automatic	  Wrapper	  Construction	  (5	  
+of	  12)
+25 	  
+	  When	  comparing	  web	  pages	  and	  generalizing	  the	  regular	  
+expression,	  we	  change	  it	  based	  on	  the	  differences:	  
+-­‐String	  mismatch(easy)	  “Vincent”	  vs	  “Kevin”	  
+-­‐Tag	  mismatch(hard)	  2	  tags	  vs	  1	  tag	  then	  a	  string	  
+	  
+Automatic  Wrapper  Construction  (6  
+of  12)
+26 	  
+Example of tag and string mismatch 
+ 
+Reminder: “+” is for iterator and “?” means 
+optional. 
+ 
+In this example the tag mismatch <UL> vs <IMG> 
+made an optional entry in the REGEX.  
+Then on line 19 the </UL> vs <LI> was caused by 
+an iterator.   
+	  
+Handling	  Tag	  Mismatch
+• Due	  to	  either	  an	  iterator	  or	  an	  optional
+– <UL>	  vs.	  <IMG	  src=…/>	  is	  due	  to	  an	  optional
+– </UL>	  on	  line	  19	  of	  p1 vs.	  <LI>	  on	  line	  20	  of	  p2 is	  due	  to	  an	  
+iterator
+• When	  tag	  mismatch	  happens
+– Try	  to	  find	  if	  it	  is	  due	  to	  an	  iterator
+– If	  yes,	  generalize	  to	  incorporate	  iterator
+– Otherwise,	  generalize	  to	  incorporate	  optional
+– Reason	  why	  looking	  for	  iterator	  first?
+Automatic	  Wrapper	  Construction	  (7	  
+of	  12)
+27 	  
+We	  want	  to	  look	  for	  the	  iterator	  first	  because	  the	  tags	  that	  
+we	  end	  up	  matching	  may	  be	  two	  iterators.	  So	  we	  first	  want	  
+to	  find	  the	  iterators	  that	  belong	  to	  the	  web	  page	  first	  before	  
+comparing.	  	  
+Handling	  Tag	  Mismatch
+• Generalize	  to	  incorporate	  an	  optional
+• Detect	  which	  page	  includes	  the	  optional
+– E.g.,	  <IMG	  src=…/>	  is	  optional
+• Generalize	  accordingly
+– E.g.,	  introducing	  a	  REGEX	  of	  (<IMG	  src=…/>)?
+• Generalize	  to	  incorporate	  an	  iterator
+• An	  iterator	  repeats	  a	  pattern,	  which	  we	  call	  a	  square
+– E.g.,	  each	  book	  description	  is	  a	  square
+• Find	  the	  squares,	  then	  locate	  the	  list,	  finally	  generalize
+– E.g.,	  (<LI><I>Title:</I>#PCDATA</LI>)+
+Automatic	  Wrapper	  Construction	  (8	  
+of	  12)
+28 	  
+	  
+More	  Complex	  Examples	  on	  Handling	  
+Tag	  Mismatch
+• Resolving	  an	  iterator	  mismatch	  often	  involves	  
+recursion
+– While	  resolving	  an	  external	  mismatch	  (in	  outer	  
+iterator),	  may	  run	  into	  an	  internal	  mismatch	  (inner	  
+iterator)
+– Must	  revolve	  the	  iterator	  mismatch	  from	  inside	  
+out,	  recursively
+Automatic	  Wrapper	  Construction	  (9	  
+of	  12)
+29 	  
+Comparing	  two	  pages	  and	  their	  iterators:	  
+Must	  use	  forward	  recursion	  to	  solve	  the	  iterator	  mismatch.	  	  
+	  
+Automatic  Wrapper  Construction  (10  
+of  12)
+30 	  
+In	  this	  example	  there	  is	  an	  external	  mismatch,	  but	  before	  
+resolving	  the	  external	  mismatch	  we	  should	  generalize	  the	  
+internal	  mismatch	  first.	  	  
+Summary	  of	  RoadRunner
+• To	  generalize	  extraction	  program	  to	  match	  a	  page	  
+p
+– Must	  detect	  and	  resolve	  all	  the	  external	  mismatches
+– For	  each	  mismatch,	  must	  detect	  if	  it	  is	  a	  string	  
+mismatch,	  iterator	  mismatch,	  or	  optional	  mismatch
+– For	  an	  iterator	  or	  optional	  mismatch,	  there	  are	  often	  
+many	  square	  candidates	  and	  optional	  candidates	  to	  
+consider,	  which	  may	  need	  backtracking
+– For	  an	  iterator	  mismatch,	  may	  need	  to	  resolve	  internal	  
+mismatches
+Automatic	  Wrapper	  Construction	  (11	  
+of	  12)
+31 	  
+	  
+Summary
+• Extracting	  information	  from	  structured	  Web	  data
+• Different	  methods	  in	  this	  category
+– Manual	  wrapper	  construction
+• REGEX
+– Learning-­‐based	  wrapper	  construction
+• HLRT	  
+– Automatic	  wrapper	  construction
+• RoadRunner
+Automatic	  Wrapper	  Construction	  (12	  
+of	  12)
+32 	  
+Quick Summary(Again):  
+Learn how to extract information from 
+Structured/Semistructred sources(like webpages). 
+ 
+Wrapper: A target schema and an extraction 
+program. 
+Target Schema: This is not necessarily the same 
+as the source schema but it contains the names of 
+attributes that we care about 
+ 
+	   Extraction Program: The program that parses a 
+web page to retrieve information for the attributes 
+for the target schema.  
+3 mentioned methods to make wrappers:  
+Manual Solution-Give target schema, write own 
+extraction program(REGEX) 
+ 
+Learning Based Solution-Give target schema, 
+automatically generate extraction program.(HLRT) 
+ 
+Automatic Solution- Automatically generate target 
+schema and extraction program(ROAD RUNNER)	  
+	  

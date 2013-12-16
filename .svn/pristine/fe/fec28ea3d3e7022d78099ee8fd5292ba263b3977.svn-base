@@ -1,0 +1,263 @@
+Kevin C. Chang
+Semi‐structured Data 1:
+Representation
+Database Systems
+• Semi‐structured data
+• XML
+• SOAP
+• JSON
+Concepts You Will Learn
+Semi‐structured Data 1:
+Representation (1 of 26)Default Section (1 of 1)
+Why Do We Learn This?
+Semi‐structured Data 1:
+Representation (2 of 26)Why Do We Learn This? (0 of 0)
+Why Semi‐structured Data?
+Semi‐structured Data 1:
+Representation (3 of 26)Why Semi‐structured Data? (0 of 5)
+• Fixed Schema in Relational Model.
+•Example: Schema (“Title”, “Year”, “Budget”) for Movie Database.
+•Pros: Efficient Implementations.
+•Cons: Inflexible.
+• Schema might change over time,
+e.g., new attribute “Is3DMovie.”
+Pros and Cons: Having Schema in Relational 
+Model
+Why Semi‐structured Data? (1 of 5) Semi‐structured Data 1:Representation (4 of 26)
+• Self‐Scribing: 
+• Data carries information about what schema is
+• Flexibility:
+• Schema can vary arbitrarily.
+Nature of Semi‐Structure Data.
+Why Semi‐structured Data? (2 of 5) Semi‐structured Data 1:Representation (5 of 26)
+Examples: A Movie Database
+Relational Model Semi‐Structure Data
+1. Define a Schema
+(Title, Release Year)
+2. Data Representation
+Mission Impossible 4 2011
+Avatar 2009
+The Hangover Part III 2013
+Data Representation (XML)
+<Movie>
+<Title>  Mission: Impossible  4 </Title>
+<Year> 2011 </Year>
+</Movie>
+<Movie>
+<Title>  Avatar </Title>
+<Year> 2009 </Year>
+<Is3D> YES </Is3D>
+</Movie>
+<Movie>
+<Title>  The Hangover Part III </Title>
+<Year> 2013 </Year>
+</Movie>
+Why Semi‐structured Data? (3 of 5) Semi‐structured Data 1:Representation (6 of 26)
+Application 1: Data Exchange
+Database 1 Database 2
+Different Schemas
+Semi‐Structure 
+Data Interface
+Why Semi‐structured Data? (4 of 5) Semi‐structured Data 1:Representation (7 of 26)
+Application 2: Information Integration
+Interface
+Legacy 
+Database
+Legacy 
+Database
+Other Applications Other Applications
+Different Schemas
+Users
+Semi‐Structure 
+Data Interface
+Why Semi‐structured Data? (5 of 5) Semi‐structured Data 1:Representation (8 of 26)
+XML: Extensible Markup 
+Language
+Semi‐structured Data 1:
+Representation (9 of 26)XML: Extensible Markup Language (0 of 8)
+• Tow different modes for XML:
+•Well‐formed XML (Without Schema): 
+Corresponds to semi‐structured data.
+•Valid XML (With Schema): 
+Intermediate between strict‐schema 
+models (e.g. relational model) and the 
+semi‐structured data.
+XML: Extensible Markup Language
+XML: Extensible Markup Language (1 of 8) Semi‐structured Data 1:Representation (10 of 26)
+• Example
+Well‐formed XML: Example
+<? Xml version = “1.0” encoding = “utf‐8” ?>
+<StarMovieData>
+<Star starID = “tc” starredIn = “mi4”>
+<Name> Tom Cruise </Name>
+<Age> 51 </Age>
+</Star>
+<Movie movieID = “mi4” starsOf = “tc”>
+<Title>  Mission: Impossible  ‐
+Ghost Protocol </Title>
+<Year> 2011 </Year>
+</Movie>
+</StarMovieData>XML: Extensible Markup Language (2 of 8) Semi‐structured Data 1:Representation (11 of 26)
+• Example
+Well‐formed XML: Semantic Tags
+<? Xml version = “1.0” encoding = “utf‐8” ?>
+<StarMovieData>
+<Star starID = “tc” starredIn = “mi4”>
+<Name> Tom Cruise </Name>
+<Age> 51 </Age>
+</Star>
+<Movie movieID = “mi4” starsOf = “tc”>
+<Title>  Mission: Impossible  ‐
+Ghost Protocol </Title>
+<Year> 2011 </Year>
+</Movie>
+</StarMovieData>
+Semantic 
+Tag
+XML: Extensible Markup Language (3 of 8) Semi‐structured Data 1:Representation (12 of 26)
+• Example
+Well‐formed XML: Elements
+<? Xml version = “1.0” encoding = “utf‐8” ?>
+<StarMovieData>
+<Star starID = “tc” starredIn = “mi4”>
+<Name> Tom Cruise </Name>
+<Age> 51 </Age>
+</Star>
+<Movie movieID = “mi4” starsOf = “tc”>
+<Title>  Mission: Impossible  ‐
+Ghost Protocol </Title>
+<Year> 2011 </Year>
+</Movie>
+</StarMovieData>
+Element
+XML: Extensible Markup Language (4 of 8) Semi‐structured Data 1:Representation (13 of 26)
+• Example
+Well‐formed XML: Attributes
+<? Xml version = “1.0” encoding = “utf‐8” ?>
+<StarMovieData>
+<Star starID = “tc” starredIn = “mi4”>
+<Name> Tom Cruise </Name>
+<Age> 51 </Age>
+</Star>
+<Movie movieID = “mi4” starsOf = “tc”>
+<Title>  Mission: Impossible  ‐
+Ghost Protocol </Title>
+<Year> 2011 </Year>
+</Movie>
+</StarMovieData>
+Attribute
+XML: Extensible Markup Language (5 of 8) Semi‐structured Data 1:Representation (14 of 26)
+• Example
+Well‐fomred XML: Attributes that connect 
+elements
+<? Xml version = “1.0” encoding = “utf‐8” ?>
+<StarMovieData>
+<Star starID = “tc” starredIn = “mi4”>
+<Name> Tom Cruise </Name>
+<Age> 51 </Age>
+</Star>
+<Movie movieID = “mi4” starsOf = “tc”>
+<Title>  Mission: Impossible  ‐
+Ghost Protocol </Title>
+<Year> 2011 </Year>
+</Movie>
+</StarMovieData>XML: Extensible Markup Language (6 of 8) Semi‐structured Data 1:Representation (15 of 26)
+• For a computer to process XML automatically, it is helpful to provide 
+a schema.
+• Define Schema using DTD (Document Type Definition)
+Valid XML: Define Schema by DTD
+XML: Extensible Markup Language (7 of 8) Semi‐structured Data 1:Representation (16 of 26)
+• Example
+Valid XML: Example
+<? Xml version = “1.0” encoding = “utf‐8” ?>
+<!DOCTYPE root‐tag [
+<!Element StarMovieData (Star*, Movie*)>
+<!Element Star(Name, Age)>
+<!Element Name(#PCDATA)>
+<!Element Age(#PCDATA)>
+…
+]>
+<StarMovieData>
+…
+</StarMovieData>
+Element 
+Definition
+Parsed 
+Character 
+Data
+XML: Extensible Markup Language (8 of 8) Semi‐structured Data 1:Representation (17 of 26)
+SOAP: Simple Object Access 
+Protocol
+Semi‐structured Data 1:
+Representation (18 of 26)SOAP: Simple Object Access Protocol (0 of 4)
+• SOAP: A standard messaging protocol used by Web services.
+SOAP: Simple Object Access Protocol
+SOAP: Simple Object Access Protocol (1 of 4) Semi‐structured Data 1:Representation (19 of 26)
+XML‐based SOAP Message
+EnvelopeHeader
+<?xml version='1.0' ?>
+<env:Envelope
+xmlns:env="http://www.w3.org/2002/06/soap‐
+envelope" >
+<env:Header>
+…
+</env:Header>
+<env:Body>
+…
+</env:Body>
+</env:Envelope>
+Body
+SOAP: Simple Object Access Protocol (2 of 4) Semi‐structured Data 1:Representation (20 of 26)
+SOAP Message: Header
+<env:Header>
+<t:transactionID
+xmlns:t="http://intermediary.example.co
+m/procurement"
+env:mustUnderstand="true" >
+57539
+</t:transactionID>
+</env:Header>
+The optional SOAP Header element contains application‐
+specific information (e.g., authentication, payment)
+SOAP: Simple Object Access Protocol (3 of 4) Semi‐structured Data 1:Representation (21 of 26)
+• The required SOAP Body element contains the actual SOAP message 
+intended for the ultimate endpoint of the message.
+SOAP Message: Body
+<env:Body>
+<m:productItem>
+<name>ACME Softener</name>
+</m:productItem>
+<m:quantity>
+35
+</m:quantity>
+</env:Body>
+SOAP: Simple Object Access Protocol (4 of 4) Semi‐structured Data 1:Representation (22 of 26)
+JSON: JavaScript Object 
+Notation
+Semi‐structured Data 1:
+Representation (23 of 26)JSON: JavaScript Object Notation (0 of 3)
+• JSON is syntax for storing and exchanging text information.
+• JSON is much like XML, but smaller, faster and easier to parse.
+JSON: JavaScript Object Notation
+JSON: JavaScript Object Notation (1 of 3) Semi‐structured Data 1:Representation (24 of 26)
+Example of JSON
+{ 
+"firstName": "John", 
+"lastName": "Smith", 
+"age": 25, 
+"address": { 
+"streetAddress": "21 2nd Street", 
+"city": "New York", 
+"state": "NY", 
+"postalCode": 10021 
+} 
+}
+JSON 
+Object
+JSON Name‐
+Value Pairs
+JSON: JavaScript Object Notation (2 of 3) Semi‐structured Data 1:Representation (25 of 26)
+• Demo. http://www.w3schools.com/json/json_intro.asp
+One Application of JSON: 
+Data Structure in Java Script.
+JSON: JavaScript Object Notation (3 of 3) Semi‐structured Data 1:Representation (26 of 26)

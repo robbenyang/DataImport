@@ -1,0 +1,662 @@
+1 
+All	  Together:	  
+	  Instruc1on	  Memory	  +	  Arithme1c	  Unit	  	  
+	  
+2 
+Today’s	  lecture	  
+  Instruc1ons	  
+  Instruc)on	  Memory	  
+  Program	  Counter	  (PC)	  
+  Adder	  
+  Pu<ng	  all	  together	  
+  Arithme)c	  unit	  to	  work	  
+3 
+Friday’s lecture 
+  Register-to-register arithmetic instructions use the R-type format. 
+ 
+  Instructions with immediates all use the I-type format. 
+ 
+         ori  $7, $2, 0x00ff 
+ 
+op rs rt rd shamt func 
+6 bits 5 bits 5 bits 5 bits 5 bits 6 bits 
+op rs rt address 
+6 bits 5 bits 5 bits 16 bits 
+add $5, $10, $4 
+4 
+Where are the instructions my program executes?  
+myprogram.c!
+a.out!
+gcc myprogram.c!
+  To look at the assembly code 
+of a.out: 
+	  
+$ objdump –d a.out!
+ 
+  The instructions executed by 
+the program are in the .text 
+section: 
+.text!
+main:!
+  addi $1, $0, 5!
+  !
+void main() {!
+  int a = 0;!
+  int b = a+5;!
+}!
+!
+5 
+Where are the instructions my program executes?  
+  Address        Data 
+0x00000000  
+0x00000001  
+0x00000002  
+0x00000003  
+0x00000004  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+.  
+0xFFFFFFFD  
+0xFFFFFFFE  
+0xFFFFFFFF  
+ 
+  The program is stored in Memory  
+  Assume our program is stored in  
+a Read Only Memory (ROM) 
+  We can read its contents, but cannot 
+modify them 
+  A 32-bit address serves as an array index 
+  # addresses: 232 = 4 G 
+  Each address contains 1 byte:  
+4Gbytes 
+  MIPS memory is byte-addressable, so a  
+32-bit instruction actually occupies four  
+contiguous locations (bytes) of memory 
+	   1	  byte	  
+6 
+6 
+Memory alignment 
+  MIPS instructions start at an address that is divisible by 4. 
+  0, 4, 8 and 12 are valid instruction addresses. 
+  1, 2, 3, 5, 6, 7, 9, 10 and 11 are not valid instruction 
+addresses. 
+ 
+ 0   1   2   3  4    5    6    7    8    9    10  11 
+Instruction 1 Instruction 2 Instruction 3 
+Address 
+8-bit data 
+7 
+How do we know which instruction to execute? 
+  We have a register called Program Counter (PC) that contains 
+the address of the next instruction to execute 
+0x0	  
+0x4	  
+0x8	  
+0xC	  
+Instruc1on	  	  
+Memory	  
+data[31:0]	  
+D31
+reset
+enable
+...
+D1
+D0
+Program Counter (PC)
+addr[31:0]
+clk
+enable
+reset
+D2
+Program	  
+Counter	  (PC)	  
+Q31"
+Q2"
+Q1"
+Q0"
+…"
+8 
+What do you get if you connect a register to an adder? 
+ 
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+A[3:0]
+out
+[3:0]
+B[3:0]
+Adder
+0
+0
+0
+1
+9 
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+A[3:0]
+out
+[3:0]
+B[3:0]
+Adder
+0
+0
+0
+1
+0
+1
+0
+1
+Time
+0
+1
+0
+1
+Q[3:0]
+D[3:0]
+clk
+reset
+PC	  nextPC	  
+PC	  
+nextPC	  
+1	  
+clk	  
+reset	  
+10 
+Implementing	  counters 
+QD
+reseten
+QD
+reseten
+QD
+reseten
+QD
+reseten
+reset
+clk
+enable
+Half 
+Adder
+A B
+SumCout
+Half 
+Adder
+A B
+SumCout
+Half 
+Adder
+A B
+SumCout
+Half 
+Adder
+A B
+SumCout
+1
+Q3 Q2 Q1 Q0
+D3 D2 D1 D0
+Q3 Q2 Q1 Q0
+11 
+Instruction Memory + PC + Adder 
+Q31D31
+reset
+enable
+......
+Q1
+D1
+Q0
+D0
+Program Counter (PC)
+data[31:0]addr[31:0]
+Instruction 
+Memory
+... ......
+...0
+0
+01 clk
+enable
+reset
+Q2D2
+Adder
+addr[31:0]
+nextaddr
+[31:0]
+12 
+Redrawn	  
+2 (Add)
+32
+reset
+enable
+Q[31:0]
+D[31:0]
+PC Register
+data[31:0]
+addr[29:0]
+Instruction
+Memory
+4
+PC[31:0]
+ALU1
+nextPC[31:0]
+PC
+[3
+1:
+2]
+32
+30
+32
+3
+13 
+Redrawn	  
+2 (Add)
+32
+reset
+enable
+Q[31:0]
+D[31:0]
+PC Register
+data[31:0]
+addr[29:0]
+Instruction
+Memory
+4
+PC[31:0]
+ALU1
+nextPC[31:0]
+PC
+[3
+1:
+2]
+32
+30
+32
+3
+Why	  aren’t	  2	  LSBs	  provided?	  
+a)  Bug	  in	  the	  slide	  
+b)  Memory	  is	  only	  230	  big	  
+c)  Bits	  [1:0]	  are	  always	  2’b00	  
+d)  Velociraptors	  ate	  them	  
+14 
+Putting all together 
+2 (Add)
+32
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+reset
+enable
+Q[31:0]
+D[31:0]
+PC Register
+Sign 
+Extender
+out[31:0]
+in[15:0]
+data[31:0]
+addr[29:0]
+Instruction
+Memory
+4
+inst[31:0]
+PC[31:0]
+ALU1
+nextPC[31:0]
+0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+PC
+[31
+:2]
+Rt
+Rd
+imm16
+imm32
+32
+30
+32
+3
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+3
+imm_val	  
+imm_val	  
+imm_val	  
+15 
+Example	  
+My	  program	  	  
+$3	  =	  10	  
+$5	  =	  -­‐7	  
+$7	  =	  $3	  +	  $5	  
+	  
+Assembly	  	  
+16 
+Example	  
+My	  program	  	  
+$3	  =	  10	  
+$5	  =	  -­‐7	  
+$7	  =	  $3	  +	  $5	  
+	  
+Assembly	  	  
+addi	  $3,	  $0,	  0x000A	  
+subi	  $5,	  $0,	  0x0007	  
+add	  	  $7,	  $3,	  $5	  
+	  
+addi	  $3,	  $0,	  0x000A	  
+addi	  $5,	  $0,	  0xFFF9	  
+add	  	  $7,	  $3,	  $5	  
+	  
+addi	  $3,	  $0,	  0x000A	  
+addi	  $5,	  $0,	  0xFFF8	  
+add	  	  $7,	  $3,	  $5	  
+	  
+add	  $3,	  $0,	  0x000A	  
+sub	  $5,	  $0,	  0x0007	  
+add	  	  $7,	  $3,	  $5	  
+	  
+Answer	  A	   Answer	  B	   Answer	  C	   Answer	  D	  
+17 
+Example	  
+My	  program	  	  
+$3	  =	  10	  
+$5	  =	  -­‐7	  
+$7	  =	  $3	  +	  $5	  
+	  
+Assembly	  	  
+addi	  $3,	  $0,	  0x000A	  
+addi	  $5,	  $0,	  0xFFF9	  
+add	  	  $7,	  $3,	  $5	  
+	  
+Machine	  code	  	  
+add   $7, $3, $5!
+addi  $3, $0, 0x000A!
+addi  $5, $0, 0xFFF9 !
+	  	  	  	  	  	  	  	  	  	  	  opcode	  	  	  	  funct	  
+add	  	  	  	  	  	  	  0x00	  	  	  	  	  	  	  	  	  0x20	  
+addi	  	  	  	  	  	  0x08	  	  	  	  	  	  	  	  	  	  
+op	   rs	   rt	   imm	  
+op	   rs	   rt	   imm	  
+op	   rs	   rt	   shamt	  rd	   func	  
+18 
+Q31D31
+reset
+enable
+......
+Q1
+D1
+Q0
+D0
+Program Counter (PC)
+data[31:0]addr[31:0]
+Instruction 
+Memory
+... ......
+...0
+0
+01 clk
+enable
+reset
+Q2D2
+Adder
+addr[31:0]
+nextaddr
+[31:0]
+Instruc1on	  	  
+Memory	  
+data[31:0]	  
+0x0	  
+0x4	  
+0x8	  
+0xC	  
+19 
+Pu<ng	  all	  together	  
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+Sign 
+Extender
+out[31:0]
+in[15:0]
+inst[31:0] 0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+Rt
+Rd
+imm16
+imm32
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+30	  
+15	  
+31	  
+26	  
+25	  
+21	  
+20	  
+16	  
+15	  
+01000	  
+00011	  
+0x000A	  
+op	  
+rs	  
+rt	  
+imm	  
+00000	  
+addi  $3, $0, 0x000A!
+imm_val	  
+imm_val	  
+imm_val	  
+20 
+Pu<ng	  all	  together	  
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+Sign 
+Extender
+out[31:0]
+in[15:0]
+inst[31:0] 0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+Rt
+Rd
+imm16
+imm32
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+3
+31	  
+	  	  	  0000000A	  
+	  	  	  FFFFFFFF9	  
+0	  
+26	  
+25	  
+21	  
+20	  
+16	  
+15	  
+00000	  
+00101	  
+op	  
+rs	  
+rt	  
+00011	  
+rd	  
+shamt	  
+func	   5	  
+10	  
+9	  
+6	  
+00111	  
+000010	  
+add   $7, $3, $5!
+imm_val	  
+imm_val	  
+imm_val	  

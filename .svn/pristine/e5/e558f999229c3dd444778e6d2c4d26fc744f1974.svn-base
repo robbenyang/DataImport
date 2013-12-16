@@ -1,0 +1,170 @@
+1 
+Building  an  ALU  (Part  2):  
+	  
+2 
+Why  NOR  is  more  general  than  NOT:  
+  We’ve  changed  the  ALU  design  to  include  NOR  over  NOT  
+  We  can  sBll  implement  NOT:  
+  NOT(X)	  is	  implemented	  by	  using	  NOR(X,	  Y)	  &	  se9ng	  Y=0	  
+NOR
+AND
+OR
+XOR
+X
+Y
+I0
+S1
+G
+S0
+I1
+I2
+I3
+Y
+R1
+R0
+x" NOT(x)"
+0" 1"
+1" 0"
+"
+x" y" NOR(x,y)"
+0" 0" 1"
+0" 1" 0"
+1" 0" 0"
+1" 1" 0"
+"
+"
+3 
+Today’s  lecture  
+  We’ll  finish  the  32-­‐bit  ALU  today!    
+  32-­‐bit	  ALU	  specificaEon	  
+  Complete  1-­‐bit  ALU  
+  Assembling  them  to  make  32-­‐bit  ALU  
+  Handling  flags:  
+  zero,	  negaEve,	  overflow	  	  
+4 
+Building  32-­‐bit  ALU  
+module alu32(out, overflow, zero, negative, !
+! !   A, B, control);!
+   output[31:0] out;!
+   output       overflow, zero, negative;!
+   input [31:0] A, B;!
+   input  [2:0] control;!
+Did  overflow  occur?  
+Is  the  output  equal  to  zero?  
+Is  the  output  negaBve?  
+A[31:0]
+control[2:0]
+out[31:0]
+B[31:0]
+ALU
+zero
+negative
+overflow control' out'='0' undefined'1' undefined'2' A''+'B'3' A''5'B'4' A'AND'B'5' A'OR'B'6' A'NOR'B'7' A'XOR'B'
+ 
+ 
+5 
+We  want  to  create  a  1-­‐bit  ALU  
+  Previously  we  showed  1-­‐bit  adder/subtractor,  1-­‐bit  logic  unit  
+  Time	  to	  put	  them	  together.	   control' outi'='0' undefined'1' undefined'2' Xi''+'Yi'3' Xi''5'Yi'4' Xi''AND'Yi'5' Xi'OR'Yi'6' Xi'NOR'Yi'7' Xi'XOR'Yi'
+ 
+ 
+module alu1(out, carryout, A, B, carryin, control);!
+   output      out, carryout;!
+   input       A, B, carryin;!
+   input [2:0] control;!
+A B control
+3
+carryincarryout
+out
+6 
+AddiBon  +  SubtracBon  in  one  circuit  
+  When  Sub  =  0,  Y  =  B  and  Cin  =  0.    Result  =  A  +  B  +  0  =  A  +  B.  
+  When  Sub  =  1,  Y  =  ~B  and  Cin  =  1.    Result  =  A  +  ~B  +  1  =  A  –  B.  
+  
+  Which  parts  belong  in  inside  the  1-­‐bit  ALU?  
+7 
+AddiBon  +  SubtracBon  in  one  circuit  
+  When  Sub  =  0,  Y  =  B  and  Cin  =  0.    Result  =  A  +  B  +  0  =  A  +  B.  
+  When  Sub  =  1,  Y  =  ~B  and  Cin  =  1.    Result  =  A  +  ~B  +  1  =  A  –  B.  
+  
+  What  should  we  do  with  the  full  adder’s  Cin  input?  
+8 
+AddiBon  +  SubtracBon  in  one  circuit  
+  When  Sub  =  0,  Y  =  B  and  Cin  =  0.    Result  =  A  +  B  +  0  =  A  +  B.  
+  When  Sub  =  1,  Y  =  ~B  and  Cin  =  1.    Result  =  A  +  ~B  +  1  =  A  –  B.  
+  
+  Where  will  the  “Sub”  signal  come  from?  
+9 
+Complete  1-­‐bit  Logic  Unit  
+NOR
+AND
+OR
+XOR
+X
+Y
+I0
+S1
+G
+S0
+I1
+I2
+I3
+Y
+R1
+R0
+  
+  What  should  the  control  inputs  (R0,  R1)  connect  to?  
+  How  do  we  select  between  the  adder  and  the  logic  unit?  
+  How  do  we  control  the  selecBon?  
+10 
+ConnecBng  1-­‐bit  ALUs  
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+11 
+Flags  (overflow,  zero,  negaBve)  
+  Let’s  do  negaBve  first;  negaBve  evaluates  to:  
+  1	  when	  the	  output	  is	  negaEve,	  and	  	  
+  0	  when	  the	  output	  is	  posiEve	  or	  zero	  
+  NegaBve  =    
+12 
+Flags  (overflow,  zero,  negaBve)  
+  zero  evaluates  to:  
+  1	  when	  the	  output	  is	  equal	  to	  zero,	  else	  0	  
+  Zero  =    
+13 
+Flags  (overflow,  zero,  negaBve)  
+  Overflow  evaluates  to:  
+  1	  when	  the	  overflow	  occurred,	  else	  0	  
+  adding	  two	  posiEve	  numbers	  yields	  a	  negaEve	  number	  
+  adding	  two	  negaEve	  numbers	  yields	  a	  posiEve	  number	  
+  Consider  the  adder  for  the  MSB:  
+  Overflow  =    
+!
+X! Y! Cin! Cout! S!
+0! 0! 0! 0! 0!
+0! 0! 1! 0! 1!
+0! 1! 0! 0! 1!
+0! 1! 1! 1! 0!
+1! 0! 0! 0! 1!
+1! 0! 1! 1! 0!
+1! 1! 0! 1! 0!
+1! 1! 1! 1! 1!
+!

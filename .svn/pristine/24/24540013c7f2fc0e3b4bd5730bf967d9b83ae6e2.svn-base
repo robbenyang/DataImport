@@ -1,0 +1,193 @@
+Kevin C. Chang
+ER Model
+1
+The New Contract on Lecture: Students 
+• Students:
+• Please attend class and participate.
+• Please sit in the front rows so we are together.
+• Please interact with instructor (signal, ask, answer).
+• Please do not fall asleep or …
+2
+The New Contract on Lecture: Instructor
+• Instructor:
+• Will be do my best to prepare.
+• Will respect each question.
+• Will not rush to cover all the materials.
+• Will make sure online students hear well.
+• Will not fall asleep or …
+3
+Why Do We Learn This?
+4
+5
+6
+7
+Steps in Building a DB Application
+• Suppose you are working on CS411 project
+• Step 0: pick an application domain
+• we will talk about this later
+• Step 1: conceptual design
+• discuss with your team mates what to model in the application domain
+• need a modeling language to express what you want
+• ER model is the most popular such language
+• output: an ER diagram of the app. domain
+8
+Steps in Building a DB Application
+• Step 2: pick a type of DBMS
+• relational DBMS is most popular and is our focus
+• Step 3: translate ER design to a relational schema
+• use a set of rules to translate from ER to rel. schema
+• use a set of schema refinement rules to transform the above rel. schema into 
+a good rel. schema
+• At this point
+• you have a good relational schema on paper
+• And then …
+9
+ER Model
+10
+ER Model
+• Gives us a language to specify
+• what information the db must hold
+• what are the relationships among components of that information
+• Proposed by Peter Chen in 1976
+• What we will cover
+• basic stuff
+• constraints
+• weak entity sets
+• design principles
+11
+12
+address name ssn
+Person
+buys
+makes
+employs
+Company
+Product
+name category
+stockprice
+name
+price
+ER Diagram
+Entities and Attributes
+• Entities
+• real‐world objects distinguishable from other objects
+• described using a set of attributes
+• Attributes
+• each has an atomic domain: string, integers, reals, etc.
+• Entity set: a collection of similar entities
+13
+Product
+name categoryprice
+Relationships
+• A mathematical definition:
+• if A, B are sets, then a relation R is a subset of A x B
+• A={1,2,3},   B={a,b,c,d},
+R = {(1,a), (1,c), (3,b)}
+makes is a subset of Product x Company:
+14
+1
+2
+3
+a
+b
+c
+d
+A=
+B=
+makes Company
+Product
+Multiplicity of E/R Relationships
+• one‐one:
+• many‐one
+• many‐many
+15
+1
+2
+3
+a
+b
+c
+d
+1
+2
+3
+a
+b
+c
+d
+1
+2
+3
+a
+b
+c
+d
+Multiway Relationships
+16
+How do we model a purchase relationship between buyers,
+products and stores?
+Purchase
+Product
+Person
+Store
+Can still model as a mathematical set (how ?)
+Arrows in Multiway Relationships
+Q: what does the arrow mean ?
+A:
+17
+Rental
+VideoStore
+Person
+Movie
+Invoice
+Arrows in Multiway Relationships
+Q: how do I say: “invoice determines store” ?
+A: no good way; best approximation:
+Q: Why is this incomplete ?
+18
+Rental
+VideoStore
+Person
+Movie
+Invoice
+Roles in Relationships
+19
+Purchase
+What if we need an entity set twice in one relationship?
+Product
+Person
+Store
+salesperson buyer
+Person
+Roles in Relationships
+20
+Purchase
+What if we need an entity set twice in one relationship?
+Product
+Person
+Store
+salesperson buyer
+Attributes on Relationships
+21
+Purchase
+Product
+Person
+Store
+date
+Q: Attributes vs. Entities on Relationships?
+22
+Purchase
+Product?
+Person
+Store
+Product?
+23
+Product
+name category
+price
+isa isa
+Educational ProductSoftware Product
+Age Groupplatforms
+Subclasses in ER Diagrams
+Warning: Viewers’ Discretion Please
+24

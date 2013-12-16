@@ -1,0 +1,133 @@
+Heap Memory Wrap-up 
+and Page Tables 
+CS 241 
+Sept. 13, 2013 
+ 
+Strategy Comparison 
+• Overhead: 
+– Dictionary: 
+– Metadata: 
+– Buddy System: 
+ 
+• Unusable Space (“Internal Fragmentation”): 
+– Dictionary: 
+– Metadata: 
+– Buddy System: 
+Strategy Comparison 
+• Find a “best fit” on malloc(): 
+– Dictionary: 
+– Metadata: 
+– Buddy System: 
+ 
+• Find p in data structure on free(p): 
+– Dictionary: 
+– Metadata: 
+– Buddy System: 
+MP2 
+Physical RAM 
+P
+1
+ V
+irtu
+al M
+e
+m
+o
+ry Sp
+ace
+ 
+… 
+Stack 
+Heap 
+Used 
+Used 
+Used 
+… 
+MMU 
+Virtual to Physical Address 
+• The OS divides every virtual and physical 
+address into pages, fixed sized regions of 
+memory. 
+– Common page size: 4 KB 
+ 
+• Every virtual memory address can be viewed 
+as two components: 
+– Page table index: where in the page table is our 
+data? 
+– Page table offset: where in the page is our data? 
+ 
+Virtual to Physical Address 
+• Assuming a page size of 4 KB, identify page 
+table index and offset of the following 
+addresses: 
+                      0x a94c3013 
+ 
+ 
+ 
+ 0b 1001010100011111010100011 
+ 
+ 
+ 
+Page Table 
+0x a94c3013 
+… 
+… 
+Page Size: 4 KB, Virtual Memory Address: 32-bit 
+[0xFFFFF] 
+[0x00000] 
+Page Table Entries (PTE) 
+• Every PTE consists of information to help 
+translate the virtual address into the physical 
+address. 
+ 
+ 
+ 
+Status Bits Physical Page Address 
+Page Table 
+0x a94c3013 
+… 
+… 
+Page Size: 4 KB, Virtual Memory Address: 32-bit 
+[0xa94c0] 
+[0xFFFFF] 
+[0x00000] 
+[0xa94c2] 
+[0xa94c4] 
+[0xa94c6] 
+[0xa94c8] 
+0x42 1 
+R 
+Status Bit #1 
+• Present (P) Bit: 
+– This bit denotes if the page is in physical memory 
+(RAM) or on disk. 
+ 
+– P=1: The page is in physical memory. 
+– P=0: The page in not in physical memory. 
+• If a page is not present in memory and needs to be 
+accessed, a page fault occurs. 
+Page Fault 
+• A page fault occurs when a page needs to be 
+brought from disk into physical memory. 
+ 
+• Several steps: 
+1. Look at the physical page address in the PTE.  
+This contains the location on disk of the data. 
+2. Find an empty page in physical memory. 
+• If there is no empty page in physical memory, we will 
+need to evict a page. 
+3. Load the data from disk into physical memory. 
+4. Update the PTE. 
+ 
+Page Eviction 
+Virtual Page #: 17 
+Virtual Page #: 33 
+Virtual Page #: 40 
+Virtual Page #: 17 
+Virtual Page #: 43 
+Virtual Page #: 8 
+Virtual Page #: 33 
+Virtual Page #: 99 
+Virtual Page #: 99 
+Virtual Page #: 17 
+Physical RAM 

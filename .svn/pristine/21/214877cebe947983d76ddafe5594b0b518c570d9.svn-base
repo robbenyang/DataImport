@@ -1,0 +1,170 @@
+1 High-Level Descriptions of Computation
+High-Level Descriptions of Computation
+• Instead of giving a Turing Machine, we shall often describe a program as code in some
+programming language (or often “pseudo-code”)
+– Possibly using high level data structures and subroutines
+• Inputs and outputs are complex objects, encoded as strings
+• Examples of objects:
+– Matrices, graphs, geometric shapes, images, videos, . . .
+– DFAs, NFAs, Turing Machines, Algorithms, other machines . . .
+Encoding Complex Objects
+• “Everything” finite can be encoded as a (finite) string of symbols from a finite alphabet (e.g.
+ASCII)
+– Can in turn be encoded in binary (as modern day computers do). No special unionsq symbol:
+use self-terminating representations
+Example 1. A “graph” can be encoded as 〈(1, 2, 3, 4)((1, 2)(2, 3)(3, 1)(1, 4))〉 where the graph is
+1
+2
+3
+4
+Notation
+For any object O, we will use 〈O〉 to denote its representation as a binary string.
+• Thus, if M is a DFA/PDA/TM then 〈M〉 is its encoding as a binary string.
+• If G is a graph then 〈G〉 is its representation as a string.
+• If O1, O2, . . . On are objects then 〈O1, . . . On〉 is the representation of these objects as a single
+string.
+Problems with Programs/Machines as Input
+• We will often consider problems where machines/programs are given as input.
+– Given an NFA, construct the equivalent DFA; given an NFA N and word w, decide if
+w ∈ L(N); . . .
+1
+• All of these algorithms can be implemented on a Turing machine
+• Some of these algorithms are for decision problems, while others are for computing more
+general functions
+Decision Problems and Languages
+Recall
+• Decision problems are problems that require a yes/no answer on a given input
+• They have an exact correspondence to languages: L is a representation of problem P if and
+only if an input x ∈ L iff answer for x is yes in problem P .
+2 Deciding vs. Recognizing
+Decidable and Recognizable Languages
+Recognizable Language
+A Turing machine M recognizes language L if L = L(M). We say L is Turing-recognizable (or
+simply recognizable) if there is a TM M such that L = L(M).
+Decidable Language
+A Turing machine M decides language L if L = L(M) and M halts on all inputs. We say L is
+decidable if there is a TM M that decides L.
+Decidable Problems
+The following problems are all decidable.
+• Problem: Given a DFA M and input w decide if M accepts w. We can write this formally
+as a language (using our notation) as Adfa = {〈M,w〉 |M is a DFA and w ∈ L(M)}.
+Algorithm: “Simulate” M on w and answer “yes” iff M reaches a final state.
+• Problem: Given a NFA M and input w decide if M accepts w. We can write this formally
+as a language (using our notation) as Anfa = {〈M,w〉 |M is an NFA and w ∈ L(M)}.
+Algorithm: Convert M into a DFA and run the algorithm for Adfa.
+• Problem: Arex = {〈R,w〉 |R is a regular expression and w ∈ L(R)}.
+Algorithm: Convert R into a NFA and run the algorithm for Anfa.
+2
+• Problem: Given a DFA M answer “yes” iff L(M) = ∅. Formally,
+Edfa = {〈M〉 |M is a DFA s.t. L(M) = ∅}
+Algorithm: Check if a final state is reachable from the start state by using a graph search
+algorithm like DFS/BFS.
+• Problem: Given DFA A and B, check if L(A) = L(B). In other words,
+EQdfa = {〈A,B〉 |A,B are DFAs s.t. L(A) = L(B)}.
+Algorithm: Construct (using cross-product construction) the DFA C recognizing (L(A) ∩
+L(B)) ∪ (L(A) ∩ L(B)) and check if L(C) = ∅.
+• Problem: Acfg = {〈G,w〉 |G is a CFG s.t. w ∈ L(G)}.
+Algorithm: Convert G to G′ in Chomsky normal form. Now w ∈ L(G′) iff w can be derived
+in 2|w| − 1 steps, where none of the intermediate strings is of length more than |w|. Go
+through all such derivations (which is finite) and check if they derive w.
+2.1 An Undecidable but Recognizable Language
+Decidable and Recognizable Languages
+• But not all languages are decidable! In the next class we will see an example:
+– Atm = {〈M,w〉 |M is a TM and w ∈ L(M)} is undecidable
+• However Atm is Turing-recognizable!
+Proposition 2. There are languages which are recognizable, but not decidable
+Recognizing Atm
+Program U for recognizing Atm:
+On input 〈M,w〉
+simulate M on w
+if simulated M accepts w, then accept
+else reject (by moving to qrej)
+U (the Universal TM) accepts 〈M,w〉 iff M accepts w. i.e.,
+L(U) = Atm
+But U does not decide Atm: If M rejects w by not halting, U rejects 〈M,w〉 by not halting.
+Indeed (as we shall see) no TM decides Atm.
+3
+2.2 Complementation
+Deciding vs. Recognizing
+Proposition 3. If L and L are recognizable, then L is decidable
+Proof. Program P for deciding L, given programs PL and PL for recognizing L and L:
+• On input x, simulate PL and PL on input x. Whether x ∈ L or x 6∈ L, one of PL and PL will
+halt in finite number of steps.
+• Which one to simulate first? Either could go on forever.
+• On input x, simulate in parallel PL and PL on input x until either PL or PL accepts
+• If PL accepts, accept x and halt. If PL accepts, reject x and halt.
+In more detail, P works as follows:
+On input x
+for i = 1, 2, 3, . . .
+simulate PL on input x for i steps
+simulate PL on input x for i steps
+if either simulation accepts, break
+if PL accepted, accept x (and halt)
+if PL accepted, reject x (and halt)
+(Alternately, maintain configurations of PL and PL, and in each iteration of the loop advance
+both their simulations by one step.)
+Deciding vs. Recognizing
+So far:
+• Atm is undecidable (next lecture)
+• But it is recognizable
+• Is every language recognizable? No!
+Proposition 4. Atm is unrecognizable
+Proof. If Atm is recognizable, since Atm is recognizable, the two languages will be decidable too!
+Note: Decidable languages are closed under complementation, but recognizable languages are
+not.
+4
+3 Recursive Enumeration
+3.1 Enumerators
+Enumerators
+write only output tape
+read/write work tape
+read/write work tape
+finite-state
+control
+• An enumerator is multi-tape Turing Machine, with a special output tape which is write-only
+– Write-only means (a) symbol on output tape does not affect transitions, and (b) tape
+head only moves right.
+• Intially all tapes blank (no input). During computation the machine adds symbols to the
+output tape. Output considered to be a list of words (separated by special symbol #)
+Recursively Enumerable Languages
+Definition 5. An enumerator M is said to enumerate a string w if and only if at some point M
+writes a word w on the output tape. E(M) = {w |M enumerates w}
+Note
+M need not enumerate strings in order. It is also possible that M lists some strings many times!
+Definition 6. L is recursively enumerable (r.e.) iff there is an enumerator M such that L = E(M).
+3.2 Equivalence of Enumerating and Recognizing a Language
+Recursively Enumerable Languages and TMs
+Theorem 7. L is recursively enumerable if and only if L is Turing-recognizable.
+Note
+Hence, when we say a language L is recursively enumerable (r.e.) then
+5
+• there is a TM that accepts L, and
+• there is an enumerator that enumerates L.
+Proof. Enumerator to Recognizer: Suppose L is enumerated by N . Need to construct M such
+that L(M) = E(N). M is the following TM
+On input w
+Run N. Every time N writes a word ‘x’
+compare x with w.
+If x = w then accept and halt
+else continue simulating N
+Clearly, if w ∈ L, M accepts w, and if w 6∈ L then M never halts.
+Flawed Solution to Construct an enumerator: Let M be such that L = L(M). Need to
+construct N such that E(N) = L(M). N is the following enumerator
+for w = , 0, 1, 00, 01, 10, 11, 000, . . . do
+simulate M on w
+if M accepts w then write the word ‘w’
+on output tape
+Does N enumerate L? No!! M may not halt on a string w 6∈ L, in which case N will not output
+any more strings! Therefore, one must simulate M on all inputs in parallel. But that means we
+need to have infinitely many parallel executions. How can this be accomplished?
+Correct Construction using Dovetailing: Let M be such that L = L(M). Need to con-
+struct N such that E(N) = L(M). N is the following enumerator
+for i = 1, 2, 3 . . . do
+let w1, w2, . . . wi be the first i strings (in
+lexicographic order)
+simulate M on w1 for i steps, then on w2 for i
+steps and ...simulate M on wi for i steps
+if M accepts wj within i steps then write wj
+(with separator) on output tape
+Observe that w ∈ L(M) iff N will enumerates w. N will enumerate strings many times!
+6

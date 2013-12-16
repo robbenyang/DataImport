@@ -1,0 +1,20 @@
+Week #3: Memory I 
+Exam Review Question  
+CS 241: Fall 2013 
+These questions are provided to you to help you study material covered in CS 241 that may appear on the 
+final exam.  These exact questions may or may not appear on the final exam, but the topics they cover will 
+almost certainly be on the final exam. 
+1. What does it mean to have a virtual address?  How does that differ from a physical address? 
+ 
+2. In lecture, several page eviction strategies were discussed.  Name three strategies, describe how 
+they work, one advantage, and disadvantage to each. 
+ 
+3. Each Page Table Entry (PTE) has several status bits.  In lecture, we focused on five of these bits.  
+Describe the purpose of the five bits discussed in lecture. 
+ 
+4. Three different heap allocation strategies were discussed in lecture: Dictionary, Metadata, and 
+Buddy System. 
+a. What strategy would you use if you were concerned only about speed?  Why? 
+b. What strategy would you use if you were concerned about total memory usage?  Why? 
+ 
+5. What does the sbrk() system call do? 

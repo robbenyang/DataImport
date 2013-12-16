@@ -1,0 +1,1339 @@
+CS411 – Indexing  
+Kevin C. Chang
+Indexing
+Database Systems
+ 
+General Idea and Definition 
+·Database indexing is a kind of data structure which 
+can be used to improve the speed of data retrieval and 
+search on relations. 
+·Creating indexing at the cost of additional writes and 
+the use of more space to store the extra copy of data.  
+·Indexes are used to quickly locate data without having 
+to search every row in a table.  
+·Indexes can be created using one or more columns of a 
+relation. 
+• Index– what is?
+• Clustered/unclustered indexes.
+• Dense/sparse indexes.
+• Primary/secondary indexes.
+• B+ trees
+• Search, insertion, deletion on B+ trees.
+• Hash tables 
+• Extensible hash tables
+• Search, insertion, deletion
+• Linear hash tables
+• Search, insertion, deletion
+Concepts You Will Learn
+Indexing (1 of 66)Default Section (1 of 2)  
+The Most Important Things You Should Know 
+·Three kinds of categories of Indexing. 
+·Besides sequential indexing, we have some more 
+effective indexing: B+ Tree and Hash Tables. 
+The Big Picture: Where We Are
+Indexing (2 of 66)
+Default Section (2 of 2)
+Query Executor
+Buffer Manager
+Storage Manager
+Tables, Indexes
+Query Optimizer
+Query Parser/Rewriter
+Access Manager
+Web/Mobile/Console Applications
+SQ
+L
+R
+el
+a
+ti
+o
+n
+a
+l 
+A
+lg
+eb
+ra
+B
++T
+re
+e
+H
+a
+sh
+ER
+Transaction
+Manager
+Concurrency 
+Control
+Logging/
+Recovery
+Relational NonRelational
+Information Extraction
+XML 
+Databases
+Map Reduce
+NoSQL 
+Databases
+Structured SemiStructured
+ 
+Some Key Points in This Diagram 
+·Query Optimizer: We may have many methods to do the 
+query, and optimizer chooses from different ways and pick 
+up the best/most efficient one.  
+· Access Manager: It uses index to get access to tables. 
+·NoSQL: A fast DBMS for large and complex data (see 
+lecture notes “NoSQLDatabase.pdf” for more details). 
+·Information Extraction: Information is at everywhere (web, 
+etc.) and we need to extract and put in in our tables. 
+·We need to deal with data not only in main memory but also 
+in disks, and we rely on index to deal with data on disks. 
+CS411 – Indexing  
+Why Do We Learn This?
+Indexing (3 of 66)Why Do We Learn This? (0 of 0)  
+Why? 
+Let me give you a simple example; if we want to take a 
+look at professor Kevin’s profile, we do not need to 
+remember and type its URL on address bar; instead we 
+just google it.   
+This means that we get access to data by “values”, and 
+without index it cannot happen. i.e. index help us move 
+from values to where it is. 
+Index: What, Why, and How?
+Indexing (4 of 66)Index: What, Why, and How? (0 of 14)  
+Additional Links 
+1. Introduction to database index 
+http://www.interspire.com/content/2006/02/15/introduction-to-
+database-indexes/ 
+2. What is database indexing? 
+http://stackoverflow.com/questions/15232403/what-is-a-
+database-index 
+3. How does database indexing works? 
+http://stackoverflow.com/questions/1108/how-does-database-
+indexing-work 
+4. Video tutorial on SQL Indexing 
+http://www.youtube.com/watch?v=7ZgG7ttJTSc 
+ 
+CS411 – Indexing  
+• To build an index.
+• But what is an index? 
+• Examples in the real world?
+Q: What is “indexing”? 
+Indexing (5 of 66)Index: What, Why, and How? (1 of 14)  
+What is database indexing? 
+http://en.wikipedia.org/wiki/Database_index 
+Examples in real world: 
+·When you are looking for food and you see 
+“McDonald’s Exit 151”. Here “McDonald’s” is value 
+and “Exit 151” is a pointer. 
+·In our best-selling textbook “Database Systems”, there 
+are two indexes: Table of Contents and Concept 
+Index. 
+What is “indexing”? 
+Indexing (6 of 66)Index: What, Why, and How? (2 of 14)  
+ 
+•An index on a file speeds up selections on the search key 
+field(s) 
+•Search key = any subset of the fields of a relation
+• Search key is not the same as key (minimal set of fields that 
+uniquely identify a record in a relation).
+•Entries in an index: (k, r), where:
+• k = the key
+• r = the record OR record id OR record ids
+Indexes
+Indexing (7 of 66)Index: What, Why, and How? (3 of 14)  
+·Main function: speed up selection. 
+·Search key (any field subset of a relation) !=  key (min 
+field set):  
+ 
+CS411 – Indexing  
+•Clustered/unclustered
+• Clustered = records sorted in the key order
+• Unclustered = no
+•Dense/sparse
+• Dense = each record has an entry in the index
+• Sparse = only some records have
+•Primary/secondary
+• Primary = on the primary key
+• Secondary = on any key
+• Some textbooks interpret these differently
+•B+ tree / Hash table / …
+Types of Indexes
+Indexing (8 of 66)Index: What, Why, and How? (4 of 14)  
+1. More definition on Clustered/Unclustered index 
+http://stackoverflow.com/questions/1251636/what-do-clustered-
+and-non-clustered-index-actually-mean 
+2. More definition on Dense/Sparse index 
+http://www.cs.sfu.ca/CourseCentral/354/zaiane/material/notes/C
+hapter11/node5.html 
+3. More definition on Primary/Secondary index 
+http://wiki.answers.com/Q/Difference_between_primary_index_
+and_secondary_index 
+ 
+ 
+• Clustered: File is sorted on the index attribute
+• Dense: sequence of (key,pointer) pairs
+Ex: Clustered, Dense Index
+Indexing (9 of 66)
+10
+20
+30
+40
+50
+60
+70
+80
+10
+20
+30
+40
+50
+60
+70
+80
+Index: What, Why, and How? (5 of 14)  
+Clustered-Dense Index 
+·Clustered = record is sorted on index attribute. 
+·Dense = every key presents in index. 
+·Suppose numbers in file is Age. “Age” is the sorted 
+index attribute and every age appears in index. 
+·Before the invention of B tree, people use sequential 
+search. 
+·This is a sequential index on a sequential file. 
+·We can hold index in main memory, and we can hold 
+data in disks. 
+·If we want to search age = 20, we search down through 
+the index and find 20; 
+·If we want to search age = 25, we pass by 20 and down 
+to 30 directly. We can conclude there is no 25 in the 
+file because this is a dense index and every age 
+should and will appear in index.   
+·If we want to search age between 20 and 40, we go 
+from 20 down to 30 and then reach 40. And that’s all 
+we need to search. We don’t need to jump back and 
+forth because it is clustered and everything is sorted. 
+ 
+CS411 – Indexing  
+• Sparse index: one key per data block
+Clustered, Sparse Index
+Indexing (10 of 66)
+10
+30
+50
+70
+90
+110
+130
+150
+10
+20
+30
+40
+50
+60
+70
+80
+Index: What, Why, and How? (6 of 14)  
+Clustered-Sparse Index 
+·Sparse = not all keys are in the index. Specifically, one 
+key per data block (disk page). 
+·Why sparse: we may not want to show every key in the 
+index, or we want to keep our index as small as 
+possible. 
+·If We want to search age = 20, we pass by 10 and 
+reach 30 directly without finding 20 in the index. But 
+we cannot conclude that 20 doesn’t exist, because not 
+all keys are in the index. We then move down from 
+10 in the file and could find 20. 
+·Index will be smaller and may be able to fit in main 
+memory. 
+ 
+How if duplicate keys?
+Indexing (11 of 66)Index: What, Why, and How? (7 of 14)  
+ 
+CS411 – Indexing  
+• Dense index: point to the first record with that key
+Clustered Index with Duplicate Keys
+Indexing (12 of 66)
+10
+20
+30
+40
+50
+60
+70
+80
+10
+10
+10
+20
+20
+20
+30
+40
+Index: What, Why, and How? (8 of 14)  
+Duplication in Clustered-Dense Index 
+·Still maintains Clustered and Dense characters. 
+·We may have many “10” and many “20”, the index 
+points to the first “10” and the first “20” in the file. 
+·The searching is the same as what we do in Clustered-
+Dense Index. 
+• Sparse index: pointer to lowest search key in each block:
+• OK? 
+Try search for 20
+Clustered Index with Duplicate Keys
+Indexing (13 of 66)
+10
+10
+20
+30
+10
+10
+10
+20
+20
+20
+30
+40
+Index: What, Why, and How? (9 of 14)  
+Duplication in Clustered-Sparse Index (1) 
+·In each disk block (disk page), there is a pointer 
+pointing to the lowest search key. 
+·In the first disk block, we have 10 and 10, so the lowest 
+search key is just 10. We have a pointer to 10. In the 
+second disk block, we have 10 and 20, so the lowest search 
+key is still 10 and we have a pointer to 10… 
+·If we want to search age = 20, we go down the index and 
+find 20, but there may be many “20”. If we want to pick up 
+all “age = 20”, we could search up and down in the file 
+from the first “20” we get. 
+·We may notice: There are two “10” in the index – 
+redundancy is bad! 
+• Better: pointer to lowest new search key in each block:
+• Search for 20
+Clustered Index with Duplicate Keys
+Indexing (14 of 66)
+10
+20
+30
+40
+50
+60
+70
+80
+10
+10
+10
+20
+30
+30
+40
+50
+Index: What, Why, and How? (10 of 14)
+ 
+Duplication in Clustered-Sparse Index (2) 
+·In each disk block (disk page), there is a pointer pointing to 
+the new lowest search key. 
+·In the first disk block, we have 10 and 10, so the lowest 
+search key is just 10. We have a pointer to 10. In the 
+second disk block, we have 10 and 20, but we have already 
+had a pointer to 10, so the new lowest should be 20. 
+ 
+CS411 – Indexing  
+• Often for indexing other attributes than primary key
+• Always dense (why ?)
+Unclustered Indexes
+Indexing (15 of 66)
+10
+10
+20
+20
+20
+30
+30
+30
+20
+30
+30
+20
+10
+20
+10
+30
+Index: What, Why, and How? (11 of 14)  
+Unclustered Index 
+·The index attribute (age) is not sorted. 
+·Unclustered index must be dense because we rely on 
+index to get access to every single data in the file. 
+This means all keys has to be shown in the index. 
+Otherwise we have no way to locate where the data is 
+and thus  have to jump back and forth to find it (that’s 
+not what we want). 
+·We could search age = 20 and will get three results 
+(every occurrence). And we may also want to search 
+age = 25 but we cannot find it in index, then we can 
+conclude that there is no age = 25 in the file. 
+ 
+Summary Clustered vs. Unclustered Index
+Indexing (16 of 66)
+Data entries
+(Index File)
+(Data file)
+Data Records
+Data entries
+Data Records
+CLUSTERED UNCLUSTERED
+Index: What, Why, and How? (12 of 14)  
+·Clustered index: 
+- looks neat and tidy 
+- not all data records need to be pointed to by index 
+·Unclustered index: 
+        - looks messy (but this doesn’t mean it is not good 
+or inefficient) 
+        - all data records has to be pointed by index (must 
+be dense) 
+Composite Search Keys
+• Composite Search Keys: Search 
+on a combination of fields.
+• Equality query: Every field 
+value is equal to a constant 
+value. E.g. wrt <sal,age> index:
+• age=20 and sal =75
+• Range query: Some field value 
+is not a constant. E.g.:
+• age =20; or age=20 and sal > 10
+Indexing (17 of 66)
+sue 13 75
+bob
+cal
+joe 12
+10
+20
+8011
+12
+name age sal
+<sal, age>
+<age, sal> <age>
+<sal>
+12,20
+12,10
+11,80
+13,75
+20,12
+10,12
+75,13
+80,11
+11
+12
+12
+13
+10
+20
+75
+80
+Data records
+sorted by name
+Data entries in index
+sorted by <sal,age>
+Data entries
+sorted by <sal>
+Examples of composite key
+indexes using lexicographic order.
+Index: What, Why, and How? (13 of 14)
+ 
+·We may need to search something rely on many fields, 
+and we need composite search key. 
+·Two types:  
+- Equality Query: usually indicated by “=”. 
+- Range Query: <, >, <=, >=, etc. 
+ 
+CS411 – Indexing  
+• How many indexes? Where?
+• What are keys? What are records?
+• Clustered?
+• Dense?
+• Primary?
+Q: Our textbook as example: Indexes? 
+Indexing (18 of 66)Index: What, Why, and How? (14 of 14)  
+As we said, we have two indexes in our test book. 
+                         Table of Contents          Concept Index 
+Key:                 Chapter/section No.             keywords 
+Pointer:                 page number                 page number 
+Clustered:                    Yes [1]                            No [2] 
+Dense:                           Yes [3]                            Yes [4] 
+Explanation: 
+[1] The book is sorted by chapter/section numbers, 
+namely by the key. So Table of Contents is clustered. 
+[2] The book is not sorted by keywords. A certain 
+keyword may appear many times in the book at different 
+place. So Concept Index is not clustered. 
+[3] Every chapter/section numbers (key) can be found in 
+the Table of Contents, so it is dense. 
+[4] Every keyword (key) can be found in the Concept 
+Index, so it is dense. 
+ 
+B+ Trees
+Indexing (19 of 66)B+ Trees (0 of 26)  
+Extra Recourses: 
+·B-Tree: http://en.wikipedia.org/wiki/B-tree 
+·B+ Tree: http://en.wikipedia.org/wiki/B%2B_tree 
+CS411 – Indexing  
+Kevin C. Chang
+B+ Trees
+Indexing (20 of 66)
+What’s wrong with sequential index?
+B+ Trees (1 of 26)  
+Drawback of Sequential Index 
+·Sequential index is too static, there is little dynamic 
+characters of a sequential index. 
+·If we want to insert/delete something in the middle of 
+an index, we have to change the position/address of 
+many other keys to create the updated index. 
+·If the storage of data is static and hard to maintain, it 
+will become useless. 
+ 
+B-Trees/B+Trees: B_ ?_ _? _ _ Trees
+• Intuition:
+• Give up on sequentiality of index
+• Try to get “balance” by dynamic reorganization
+• B+trees:
+• Textbook refers to B+trees (a popular variant) as B-trees (as most people do)
+• Distinction will be clear later (ok to confuse now)
+Indexing (21 of 66)B+ Trees (2 of 26)  
+·B here doesn’t mean “Binary”. It means “Balance”. 
+There may be many children extended from a parent 
+node, so it has no binary character. 
+Behind the Scene: 
+UIUC (Alumni) Contribution!
+Prof. Rudolf Bayer
+Rudolf Bayer studied Mathematics in Munich and at the University of Illinois, 
+where he received his Ph.D. in 1966. After working at Boeing Research Labs he 
+became an Associate Professor at Purdue University. He is a Professor of 
+Informatics at the Technische Universität München since 1972 and … …
+The 2001 SIGMOD Innovations Award goes to Prof. Rudolf Bayer of the Technical 
+University of Munich, for his invention of the B-Tree (with Edward M. 
+McCreight), of B-Tree prefix compression, and of lock coupling (a.k.a. crabbing) 
+for concurrent access to B-Trees (with Mario Schkolnick). All of these techniques 
+are widely used in commercial database products. ……
+The Original Publication
+Rudolf Bayer, Edward M. McCreight: Organization and Maintenance of 
+Large Ordered Indices. Acta Informatica 1: 173-189(1972)
+Indexing (22 of 66)B+ Trees (3 of 26)  
+ 
+CS411 – Indexing  
+Behind the Scene: And he said Hello!
+Indexing (23 of 66)B+ Trees (4 of 26)  
+ 
+• Parameter d = the degree
+• Each node has [d, 2d] keys (except root)
+• Internal node:
+• Leaf:
+B+ Trees Basics
+Indexing (24 of 66)
+30 120 240
+[X , 30) [30, 120) [120, 240) [240, Y)
+40 50 60
+40 50 60
+next leaf
+B+ Trees (5 of 26)  
+·Degree (d): How bid an index node is. This means how 
+many values you can have in a node. 
+·After defining the degree, we could have [degree, 
+2*degree] values in an index node (the root node may 
+not obey this rule).  
+·The number of pointer is always one more than the 
+number of values in that node (this rule apply for the 
+root). 
+B+ Tree Example
+Indexing (25 of 66)
+80
+20 60 100 120 140
+10 15 18 20 30 40 50 60 65 80 85 90
+10 15 18 20 30 40 50 60 65 80 85 90
+d = 2
+B+ Trees (6 of 26)  
+B+ Tree Example 
+·In this example, the root has only one value (two 
+pointers), and the second node in the third level (the 
+root is the first level) is “full”. 
+·Usually the first several levels can fit in main memory, and 
+the bottom level is in the disk. 
+CS411 – Indexing  
+• How large d ?
+• Example:
+• Key size = 4 bytes
+• Pointer size = 8 bytes
+• Block size = 4096 byes
+• 2d x 4  + (2d+1) x 8  <=  4096
+• d = 170
+B+ Tree Design
+Indexing (26 of 66)B+ Trees (7 of 26)  
+Calculate d 
+·One node on each data block (disk page). 
+·The total size of a node should be: 
+2d * key_size + (2d+1) * pointer_size 
+·In this example, d is at most 170. 
+• Exact key values:
+• Start at the root
+• Proceed down, to the leaf
+• Range queries:
+• As above
+• Then sequential traversal
+Searching a B+ Tree
+Indexing (27 of 66)
+Select name
+From people
+Where age = 25
+Select name
+From people
+Where 20 <= age
+and  age <= 30
+B+ Trees (8 of 26)  
+Start of Second Indexing Lecture 
+ Recall that sequential indices are bad because they are 
+not dynamic 
+ B+ trees are dynamic 
+ Also recall degree d: each block contains [d, 2d] nodes 
+ Root can contain less than d entries 
+ Search: start at root and make comparisons. Take 
+appropriate pointer to next block until reach leaf 
+ Ranges: search for lowest entry in range, then use 
+sequence pointers to access data until out of range 
+•Typical order: 100.  Typical fill-factor: 67%.
+• average fanout = 133
+•Typical capacities:
+• Height 4: 1334 = 312,900,700 records
+• Height 3: 1333 =     2,352,637 records
+•Can often hold top levels in buffer pool:
+• Level 1 =           1 page  =     8 Kbytes
+• Level 2 =      133 pages =     1 Mbyte
+• Level 3 = 17,689 pages = 133 MBytes       
+B+ Trees in Practice
+Indexing (28 of 66)B+ Trees (9 of 26)  
+ Order: degree(d) of tree(each node has [d, 2d] values) 
+ Fill-factor: percentage of tree that contains data 
+ average fanout = 2d * fill factor = 2*100*0.67 = 133 
+ Capacity: number of records in tree. If each node contains 
+an average of 133 values then at height h, the number of 
+records is 133h 
+ Assuming 1 page is 8Kb, then memory used is 8Kb*num. 
+records 
+CS411 – Indexing  
+Insert (K, P)
+• Find leaf where K belongs, insert
+• If no overflow (2d keys or less), halt
+• If overflow (2d+1 keys), split node, insert in parent:
+• If leaf, keep K3 too in right node
+• When root splits, new root has 1 key only 
+• that’s why root is special for degree satisfaction
+Insertion in a B+ Tree
+Indexing (29 of 66)
+K1 K2 K3 K4 K5
+P0 P1 P2 P3 P4 p5
+K1 K2
+P0 P1 P2
+K4 K5
+P3 P4 p5
+(K3,    ) to parent
+B+ Trees (10 of 26)  
+Insertion  
+ B+ tree must be kept balanced after insertion 
+ Dynamic: Insertion, Deletion, Upgrade 
+ Root can contain less entries than degree 
+ Find leaf where entry belongs: 
+o if leaf block w/ new entry has [d, 2d] entries, then do 
+nothing 
+o if overflow, then find middle node and move to 
+parent. Then, split old block into two new nodes with d 
+entries 
+o if root is full, middle node of root becomes new root 
+ B+TreeApplet:http://csilm.usu.edu/lms/nav/activity.jsp?si
+d=__shared&cid=usu@mills&lid=53 
+Insertion in a B+ Tree
+Indexing (30 of 66)
+80
+20 60 100 120 140
+10 15 18 20 30 40 50 60 65 80 85 90
+10 15 18 20 30 40 50 60 65 80 85 90
+Insert K=19
+B+ Trees (11 of 26)  
+ Insert 19 
+ First compare to root. 19<80 so go left 
+ 19<20 so go left again 
+ 19 fits into block [10,15,18] and does not cause overflow 
+ block becomes [10,15,18,19]. No splitting necessary 
+Insertion in a B+ Tree
+Indexing (31 of 66)
+80
+20 60 100 120 140
+10 15 18 19 20 30 40 50 60 65 80 85 90
+10 15 18 20 30 40 50 60 65 80 85 9019
+After insertion
+B+ Trees (12 of 26)  
+ Now there exists pointer to 19's data and a pointer to next 
+CS411 – Indexing  
+Insertion in a B+ Tree
+Indexing (32 of 66)
+80
+20 60 100 120 140
+10 15 18 19 20 30 40 50 60 65 80 85 90
+10 15 18 20 30 40 50 60 65 80 85 9019
+Now insert 25
+B+ Trees (13 of 26)  
+ 25<80 so go left. 20<25<60, so take pointer to block 
+[20,30,40,50] 
+ Leaf block, so block now becomes [20,25,30,40,50] 
+ 
+Insertion in a B+ Tree
+Indexing (33 of 66)
+80
+20 60 100 120 140
+10 15 18 19 20 25 30 40 50 60 65 80 85 90
+10 15 18 20 25 30 40 60 65 80 85 9019
+After insertion
+50
+B+ Trees (14 of 26)  
+ Add pointer to data from node 25 in leaf block 
+Insertion in a B+ Tree
+Indexing (34 of 66)
+80
+20 60 100 120 140
+10 15 18 19 20 25 30 40 50 60 65 80 85 90
+10 15 18 20 25 30 40 60 65 80 85 9019
+But now have to split !
+50
+B+ Trees (15 of 26)  
+ Since leaf block contains 2d+1 entries, we must split 
+ Find middle element -> 30 
+ Insert 30 into parent block and split old block into new 
+blocks [20,25] and [30,40,50] 
+CS411 – Indexing  
+Insertion in a B+ Tree
+Indexing (35 of 66)
+80
+20 30 60 100 120 140
+10 15 18 19 20 25 60 65 80 85 90
+10 15 18 20 25 30 40 60 65 80 85 9019
+After the split
+50
+30 40 50
+B+ Trees (16 of 26)  
+ Since 30 is between 20 and 60 in parent block, insert 30 
+in index 1 of parent block 
+ Add pointer in parent block to new child blocks 
+Deletion from a B+ Tree
+Indexing (36 of 66)
+80
+20 30 60 100 120 140
+10 15 18 19 20 25 60 65 80 85 90
+10 15 18 20 25 30 40 60 65 80 85 9019
+Delete 30
+50
+30 40 50
+B+ Trees (17 of 26)  
+Deletion  
+ For deletion to occur, data must exist in tree 
+ If deletion from leaf block leaves d or greater entries, 
+then no merging or rotating is necessary 
+ If deletion from leaf block results in less than d entries, 
+we try to rotate with siblings 
+ We can rotate with sibling if sibling contains more than d 
+entries 
+ If both siblings contain d entries, merge with sibling 
+ Here, we can delete 30 without splitting or merging 
+because leaf block contains d+1 nodes 
+Deletion from a B+ Tree
+Indexing (37 of 66)
+80
+20 30 60 100 120 140
+10 15 18 19 20 25 60 65 80 85 90
+10 15 18 20 25 40 60 65 80 85 9019
+After deleting 30
+50
+40 50
+May change to 
+40, or not
+B+ Trees (18 of 26)  
+ Not necessary to change pointer in parent to 40, although 
+this would be more efficient in long run 
+CS411 – Indexing  
+Deletion from a B+ Tree
+Indexing (38 of 66)
+80
+20 30 60 100 120 140
+10 15 18 19 20 25 60 65 80 85 90
+10 15 18 20 25 40 60 65 80 85 9019
+Now delete 25
+50
+40 50
+B+ Trees (19 of 26)  
+ To delete 25, we find that 25 is in leaf block [20,25] 
+ Now we remove data and node. This results in 1 entry in 
+a leaf block. Since 1<d, we must try to rotate 
+Deletion from a B+ Tree
+Indexing (39 of 66)
+80
+20 30 60 100 120 140
+10 15 18 19 20 60 65 80 85 90
+10 15 18 20 40 60 65 80 85 9019
+After deleting 25
+Need to rebalance
+Rotate
+50
+40 50
+B+ Trees (20 of 26)  
+ We need to rebalance because leaf block contains less 
+than minimum nodes 
+ First we check left sibling. If sibling contains >d entries, 
+then we can "steal" its greatest element 
+ Left sibling contains 2d entries, so we "steal" element 19 
+ Now the block becomes [19,20] and the pointer to 
+elements greater than 18 and less than 20 becomes the 
+leftmost pointer of new block 
+Deletion from a B+ Tree
+Indexing (40 of 66)
+80
+19 30 60 100 120 140
+10 15 18 19 20 60 65 80 85 90
+10 15 18 20 40 60 65 80 85 9019
+Now delete 40
+50
+40 50
+B+ Trees (21 of 26)  
+ We find 40 to be in leaf block containing d entries, so we 
+must try to rotate 
+ We cannot rotate because each adjacent sibling contains d 
+entries, thus we must merge 
+CS411 – Indexing  
+Deletion from a B+ Tree
+Indexing (41 of 66)
+80
+19 30 60 100 120 140
+10 15 18 19 20 60 65 80 85 90
+10 15 18 20 60 65 80 85 9019
+After deleting 40
+Rotation not possible
+Need to merge nodes
+50
+50
+B+ Trees (22 of 26)  
+ We will merge with left sibling to get new block 
+[19,26,50] 
+ Remove node in parent that is the maximum of old left 
+block and minimum of old right block 
+ If parent node had contained d nodes, then we would 
+have needed to rotate or merge with uncle (adjacent block 
+of parent) 
+Deletion from a B+ Tree
+Indexing (42 of 66)
+80
+19 60 100 120 140
+10 15 18 19 20 50 60 65 80 85 90
+10 15 18 20 60 65 80 85 9019
+Final tree
+50
+B+ Trees (23 of 26)  
+ Final tree after rebalancing 
+ B+ Trees and its algorithms: 
+http://en.wikipedia.org/wiki/B+_tree 
+• Idea:
+• Avoid duplicate keys
+• Have record pointers in non-leaf nodes
+•Note: Textbook’s B-Tree means B+-tree!
+Variation on B+tree: B-tree (no +)
+Indexing (43 of 66)B+ Trees (24 of 26)  
+ Differences between B-Tree and B+Tree 
+o B-Tree: Each key at any level points to disk 
+o B-Tree: Internal nodes contain more pointers 
+o B-Tree: Sequence pointers do not exist because not all 
+data is stored at the leaf level 
+ 
+CS411 – Indexing  
+to record to record to record
+with K1 with K2 with K3
+to keys to keys to keys to keys
+< K1 K1<x<K2 K2<x<k3 >k3
+Indexing (44 of 66)
+K1 P1 K2 P2 K3 P3
+B+ Trees (25 of 26)  
+ K1, K2, K3 point to disk data 
+ P1, P2, P3 point to child nodes 
+B-tree example n=2
+Indexing (45 of 66)
+6
+5
+1
+2
+5
+1
+4
+5
+1
+6
+5
+8
+5
+1
+0
+5
+2
+5
+4
+5
+1
+0
+2
+0
+3
+0
+4
+0
+1
+1
+0
+1
+2
+0
+9
+0
+1
+0
+0
+7
+0
+8
+0
+1
+7
+0
+1
+8
+0
+5
+0
+6
+0
+1
+3
+0
+1
+4
+0
+1
+5
+0
+1
+6
+0
+• Sequence pointers not useful now! 
+B+ Trees (26 of 26)  
+- Seq. ptrs not useful any more, since keys are not all in 
+the leaves 
+ 
+Question: Why balanced structure is good?  
+In term of space : 
+ Uniform utilization 
+ Predictable organization: know how the tree grow 
+In term of time : 
+ Predictable time : know how long to wait 
+Fast : logN where N = number of records 
+Hash Tables
+Indexing (46 of 66)Hash Tables (0 of 20)  
+ Basic knowledge of hash function 
+http://en.wikipedia.org/wiki/Hash_table 
+ 
+Concept: to store data and pointer in buckets and use 
+hash function to create index to map keys and values 
+ 
+ Why Balanced Trees are Good 
+o Space: uniform utilization, predictable organization 
+o Time: predictable (logarithmic), unbalanced are 
+linear in the worst case 
+ Another option is Hashtables 
+o Pros: very fast 
+o Cons: only support equality 
+o Good for joining, bad for selecting ranges 
+CS411 – Indexing  
+• Secondary storage hash tables are much like main memory ones
+• Recall basics:
+• There are n buckets
+• A hash function f(k) maps a key k to {0, 1, …, n-1}
+• Store in bucket f(k) a pointer to record with key k
+• Secondary storage: bucket = block, use overflow blocks when needed
+Hash Tables
+Indexing (47 of 66)Hash Tables (1 of 20)  
+ Buckets contain data or pointers to disk 
+ Hash functions map keys to a bucket 
+ Each key maps to only one bucket 
+ Secondary storage: if bucket fills, then last spot in entry 
+points to secondary block 
+• Assume 1 bucket (block) stores 2 keys + pointers
+• h(e)=0
+• h(b)=h(f)=1
+• h(g)=2
+• h(a)=h(c)=3
+Hash Table Example
+Indexing (48 of 66)
+e
+b
+f
+g
+a
+c
+0
+1
+2
+3
+Hash Tables (2 of 20)  
+ As you can see, different keys can map to the same 
+bucket 
+• Search for a:
+• Compute h(a)=3
+• Read bucket 3
+• 1 disk access
+Searching in a Hash Table
+Indexing (49 of 66)
+e
+b
+f
+g
+a
+c
+0
+1
+2
+3
+Hash Tables (3 of 20)  
+ To search for a, use hash function h(x) to find h(a) 
+ h(a) maps to bucket 3 
+ Only one disk read is needed compared to log(n) disk 
+reads for a b+ tree 
+CS411 – Indexing  
+• Place in right bucket, if space
+• E.g. h(d)=2
+Insertion in Hash Table
+Indexing (50 of 66)
+e
+b
+f
+g
+d
+a
+c
+0
+1
+2
+3
+Hash Tables (4 of 20)  
+ Calculate h(d) and place in bucket if bucket is not full 
+ Again, should be constant time with good hash function 
+• Create overflow block, if no space
+• E.g. h(k)=1
+• More over-
+flow blocks
+may be needed
+Insertion in Hash Table
+Indexing (51 of 66)
+e
+b
+f
+g
+d
+a
+c
+0
+1
+2
+3
+k
+Hash Tables (5 of 20)  
+ h(k) maps to bucket 1 which is full, so we need a pointer 
+to an overflow block 
+ There can be a lot of overflow blocks for a given bucket 
+• Excellent, if no overflow blocks
+• Degrades considerably when number of keys exceeds the number of 
+buckets (I.e. many overflow blocks).
+Hash Table Performance
+Indexing (52 of 66)Hash Tables (6 of 20)  
+ Should be constant time 
+ If number of entries approaches number of buckets, then 
+performance suffers. Can improve if number of buckets is 
+increased. 
+ To do hash tables to be dynamic  
+ Extensible Hash table 
+ Linear Hash table 
+CS411 – Indexing  
+• Allows hash table to grow, to avoid performance degradation
+• Assume a hash function h that returns numbers in {0, …, 2k – 1}
+• Start with n = 2i << 2k , only look at first i most significant bits
+Extensible Hash Table
+Indexing (53 of 66)Hash Tables (7 of 20)  
+ Extensible hash table is dynamic 
+ Suppose k=4, then hash function can return {0,15} or 
+{0000, 0001, 0010, 0100, 1000, 0011, 0101, 1001, 0110, 
+1010, 1100, 0111, 1011, 1101, 1110, 1111} 
+ Start with i=1 and 2 buckets 
+ When a bucket fills, increase i by 1 and increases buckets 
+to 2i 
+ Map key to first i most significant bits 
+• E.g. i=1, n=2, k=4
+• Note: we only look at the first bit (0 or 1)
+Extensible Hash Table
+Indexing (54 of 66)
+0(010)
+1(011)
+i=1 1
+1
+0
+1
+Hash Tables (8 of 20)  
+ We place 0010 in top bucket because MSB is 0 
+ We place 1011 in bottom bucket because MSB is 1 
+ Keep using first MSB until one of the buckets overflow 
+• Insert 1110
+Insertion in Extensible Hash Table
+Indexing (55 of 66)
+0(010)
+1(011)
+1(110)
+i=1 1
+1
+0
+1
+Hash Tables (9 of 20)  
+ We can insert 1110 into second bucket because MSB is 1 
+and bucket is not full 
+CS411 – Indexing  
+• Now insert 1010
+• Need to extend table, split blocks
+• i becomes 2
+Insertion in Extensible Hash Table
+Indexing (56 of 66)
+0(010)
+1(011)
+1(110), 1(010)
+i=1 1
+1
+0
+1
+Hash Tables (10 of 20)  
+ Cannot put 1010 in bucket 2 because it is full 
+ We must extend the table 
+ Increase i to 2 and increase buckets 
+• Now insert 1010 (cont.)
+Insertion in Extensible Hash Table
+Indexing (57 of 66)
+0(010)
+10(11)
+10(10)
+i=2 1
+2
+00
+01
+10
+11
+11(10) 2
+Hash Tables (11 of 20)  
+ Now we can use the 2 MSB bits when inserting keys that 
+start with 1 
+ Keys that start with 0 can still point to the original bucket 
+• Now insert 0000, then 0101
+• Need to split block
+Insertion in Extensible Hash Table
+Indexing (58 of 66)
+0(010)
+0(000), 0(101)
+10(11)
+10(10)
+i=2 1
+2
+00
+01
+10
+11
+11(10) 2
+Hash Tables (12 of 20)  
+ When inserting 0101, we must extend the first bucket to 
+now use 2 MSBs 
+CS411 – Indexing  
+• After splitting the block
+Insertion in Extensible Hash Table
+Indexing (59 of 66)
+00(10)
+00(00)
+10(11)
+10(10)
+i=2
+2
+2
+00
+01
+10
+11
+11(10) 2
+01(01) 2
+Hash Tables (13 of 20)  
+ Same insertion strategies as before 
+• No overflow blocks: access always one read
+• BUT:
+• Extensions can be costly and disruptive
+• After an extension table may no longer fit in memory
+Performance Extensible Hash Table
+Indexing (60 of 66)Hash Tables (14 of 20)  
+ Extensions are costly 
+ Extensions to a bucket will eventually lead to the table 
+not fitting into memory 
+• Idea: extend only one entry at a time
+• Problem: n= no longer a power of 2
+• Let i be #bits necessary to address n buckets.
+• 2i-1 < n <= 2i
+• After computing h(k), use last i bits:
+• If last i bits represent a number >= n, change msb from 1 to 0 (get a number 
+< n)
+Linear Hash Table
+Indexing (61 of 66)Hash Tables (15 of 20)  
+Linear Hash Table idea is similar to extensible hash table but 
+consider from right digit. It extends by one entry/time. That 
+means it grow slower than Extensible Hash Tables  
+CS411 – Indexing  
+• N=3
+Linear Hash Table Example
+Indexing (62 of 66)
+(01)00
+(11)00
+(10)10
+i=2
+00
+01
+10
+(01)11 BIT FLIP
+Hash Tables (16 of 20)  
+ 
+• Insert 1000: overflow blocks…
+Linear Hash Table Example
+Indexing (63 of 66)
+(01)00
+(11)00
+(10)10
+i=2
+00
+01
+10
+(01)11
+(10)00
+Hash Tables (17 of 20)  
+ 
+• Extension: independent on overflow blocks
+• Extend n:=n+1 when average number of records per block exceeds 
+(say) 80%
+Linear Hash Tables
+Indexing (64 of 66)Hash Tables (18 of 20)  
+ 
+CS411 – Indexing  
+•From n=3 to n=4
+•Only need to touch
+one block (which one ?)
+Linear Hash Table Extension
+Indexing (65 of 66)
+(01)00
+(11)00
+(10)10
+i=2
+00
+01
+10
+(01)11
+(01)11
+(01)11
+i=2
+00
+01
+10
+(10)10
+(01)00
+(11)00
+11
+Hash Tables (19 of 20)  
+ 
+• From n=3 to n=4 finished
+• Extension from n=4
+to n=5 (new bit)
+• Need to touch every
+single block (why ?)
+Linear Hash Table Extension
+Indexing (66 of 66)
+(01)11
+i=2
+00
+01
+10
+(10)10
+(01)00
+(11)00
+11
+Hash Tables (20 of 20)  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+CS411 – Indexing  
+Additional Sources: 
+B-Tree example: http://www.youtube.com/watch?v=coRJrcIYbF4 
+B+Tree Insertion: http://www.youtube.com/watch?v=_nY8yR6iqx4 
+Extensible Hashing:  http://www.youtube.com/watch?v=r4GkXtH1la8 
+Linear Hashing: http://cgi.di.uoa.gr/~ad/MDE515/e_ds_linearhashing.pdf 
+Pros & cons of hashing and B+Tree http://en.wikipedia.org/wiki/Database_storage_structures 
+ 
+ B+Tree Extensible Hash Tables Linear Hash Tables 
+Searching  Lookup from root and go 
+down to leaf 
+Using hash function Using hash function 
+Structure Tree  Array of buckets  Array of buckets 
+Insertion & how to deal 
+with overflow  
+Insert and split nodes  Insert by looking from the 
+left most digits and extend 
+the buckets by increase in 
+number of bits.   
+Insert by looking from the 
+right most 
+Deletion Delete, Merge or rotate Opposite process of 
+insertion 
+Opposite process of 
+insertion 
+Time  Predictable time, fast but 
+slower than Hash Tables  
+Faster than B+Tree Faster than B+Tree 
+advantages Can do range retrieval  
+Predictable time  
+Uniform utilization 
+Predictable organization 
+No overflow problem 
+Don’t need to search more 
+than one data block 
+Growing by one entry at a 
+time which is slower than 
+Extensible Hash Tables 
+disadvantages Need to start from root to 
+go leaf in searching. 
+Grow very fast, can’t fit in 
+memories when increase 
+bucket size. 
+Not support range query 
+Not support range query 
+ 
+ 
+ 

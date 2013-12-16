@@ -1,0 +1,89 @@
+1 Undecidability
+Undecidability
+Definition 1. A language L is undecidable if L is not decidable. Thus, there is no Turing machine
+M that halts on every input and L(M) = L.
+• This means that either L is not recursively enumerable. That is there is no turing machine
+M such that L(M) = L, or
+• L is recursively enumerable but not decidable. That is, any Turing machine M such that
+L(M) = L, M does not halt on some inputs.
+Big Picture
+Regular
+CFL L0n1n
+Decidable Lanbncn
+Recursively Enumerable
+Languages
+Figure 1: Relationship between classes of Languages
+1.1 Diagonalization
+The Diagonal Language
+Definition 2. Define Ld = {〈M〉 | 〈M〉 6∈ L(M)}. Thus, Ld is the collection of Turing machines
+(programs) M such that M does not halt and accept when given itself as input.
+A non-Recursively Enumerable Language
+Diagonalization: Cantor
+Proposition 3. Ld is not recursively enumerable.
+Proof. Recall that,
+1
+• Inputs are strings over {0, 1}
+• Every Turing Machine can be described by a binary string and every binary string can be
+viewed as Turing Machine
+• In what follows, we will denote the ith binary string (in lexicographic order) as the number
+i. Thus, we can say j ∈ L(i), which means that the Turing machine corresponding to ith
+binary string accepts the jth binary string.
+• We can organize all programs and inputs as a (infinite) matrix, where the (i, j)th entry is Y
+if and only if j ∈ L(i).
+Inputs −→
+1 2 3 4 5 6 7 · · ·
+TMs 1 N N N N N N N
+↓ 2 N N N N N N N
+3 Y N Y N Y Y Y
+4 N Y N Y Y N N
+5 N Y N Y Y N N
+6 N N Y N Y N Y
+• Suppose Ld is recognized by a Turing machine, which is the jth binary string. i.e., Ld = L(j).
+But j ∈ Ld iff j 6∈ L(j)!
+Acceptor for Ld?
+Consider the following program
+On input 〈M〉
+Run program M on 〈M〉
+Output ‘‘yes’’ if M does not accept 〈M〉
+Output ‘‘no’’ if M accepts 〈M〉
+The above program does not recognize Ld because it may never output “yes” if M does not
+halt on 〈M〉.
+Models for Decidable Languages
+Question
+Is there a machine model such that
+• all programs in the model halt on all inputs, and
+• for each problem decidable by a TM, there is a program in the model that decides it?
+2
+Answer
+There is no such model! Suppose there is a programming language in which all programs always
+halt. Programs in this language can be described by binary strings, and can be simulated by TMs.
+Consider the Turing Machine Md
+On input 〈M〉
+Run program M on 〈M〉
+Output ‘‘yes’’ if M does not accept 〈M〉
+Output ‘‘no’’ if M accepts 〈M〉
+Md always halts and solves a problem not solved by any program in our language! Inability to
+halt is essential to capture all computation.
+1.2 The Universal Language
+Recursively Enumerable but not Decidable
+• Ld not recursively enumerable, and therefore not decidable. Are there languages that are
+recursively enumerable but not decidable?
+• Yes, Atm = {〈M,w〉 |M is a TM and M accepts w}
+Proposition 4. Atm is r.e. but not decidable.
+Proof. We have already seen that Atm is r.e. Suppose (for contradiction) Atm is decidable. Then
+there is a TM M that always halts and L(M) = Atm. Consider a TM D as follows:
+On input 〈N〉
+Run M on input 〈N, 〈N〉〉
+Output ‘‘yes’’ if M rejects 〈N, 〈N〉〉
+Output ‘‘no’’ if M accepts 〈N, 〈N〉〉
+Observe that L(D) = Ld! But, Ld is not r.e. which gives us the contradiction.
+A more complete Big Picture
+3
+Regular
+CFL L0n1n
+Decidable Lanbncn
+Recursively Enumerable
+Languages
+Ld, Atm
+Atm
+4

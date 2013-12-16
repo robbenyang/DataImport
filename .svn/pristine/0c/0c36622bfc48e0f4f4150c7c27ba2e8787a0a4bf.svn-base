@@ -1,0 +1,266 @@
+9/24/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+9/24/13 2 
+Variants - Syntax (slightly simplified) 
+n  type name = C1 [of  ty1] | . . . | Cn [of tyn] 
+n  Introduce a type called name 
+n  (fun x -> Ci x) : ty1 -> name 
+n  Ci is called a constructor; if the optional type 
+argument is omitted, it is called a constant 
+n  Constructors are the basis of almost all 
+pattern matching 
+9/24/13 3 
+Enumeration Types as Variants 
+An enumeration type is a collection of distinct 
+values 
+ 
+ 
+ 
+ 
+In C and Ocaml they have an order structure; 
+order by order of input 
+9/24/13 4 
+Enumeration Types as Variants 
+# type weekday = Monday | Tuesday | Wednesday 
+   | Thursday | Friday | Saturday | Sunday;; 
+type weekday = 
+    Monday 
+  | Tuesday 
+  | Wednesday 
+  | Thursday 
+  | Friday 
+  | Saturday 
+  | Sunday 
+9/24/13 5 
+Functions over Enumerations 
+# let day_after day = match day with 
+      Monday -> Tuesday 
+  | Tuesday -> Wednesday 
+  | Wednesday -> Thursday 
+  | Thursday -> Friday 
+  | Friday -> Saturday 
+  | Saturday -> Sunday 
+  | Sunday -> Monday;; 
+ val day_after : weekday -> weekday = <fun> 
+9/24/13 6 
+Functions over Enumerations 
+# let rec days_later n day = 
+    match n with 0 -> day 
+    | _ -> if n > 0 
+          then day_after (days_later (n - 1) day) 
+         else days_later (n + 7) day;; 
+val days_later : int -> weekday -> weekday 
+= <fun> 
+9/24/13 7 
+Functions over Enumerations 
+# days_later 2 Tuesday;; 
+- : weekday = Thursday 
+# days_later (-1) Wednesday;; 
+- : weekday = Tuesday 
+# days_later (-4) Monday;; 
+- : weekday = Thursday 
+Problem: 
+# type weekday = Monday | Tuesday | 
+Wednesday 
+   | Thursday | Friday | Saturday | Sunday;; 
+n  Write function is_weekend : weekday -> bool 
+let is_weekend day =  
+9/24/13 8 
+Problem: 
+# type weekday = Monday | Tuesday | 
+Wednesday 
+   | Thursday | Friday | Saturday | Sunday;; 
+n  Write function is_weekend : weekday -> bool 
+let is_weekend day =  
+     match day with Saturday -> true 
+      | Sunday -> true 
+      | _ -> false 
+9/24/13 9 
+9/24/13 10 
+Disjoint Union Types 
+n  Disjoint union of types, with some possibly 
+occurring more than once 
+n  We can also add in some new singleton 
+elements 
+ty1 ty2 ty1 
+9/24/13 11 
+Disjoint Union Types 
+# type id = DriversLicense of int                     
+| SocialSecurity of int | Name of string;; 
+type id = DriversLicense of int | SocialSecurity 
+of int | Name of string 
+# let check_id id = match id with 
+      DriversLicense num ->  
+       not (List.mem num [13570; 99999]) 
+    | SocialSecurity num -> num < 900000000 
+    | Name str -> not (str = "John Doe");; 
+ val check_id : id -> bool = <fun> 
+Problem 
+n  Create a type to represent the currencies for 
+US, UK, Europe and Japan 
+9/24/13 12 
+Problem 
+n  Create a type to represent the currencies for 
+US, UK, Europe and Japan 
+type currency = 
+   Dollar of int 
+ | Pound of int 
+ | Euro of int 
+ | Yen of int 
+9/24/13 13 
+9/24/13 14 
+Polymorphism in Variants 
+n  The type 'a option is gives us something to 
+represent non-existence or failure 
+# type 'a option = Some of 'a | None;; 
+type 'a option = Some of 'a | None 
+n  Used to encode partial functions 
+n  Often can replace the raising of an exception 
+9/24/13 15 
+Functions producing option 
+# let rec first p list = 
+    match list with [ ] -> None 
+    | (x::xs) -> if p x then Some x else first p xs;; 
+val first : ('a -> bool) -> 'a list -> 'a option = <fun> 
+# first (fun x -> x > 3) [1;3;4;2;5];; 
+- : int option = Some 4 
+# first (fun x -> x > 5) [1;3;4;2;5];; 
+- : int option = None 
+9/24/13 16 
+Functions over option 
+# let result_ok r = 
+   match r with None -> false 
+   | Some _ -> true;; 
+val result_ok : 'a option -> bool = <fun> 
+# result_ok (first (fun x -> x > 3) [1;3;4;2;5]);; 
+- : bool = true 
+# result_ok (first (fun x -> x > 5) [1;3;4;2;5]);; 
+- : bool = false 
+Problem 
+n  Write a hd and tl on lists that doesn’t raise 
+an exception and works at all types of lists. 
+9/24/13 17 
+Problem 
+n  Write a hd and tl on lists that doesn’t raise 
+an exception and works at all types of lists. 
+n  let hd list =  
+       match list with [] -> None 
+        | (x::xs) -> Some x 
+n  let tl list =  
+       match list with [] -> None 
+        | (x::xs) -> Some xs 
+9/24/13 18 
+9/24/13 19 
+Mapping over Variants 
+# let optionMap f opt = 
+    match opt with None -> None 
+    | Some x -> Some (f x);; 
+val optionMap : ('a -> 'b) -> 'a option -> 'b 
+option = <fun> 
+# optionMap 
+  (fun x -> x - 2) 
+  (first (fun x -> x > 3) [1;3;4;2;5]);; 
+-  : int option = Some 2 
+9/24/13 20 
+Folding over Variants 
+# let optionFold someFun noneVal opt = 
+    match opt with None -> noneVal 
+    | Some x -> someFun x;; 
+val optionFold : ('a -> 'b) -> 'b -> 'a option -> 
+'b = <fun> 
+# let optionMap f opt = 
+    optionFold (fun x -> Some (f x)) None opt;; 
+val optionMap : ('a -> 'b) -> 'a option -> 'b 
+option = <fun> 
+9/24/13 21 
+Recursive Types 
+n  The type being defined may be a component 
+of itself 
+ty ty’ ty 
+9/24/13 22 
+Recursive Data Types 
+# type int_Bin_Tree = 
+ Leaf of int | Node of (int_Bin_Tree * 
+int_Bin_Tree);; 
+ 
+type int_Bin_Tree = Leaf of int | Node of 
+(int_Bin_Tree * int_Bin_Tree) 
+9/24/13 23 
+Recursive Data Type Values 
+# let bin_tree = 
+ Node(Node(Leaf 3, Leaf 6),Leaf (-7));; 
+ 
+val bin_tree : int_Bin_Tree = Node (Node 
+(Leaf 3, Leaf 6), Leaf (-7)) 
+9/24/13 24 
+Recursive Data Type Values 
+ 
+  bin_tree =   Node 
+ 
+         Node               Leaf (-7) 
+ 
+Leaf 3      Leaf 6 
+9/24/13 25 
+Recursive Functions 
+# let rec first_leaf_value tree = 
+    match tree with (Leaf n) -> n 
+    | Node (left_tree, right_tree) -> 
+     first_leaf_value left_tree;; 
+val first_leaf_value : int_Bin_Tree -> int = 
+<fun> 
+# let left = first_leaf_value bin_tree;; 
+val left : int = 3 
+Problem 
+type int_Bin_Tree =Leaf of int  
+| Node of (int_Bin_Tree * int_Bin_Tree);; 
+n  Write sum_tree : int_Bin_Tree -> int 
+n  Adds all ints in tree 
+let rec sum_tree t = 
+9/24/13 26 
+Problem 
+type int_Bin_Tree =Leaf of int  
+| Node of (int_Bin_Tree * int_Bin_Tree);; 
+n  Write sum_tree : int_Bin_Tree -> int 
+n  Adds all ints in tree 
+let rec sum_tree t = 
+     match t with Leaf n -> n 
+     | Node(t1,t2) -> sum_tree t1 + sum_tree t2 
+9/24/13 27 
+9/24/13 28 
+Mapping over Recursive Types 
+# let rec ibtreeMap f tree = 
+    match tree with (Leaf n) -> Leaf (f n) 
+    | Node (left_tree, right_tree) -> 
+     Node (ibtreeMap f left_tree, 
+           ibtreeMap f right_tree);; 
+val ibtreeMap : (int -> int) -> int_Bin_Tree -> 
+int_Bin_Tree = <fun> 
+9/24/13 29 
+Mapping over Recursive Types 
+# ibtreeMap ((+) 2) bin_tree;; 
+ 
+- : int_Bin_Tree = Node (Node (Leaf 5, Leaf 
+8), Leaf (-5)) 
+9/24/13 30 
+Folding over Recursive Types 
+# let rec ibtreeFoldRight leafFun nodeFun tree = 
+    match tree with Leaf n -> leafFun n 
+    | Node (left_tree, right_tree) -> 
+      nodeFun 
+      (ibtreeFoldRight leafFun nodeFun left_tree) 
+      (ibtreeFoldRight leafFun nodeFun right_tree);; 
+val ibtreeFoldRight : (int -> 'a) -> ('a -> 'a -> 'a) -> 
+int_Bin_Tree -> 'a = <fun> 
+9/24/13 31 
+Folding over Recursive Types 
+# let tree_sum =  
+    ibtreeFoldRight (fun x -> x) (+);; 
+val tree_sum : int_Bin_Tree -> int = <fun> 
+# tree_sum bin_tree;; 
+- : int = 2 

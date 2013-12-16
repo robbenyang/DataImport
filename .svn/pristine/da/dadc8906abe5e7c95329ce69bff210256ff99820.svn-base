@@ -1,0 +1,130 @@
+MP5 available, due 11/1, 11:59p.  MP6 available soon!
+Exam 2: 11/5, 7-10p, rooms on web (MP5 is on exam)
+Class cancelled 11/4.
+Exam reviews: 11/4, 12-2p in Siebel 1404
+11/4, 2-3 in Siebel 0216
+Today’s announcements:
+Hash table consists of:
+______________
+______________
+______________
+http://groups.engin.umd.umich.edu/CIS/course.des/cis350/hashing/WEB/HashApplet.htm
+Hash Functions - Required characteristics
+KeySpace
+0 1 … N-1
+0 1 … N-1
+0 1 … N-1
+Hash Functions - Why can’t we avoid collisions?
+And what are collisions anyway?
+KeySpace 0 1 … N-1
+Collision handling - Separate Chaining: (an example of open hashing)
+S = {16, 8, 4, 13, 29, 11, 22}             |S| = n h(k) = k%7
+0
+1
+2
+3
+4
+5
+6
+Worst case Under 
+SUHA
+Insert
+Remove/find:
+successful
+Remove/find:
+unsuccessful
+Load factor:
+Collision Handling - Probe based hashing:  (example of closed hashing)
+S = {16, 8, 4, 13, 29, 11, 22}             |S| = n h(k) = k%7
+0
+1
+2
+3
+4
+5
+6
+Try h(k) = (k + 0) % 7. If full...
+try h(k) = (k + 1) % 7.  If full...
+try h(k) = (k + 2) % 7.  If full...
+try...
+01
+2
+3
+4
+5
+6
+22
+8
+16
+29
+4
+11
+13
+Probe based hashing – 2 problems…
+Removals:    Clustering:
+http://groups.engin.umd.umich.edu/CIS/course.des/cis350/hashing/WEB/HashApplet.htm
+Probe based hashing:  (double hashing)
+S = {16, 8, 4, 13, 29, 11, 22}     |S| = n   H(k,i) = h1(k) + ih2(k)
+0
+1
+2
+3
+4
+5
+6
+Hash table performance:  expected # of probes for Find(key) under SUHA
+Linear probing - 
+Separate chaining -
+Double hashing -
+successful:
+unsuccessful:
+successful:
+unsuccessful:
+successful:
+unsuccessful:
+½ (1 + 1/(1-α))
+½ (1 + 1/(1-α))2
+1/α ln 1/(1-α)
+1/(1-α)
+1 +α/2 
+1 +α
+Do not memorize these!
+Observe:
+•As α increases, running times 
+increase…
+•If α is held constant then 
+running times are constant…
+Which is better?
+•Big records – 
+•Structure speed – 
+What structures do hash 
+tables replace for us?
+Hash table performance:  expected # of probes for Find(key) under SUHA
+Linear probing - 
+successful:
+unsuccessful:
+½ (1 + 1/(1-α))
+½ (1 + 1/(1-α))2
+Double hashing -
+successful:
+unsuccessful:
+1/α ln 1/(1-α)
+1/(1-α)
+ReHashing:
+What if the array fills?
+Miscellaneous Discussion – 
+Which hash table implementation is better?
+•Big records –  
+•Structure speed – 
+What structures do hash tables replace for us?
+Why do we talk about balanced BST if hashing is so great?
+Applications of hashing?  
+Area of active research in mathematics to develop general purpose hash functions.
+Interview questions!
+Consider a stream of integers... you want to know immediately if the stream stops 
+producing unique values.
+Consider a stream of integers... you want to know immediately if you have seen a 
+pair of numbers that sum to 225.
+http://www.ardendertat.com/2012/01/09/programming-interview-questions/
+0 1 2 3 4 5 6 7
+0 1 2 3 4 5 6 7

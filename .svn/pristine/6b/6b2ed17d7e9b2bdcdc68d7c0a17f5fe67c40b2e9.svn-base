@@ -1,0 +1,176 @@
+• Theprincipalformofaqueryis:
+SELECT    desired attributes
+FROM       one or more tables
+WHERE    condition about tuples of the tables
+SelectͲFromͲWhereStatements
+5
+• AlmostthesameasforsingleͲrelationqueries:
+1. StartwiththeproductofalltherelationsintheFROMclause.
+2. ApplytheselectionconditionfromtheWHEREclause.
+3. ProjectontothelistofattributesandexpressionsintheSELECTclause.
+Semantics
+22
+SELECTa1,a2,…,ak
+FROMR1ASx1,R2ASx2,…,Rn ASxn
+WHEREConditions
+1.Nestedloops:
+Meaning(Semantics)ofSQLQueries
+25
+Answer={}
+for x1in R1do
+for x2in R2do
+…..
+for xn in Rn do
+if Conditionson(x1,x2,…,xn)
+then Answer=AnswerU{(a1,…,ak)
+return Answer
+• AparenthesizedSELECTͲFROMͲWHEREstatement(subquery)canbe
+usedasavalueinanumberofplaces,includingFROMandWHERE
+clauses.
+• Example:inplaceofarelationintheFROMclause,wecanplace
+anotherquery,andthenqueryitsresult.
+• BetteruseatupleͲvariabletonametuplesoftheresult.
+Subqueries
+28
+• Ifasubqueryisguaranteedtoproduceonetuplewithone
+component,thenthesubquerycanbeusedasavalue.
+• “Single”tupleoftenguaranteedbykeyconstraint.
+• ArunͲtimeerroroccursifthereisnotupleormorethanonetuple.
+Subqueries thatReturnScalar
+29
+• FromSells(bar,beer,price),findthebarsthatserveSamAdamforthe
+samepriceJoechargesforBud.
+• Twoquerieswouldsurelywork:
+1. FindthepriceJoechargesforBud.
+2. FindthebarsthatserveSamAdamatthatprice.
+Example
+30
+SELECTbar
+FROMSells
+WHEREbeer=‘sam adam’AND
+price=(SELECTprice
+FROMSells
+WHEREbar=‘joe Bar’
+ANDbeer=‘bud’);
+Query+SubquerySolution
+31
+• <tuple>IN<relation>istrueifandonlyifthetupleisamemberof
+therelation.
+• <tuple>NOTIN<relation>meanstheopposite.
+• INͲexpressionscanappearinWHEREclauses.
+• The<relation>isoftenasubquery.
+• Ex:FindthenameandmanufacturerofeachbeerthatAlexlikes.
+SELECT *
+FROM Beers
+WHERE name IN (SELECT beer FROM Likes WHERE drinker = ‘alex’);
+TheINOperator
+32
+• EXISTS(<relation>)istrueifandonlyifthe<relation>isnotempty.
+• BeingabooleanͲvaluedoperator,EXISTScanappearinWHERE
+clauses.
+• Example:FromBeers(name,manf),findthosebeersthataretheonly
+beerbytheirmanufacturer.
+TheExistsOperator
+33
+SELECTname
+FROMBeersb1
+WHERENOTEXISTS(
+SELECT*
+FROMBeers
+WHEREmanf =b1.manfAND
+name<>b1.name);
+WhatDoesThisQueryDo?
+34
+• x =ANY(<relation>)isabooleanconditionmeaningthatx equalsatleast
+onetupleintherelation.
+• Similarly,=canbereplacedbyanyofthecomparisonoperators.
+• Example:x >=ANY(<relation>)meansx isnotsmallerthanalltuplesinthe
+relation.
+• Notetuplesmusthaveonecomponentonly.
+TheOperatorANY
+35
+• Similarly,x <>ALL(<relation>)istrueifandonlyifforeverytuplet
+intherelation,x isnotequaltot.
+• Thatis,x isnotamemberoftherelation.
+• The<>canbereplacedbyanycomparisonoperator.
+• Example:x >=ALL(<relation>)meansthereisnotuplelargerthanx
+intherelation.
+SELECT beer
+FROM Sells
+WHERE price >= ALL(
+SELECT price
+FROM Sells);
+TheOperatorALL
+36
+• Union:{a,b,b,c}U{a,b,b,b,e,f,f}={a,a,b,b,b,b,b,c,e,f,f}
+• add thenumberofoccurrences
+• Difference:{a,b,b,b,c,c}– {b,c,c,c,d}={a,b,b}
+• subtractthenumberofoccurrences
+• Intersection:{a,b,b,b,c,c}{b,b,c,c,c,c,d}={b,b,c,c}
+• minimumofthetwonumbersofoccurrences
+• Selection:preservethenumberofoccurrences
+• Projection:preservethenumberofoccurrences(noduplicate
+elimination)
+• Cartesianproduct,join:noduplicateelimination
+RelationalAlgebra:OperationsonBags
+(andwhywecare)
+37
+Read Section 5.3 of the book for more detail
+• TheSELECTͲFROMͲWHEREstatementusesbagsemantics
+• Selection:preservethenumberofoccurrences
+• Projection:preservethenumberofoccurrences(noduplicateelimination)
+• Cartesianproduct,join:noduplicateelimination
+BagSemanticsforSFWQueries
+38
+• Union,intersection,anddifferenceofrelationsareexpressedbythe
+followingforms,eachinvolvingsubqueries:
+• (subquery)UNION(subquery)
+• (subquery)INTERSECT(subquery)
+• (subquery)EXCEPT(subquery)
+Union,Intersection,andDifference
+39
+(SELECT*FROMLikes)
+INTERSECT
+(SELECTdrinker,beer
+FROMSells,Frequents
+WHEREFrequents.bar =Sells.bar
+);
+Example:Intersect
+40
+• AlthoughtheSELECTͲFROMͲWHEREstatementusesbagsemantics,
+thedefaultforunion,intersection,anddifferenceissetsemantics.
+• Thatis,duplicatesareeliminatedastheoperationisapplied.
+BagSemanticsforSetOperationsinSQL
+41
+• Whendoingprojectioninrelationalalgebra,itiseasiertoavoid
+eliminatingduplicates.
+• JustworktupleͲatͲaͲtime.
+• Whendoingintersectionordifference,itismostefficienttosortthe
+relationsfirst.
+• Atthatpointyoumayaswelleliminatetheduplicatesanyway.
+Motivation:Efficiency
+42
+• Forcetheresulttobeasetby
+SELECTDISTINCT...
+• Forcetheresulttobeabag(i.e.,don’teliminateduplicates)byALL,asin
+...UNIONALL...
+ControllingDuplicateElimination
+43
+• FromSells(bar,beer,price),findallthedifferentpriceschargedfor
+beers:
+SELECT DISTINCT price
+FROM Sells;
+• NoticethatwithoutDISTINCT,eachpricewouldbelistedasmany
+timesastherewerebar/beerpairsatthatprice.
+Example:DISTINCT
+44
+•UsingrelationsFrequents(drinker,bar)and
+Likes(drinker,beer):
+(SELECT drinker FROM Frequents)
+EXCEPT ALL
+(SELECT drinker FROM Likes);
+• Listsdrinkerswhofrequentmorebarsthanthey
+likebeers,anddoessoasmanytimesasthe
+differenceofthosecounts.
+Example:ALL
+45

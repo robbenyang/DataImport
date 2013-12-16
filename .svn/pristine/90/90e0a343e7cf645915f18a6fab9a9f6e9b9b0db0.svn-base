@@ -1,0 +1,274 @@
+1 
+What’s  Inside  A  Disk  Drive?  
+Spindle Arm 
+Actuator 
+Platters 
+Electronics 
+(including a  
+processor  
+and memory!) SCSI 
+connector 
+Image courtesy of Seagate Technology 
+2 
+Disk  Geometry  
+  Disks  consist  of  pla;ers,  each  with  two  surfaces.  
+  Each  surface  consists  of  concentric  rings  called  tracks.  
+  Each  track  consists  of  sectors  separated  by  gaps.  
+Spindle 
+Surface 
+Tracks 
+Track k 
+Sectors 
+Gaps 
+3 
+Disk  Geometry  (Muliple-­‐Pla;er  View)  
+    Aligned  tracks  form  a  cylinder.  
+Surface 0 
+Surface 1 
+Surface 2 
+Surface 3 
+Surface 4 
+Surface 5 
+Cylinder k 
+Spindle 
+Platter 0 
+Platter 1 
+Platter 2 
+4 
+Disk  Capacity  
+  Capacity:  maximum  number  of  bits  that  can  be  stored.  
+  Vendors	  express	  capacity	  in	  units	  of	  gigabytes	  (GB),	  	  where	  
+1	  GB	  =	  109	  Bytes.	  	  
+  Capacity  is  determined  by  these  technology  factors:  
+  Recording	  density	  (bits/in):	  number	  of	  bits	  that	  can	  be	  squeezed	  
+into	  a	  1	  inch	  segment	  of	  a	  track.	  
+  Track	  density	  (tracks/in):	  number	  of	  tracks	  that	  can	  be	  squeezed	  
+into	  a	  1	  inch	  radial	  segment.	  
+  Areal	  density	  (bits/in2):	  product	  of	  recording	  and	  track	  density.	  
+          
+5 
+  CompuLng  Disk  Capacity  
+Capacity  =    (#  bytes/sector)  x  (avg.  #  sectors/track)  x  
+             (#  tracks/surface)  x  (#  surfaces/pla;er)  x  
+                  (#  pla;ers/disk)  
+Example:  
+  512	  bytes/sector	  
+  300	  sectors/track	  (on	  average)	  
+  20,000	  tracks/surface	  
+  2	  surfaces/plaNer	  
+  5	  plaNers/disk	  
+Capacity  =  512  x  300  x  20000  x  2  x  5  
+       =  30,720,000,000  
+                                =  30.72  GB    
+6 
+Disk  OperaLon  (Single-­‐Pla;er  View)  
+The disk surface  
+spins at a fixed 
+rotational rate 
+By moving radially, the arm can 
+position the read/write head over 
+any track. 
+The read/write head 
+is attached to the end 
+of the arm and flies over 
+ the disk surface on 
+a thin cushion of air. 
+spindle 
+spindle 
+sp
+in
+dl
+e 
+spindle 
+7 
+Disk  OperaLon  (MulL-­‐Pla;er  View)  
+Arm 
+Read/write heads 
+move in unison 
+from cylinder to cylinder 
+Spindle 
+8 
+Tracks divided into sectors 
+Disk  Structure  -­‐  top  view  of  single  pla;er  
+Surface organized into tracks 
+9 
+Disk  Access  
+Head in position above a track 
+10 
+Disk  Access  
+Rotation is counter-clockwise 
+11 
+Disk  Access  –  Read  
+About to read blue sector 
+12 
+Disk  Access  –  Read  
+After BLUE read 
+After reading blue sector 
+13 
+Disk  Access  –  Read  
+After BLUE read 
+Red request scheduled next 
+14 
+Disk  Access  –  Seek  
+After BLUE read Seek for RED 
+Seek to red’s track 
+15 
+Disk  Access  –  RotaLonal  Latency  
+After BLUE read Seek for RED Rotational latency 
+Wait for red sector to rotate around 
+16 
+Disk  Access  –  Read  
+After BLUE read Seek for RED Rotational latency After RED read 
+Complete read of red 
+17 
+Disk  Access  –  Service  Time  Components  
+After BLUE read Seek for RED Rotational latency After RED read 
+Data  transfer   Seek   RotaLonal  
+latency  
+Data  transfer  
+18 
+Disk  Access  Time  
+  Average  Lme  to  access  some  target  sector  approximated  by  :  
+  Taccess	  	  =	  	  Tavg	  seek	  +	  	  Tavg	  rotaPon	  +	  Tavg	  transfer	  	  
+  Seek  Lme  (Tavg  seek)  
+  Time	  to	  posiPon	  heads	  over	  cylinder	  containing	  target	  sector.	  
+  Typical	  	  Tavg	  seek	  is	  3—9	  ms	  
+  RotaLonal  latency  (Tavg  rotaLon)  
+  Time	  waiPng	  for	  first	  bit	  of	  target	  sector	  to	  pass	  under	  r/w	  head.	  
+  Tavg	  rotaPon	  =	  1/2	  x	  1/RPMs	  x	  60	  sec/1	  min	  
+  Typical	  Tavg	  rotaPon	  =	  7200	  RPMs	  
+  Transfer  Lme  (Tavg  transfer)     
+  Time	  to	  read	  the	  bits	  in	  the	  target	  sector.	  
+  Tavg	  transfer	  =	  1/RPM	  x	  1/(avg	  #	  sectors/track)	  x	  60	  secs/1	  min.	  
+19 
+Disk  Performance  
+  Two  scenarios:  
+  Random  Access:  no	  locality	  in	  sectors	  accessed	  
+  Taccess	  	  =	  	  Tavg	  seek	  +	  	  Tavg	  rotaPon	  +	  Tavg	  transfer	  	  
+  SequenLal  Access:  accessing	  consecuPve	  sectors	  
+  No	  seek	  Pme	  or	  rotaPonal	  delay!!	  	  	  Just	  transfer	  Pme.	  
+  Data  from  a  representaLve  disk:  
+Access Type Throughput (MB/s) 
+Random Access, 8kB blocks 1.26 
+Random Access, 64kB blocks 9.18 
+Sequential Access, 64kB blocks 111 
+20 
+Recording  Zones:  
+  Modern  disks  parLLon  tracks  into  
+disjoint  subsets  called  recording  zones  
+  Each	  track	  in	  a	  zone	  has	  the	  same	  number	  
+of	  sectors,	  determined	  by	  the	  
+circumference	  of	  innermost	  track.	  
+  Each	  zone	  has	  a	  different	  number	  of	  
+sectors/track	  
+  Outside  tracks  have  more  sectors  
+  Same	  rotaPon	  speed	  
+  Higher	  MB/sec	  
+21 
+Logical  Disk  Blocks  
+  Modern  disks  present  a  simpler  abstract  view  of  the  
+complex  sector  geometry:  
+  The	  set	  of	  available	  sectors	  is	  modeled	  as	  a	  sequence	  of	  b-­‐sized	  
+logical	  blocks	  (0,	  1,	  2,	  ...)	  
+  Mapping  between  logical  blocks  and  actual  (physical)  
+sectors  
+  Maintained	  by	  hardware/firmware	  device	  called	  disk	  controller.	  
+  Converts	  requests	  for	  logical	  blocks	  into	  (surface,track,sector)	  
+triples.	  
+  Allows  controller  to  set  aside  spare  cylinders  for  each  
+zone.  
+  Accounts	  for	  the	  difference	  in	  “formaNed	  capacity”	  and	  “maximum	  
+capacity”.	  	  
+22 
+Solid  State  Disks  (SSDs)  
+  Pages:  512KB  to  4KB,  Blocks:  32  to  128  pages  
+  Data  read/wri;en  in  units  of  pages.    
+  Page  can  be  wri;en  only  ader  its  block  has  been  erased  
+  A  block  wears  out  ader  100,000  repeated  writes.  
+Flash  
+translation layer 
+I/O bus 
+Page 0 Page 1 Page P-1 … 
+Block 0 
+… Page 0 Page 1 Page P-1 … 
+Block  B-1 
+Flash memory 
+Solid State Disk (SSD) 
+Requests to read and  
+write logical disk blocks 
+23 
+SSD  Performance  CharacterisLcs     
+  Why  are  random  writes  so  slow?  
+  Erasing	  a	  block	  is	  slow	  (around	  1	  ms)	  
+  Write	  to	  a	  page	  triggers	  a	  copy	  of	  all	  useful	  pages	  in	  the	  block	  
+  Find	  an	  used	  block	  (new	  block)	  and	  erase	  it	  
+  Write	  the	  page	  into	  the	  new	  block	  
+  Copy	  other	  pages	  from	  old	  block	  to	  the	  new	  block	  
+SequenLal  read  tput   250  MB/s   SequenLal  write  tput   170  MB/s  
+Random  read  tput   140  MB/s   Random  write  tput   14  MB/s  
+Rand  read  access     30  us      Random  write  access   300  us  
+24 
+SSD  Tradeoffs  vs  RotaLng  Disks  
+  Advantages    
+  No	  moving	  parts	  	  faster,	  less	  power,	  more	  rugged	  
+  Disadvantages  
+  Have	  the	  potenPal	  to	  wear	  out	  	  
+  MiPgated	  by	  “wear	  leveling	  logic”	  in	  flash	  translaPon	  layer	  
+  E.g.	  Intel	  X25	  guarantees	  1	  petabyte	  (1015	  bytes)	  of	  random	  
+writes	  before	  they	  wear	  out	  
+  In	  2010,	  about	  100	  Pmes	  more	  expensive	  per	  byte	  
+  ApplicaLons  
+  MP3	  players,	  smart	  phones,	  laptops	  
+  Beginning	  to	  appear	  in	  desktops	  and	  servers	  
+25 
+Metric   1980  1985  1990  1995  2000  2005  2010  2010:1980 
+ 
+$/MB   8,000  880  100  30  1  0.1  0.06  130,000 
+access (ns)  375  200  100  70  60  50  40  9 
+typical size (MB)  0.064  0.256  4  16  64  2,000  8,000  125,000  
+Storage  Trends  
+DRAM 
+SRAM 
+Metric   1980  1985  1990  1995  2000  2005  2010  2010:1980 
+ 
+$/MB   500  100  8  0.30  0.01  0.005  0.0003  1,600,000 
+access (ms)  87  75  28  10  8  4  3  29 
+typical size (MB)  1  10  160  1,000  20,000  160,000  1,500,000 1,500,000 
+Disk 
+Metric   1980  1985  1990  1995  2000  2005  2010  2010:1980 
+ 
+$/MB   19,200  2,900  320  256  100  75  60  320 
+access (ns)  300  150  35  15  3  2  1.5  200 
+26 
+RAID  :  Redundant  Array  of  Inexpensive  Disks  
+  Problem:    Disks  fail  -­‐>  total  data  loss  
+  Improving	  reliability	  of	  a	  disk	  is	  expensive.	  
+  Cheaper	  just	  to	  buy	  a	  few	  extra	  disks.	  
+  Idea:    ECC  for  your  disks  
+  Files	  are	  “striped”	  across	  mulPple	  disks	  
+  Redundancy	  yields	  high	  data	  availability	  
+  Disks	  will	  sPll	  fail	  
+  Contents	  reconstructed	  from	  data	  redundantly	  stored	  in	  the	  array	  
+  ⇒	  Capacity	  penalty	  to	  store	  redundant	  info	  
+  ⇒	  Bandwidth	  penalty	  to	  update	  redundant	  info	  
+  A  mulL-­‐billion  industry  80%  non-­‐PC  disks  sold  in  RAIDs  
+27 
+Common  RAID  configuraLons  
+RAID 3/4 
+Parity drive protects against 1 failure 
+RAID 5 
+Rotated parity across all drives 
+RAID 0 
+No redundancy, Fast access 
+RAID 1 
+Mirror Data, most expensive sol’n 
+28 
+Summary  
+  I/O  devices  are  much  slower  than  processors.  
+  Engineered	  to	  be	  accessible,	  but	  to	  not	  slow	  down	  computaPon	  
+  Spindle-­‐based  devices:  
+  Access	  Pme	  =	  seek	  Pme	  +	  rotaPonal	  delay	  +	  transfer	  Pme	  
+  Lay	  files	  out	  conPguously!	  
+  RAID:  Redundant  Array  of  Inexpensive  Disks  
+  Achieve	  reliable	  storage,	  but	  not	  by	  making	  reliable	  disks	  
+  Use	  redundancy	  (e.g.,	  parity)	  to	  reconstruct	  lost	  disk	  

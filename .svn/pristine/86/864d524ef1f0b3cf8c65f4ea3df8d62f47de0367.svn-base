@@ -1,0 +1,63 @@
+MP4 available, due 10/18, 11:59p.  MP5 released immediately.
+TODAY:  balanced BST (intro)
+(http://webdiis.unizar.es/asignaturas/EDA/AVLTree/avltree.html)
+1
+Announcements
+Running times:
+insert
+remove
+find
+traverse
+Binary Search Tree - miscellaneous characteristics and analysis
+BST<int> myT;
+myT.insert(2);
+myT.insert(7);
+myT.insert(15);
+myT.insert(22);
+myT.insert(28);
+…
+Give a sequence of inserts that result in a tree that looks like:
+How many “bad” n-item trees are there?
+Binary Tree -
+Reminder:
+height(T) is:
+• ______ if T is empty
+• 1 + max{height(TL), height(TR)}, otherwise
+The algorithms on BST depend on the 
+height (h) of the tree.
+The analysis should be in terms of the amt 
+of data (n) the tree contains. 
+So we need a relationship between h and n.
+h ≥ f(n) 
+h ≤ g(n)
+Binary Tree  (theory moment #1)
+what is maximum number of nodes in a tree of 
+height h?
+what is the least possible height (h) for a tree of n nodes?
+Binary Tree (theory moment #2)
+what is minimum number of nodes (n) in a tree of height h?
+what is the greatest possible height (h) for a tree of n nodes?
+thus:  lower bd on ht ______, upper bd on ht _______,  good news or bad?
+Binary Search Tree -
+The height of a BST depends on the order in which the data is inserted into it.
+ex. 1 3 2 4 5 7 6   vs.  4 2 3 6 7 1 5
+How many different ways are there to insert n keys into a tree?
+Avg height, over all arrangements of n keys is _____________.
+operation avg case worst case sorted array sorted list
+find
+insert
+delete
+traverse
+something new… which tree makes you happiest?
+50
+70
+90
+50
+70
+90
+The “height balance” of a tree T is: 
+b = height(TL) - height(TR)
+A tree T is “height balanced” if:
+• 
+• 
+Binary Search Tree - is this tree “height balanced”?

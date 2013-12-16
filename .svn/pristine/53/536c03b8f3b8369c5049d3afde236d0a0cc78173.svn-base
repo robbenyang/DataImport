@@ -1,0 +1,164 @@
+MP6 available, due 11/19, 11:59p. EC due 11/12, 11:59p.
+Exam 2: returned in section this week.
+ 
+Today’s announcements:
+This image reminds us of a ____________, 
+which is one way we can implement ADT ___________________, 
+whose functions include ___________ and ___________.
+(min)Heap: tell me as many details as you can...
+68
+15
+16 25
+9
+14 12
+7
+11
+20
+4
+1112142516207915684
+Structure:
+• 
+• 
+Max ht:
+Level order traversal:
+Implementation:
+• LeftChild(i) = 
+• RightChild(i) =
+• Parent(i) =
+(min)Heap: insert
+68
+15
+16 25
+9
+14 12
+7
+11
+20
+4
+1112142516207915684
+http://people.ksp.sk/~kuko/bak/index.html
+Code:
+template <class T>
+void Heap<T>::insert(const T & key){
+   if (size==capacity) growArray();
+   size++;
+   items[size] = key;
+   heapifyUp(size);
+  
+}
+growArray()
+template <class T>
+void Heap<T>::insert(const T & key){
+   if (size==capacity) growArray();
+   size++;
+   items[size] = key;
+   heapifyUp(size);
+  
+}
+Code:
+template <class T>
+void Heap<T>::heapifyUp(int cIndex){
+   if (cIndex > ___){
+      if (items[cIndex] ___ items[parent(cIndex)]{
+         swap(_______________,_______________);
+         heapifyUp(_______________);
+      }
+   }
+}
+(min)Heap: removeMin
+65
+15
+16 25
+9
+14 12
+7
+11
+20
+4
+1112142516207915654
+Code:
+template <class T>
+T Heap<T>::removeMin(){
+   T minVal = items[1];
+   items[1] = items[size];
+   size--;
+   heapifyDown(1);
+   return minVal;
+}
+Code:
+template <class T>
+void Heap<T>::heapifyDown(int cIndex){
+   if (hasAChild(cIndex)){
+      minChildIndex = minChild(cIndex);
+      if (items[cIndex] ____ items[minChildIndex]{
+         swap(_____________,______________);
+         _______________________;
+   }
+}
+template <class T>
+T Heap<T>::removeMin(){
+   T minVal = items[1];
+   items[1] = items[size];
+   size--;
+   heapifyDown(1);
+   return minVal;
+}
+What have we done?
+(min)Heap: buildHeap
+IU
+L
+A P
+D
+N O
+H
+W
+E
+B
+WONPAEHDLIUB
+(min)Heap: buildHeap - 3 alternatives
+IU
+L
+A P
+D
+N O
+H
+W
+E
+B
+WONPAEHDLIUB
+template <class T>
+void Heap<T>::buildHeap(){
+   for (int i=2;i<=size;i++)
+      heapifyUp(i)
+}
+template <class T>
+void Heap<T>::buildHeap(){
+   for (int i=parent(size);i>0;i--)
+      heapifyDown(i)
+}
+1. Sort the array:
+2. 3.
+(min)Heap: buildHeap
+EB
+L
+U P
+D
+N O
+H
+W
+I
+A
+WONPUIHDLEBA
+Thm:  The running time of buildHeap on 
+an array of size n is ________. 
+Instead of focussing specifically on 
+running time, we observe that the time is 
+proportional to the sum of the heights of 
+all of the nodes, which we denote by S(h).
+S(h) = 
+S(0) = 
+Soln S(h) = 
+level   height
+Proof of solution to the recurrence:
+But running times are reported in terms of n, the number of nodes...
+ 

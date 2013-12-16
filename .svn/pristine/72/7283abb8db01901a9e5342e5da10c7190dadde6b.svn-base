@@ -1,0 +1,81 @@
+Networking III 
+CS 241 
+Nov. 13, 2013 
+TCP vs UDP 
+• TCP 
+– Reliable Delivery 
+– Flow Control 
+– Slower / More Overhead 
+ 
+– Requires a 3-way 
+handshake on connect 
+ 
+– Ideal for applications 
+where data integrity is 
+critical. 
+ 
+ 
+ 
+ 
+• UDP 
+– Fast / Low Overhead  
+– No delivery guarantees 
+ 
+ 
+– “Connectionless”: no 
+setup required 
+ 
+– Ideal for applications 
+where speed is most 
+important. 
+ 
+ 
+…and both provides for port numbers. 
+• socket(): create an endpoint for communication  
+• getaddrinfo(): network address and service 
+translation  
+ 
+• Server Sockets: 
+– bind(): bind a name to a socket  
+– listen(): listen for connections on a socket  
+– accept(): accept a connection on a socket  
+ 
+• Client Sockets: 
+– connect(): initiate a connection on a socket  
+ 
+void main() { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+void main() { 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 

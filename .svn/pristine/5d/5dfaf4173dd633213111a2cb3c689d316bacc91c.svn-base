@@ -1,0 +1,537 @@
+11/19/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+11/19/13 2 
+If Then Else Command 
+(if true then C else C’ fi, m) --> (C, m) 
+ 
+(if false then C else C’ fi, m) --> (C’, m) 
+ 
+(B,m) --> (B’,m) 
+(if B then C else C’ fi, m)  
+--> (if B’ then C else C’ fi, m)  
+11/19/13 3 
+While Command 
+ 
+(while B do C od, m)   
+--> (if B then C; while B do C od else skip fi, 
+m)  
+ 
+In English: Expand a While into a test of the boolean 
+guard, with the true  case being to do the body 
+and then try the while loop again, and the false 
+case being to stop. 
+11/19/13 4 
+Example Evaluation 
+n  First step: 
+ 
+ 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> ?  
+11/19/13 5 
+Example Evaluation 
+n  First step: 
+ 
+(x > 5, {x -> 7}) --> ? 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> ? 
+11/19/13 6 
+Example Evaluation 
+n  First step: 
+(x,{x -> 7}) --> (7, {x -> 7})  
+(x > 5, {x -> 7}) --> ? 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> ? 
+11/19/13 7 
+Example Evaluation 
+n  First step: 
+(x,{x -> 7}) --> (7, {x -> 7})  
+(x > 5, {x -> 7}) --> (7 > 5, {x -> 7}) 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> ? 
+11/19/13 8 
+Example Evaluation 
+n  First step: 
+(x,{x -> 7}) --> (7, {x -> 7}) 
+(x > 5, {x -> 7}) --> (7 > 5, {x -> 7}) 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+--> (if 7 > 5 then y:=2 + 3 else y:=3 + 4 fi,  
+{x -> 7}) 
+11/19/13 9 
+Example Evaluation 
+n  Second Step: 
+(7 > 5, {x -> 7}) --> (true, {x -> 7})  
+(if 7 > 5 then y:=2 + 3 else y:=3 + 4 fi, 
+{x -> 7})  
+--> (if true then y:=2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) 
+n  Third Step: 
+(if true then y:=2 + 3 else y:=3 + 4 fi, {x -> 7}) 
+ -->(y:=2+3, {x->7}) 
+11/19/13 10 
+Example Evaluation 
+n  Fourth Step: 
+(2+3, {x-> 7}) --> (5, {x -> 7}) 
+(y:=2+3, {x->7}) --> (y:=5, {x->7}) 
+ 
+•  Fifth Step: 
+(y:=5, {x->7}) --> {y -> 5, x -> 7} 
+11/19/13 11 
+Example Evaluation 
+•  Bottom Line: 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi,            
+{x -> 7}) 
+--> (if 7 > 5 then y:=2 + 3 else y:=3 + 4 fi,       
+{x -> 7}) 
+-->(if true then y:=2 + 3 else y:=3 + 4 fi,         
+{x -> 7}) 
+  -->(y:=2+3, {x->7}) 
+ --> (y:=5, {x->7}) --> {y -> 5, x -> 7} 
+11/19/13 12 
+Transition Semantics Evaluation 
+n  A sequence of steps with trees of  
+justification for each step 
+ 
+(C1,m1) --> (C2,m2) --> (C3,m3) --> … --> m 
+n  Let -->* be the transitive closure of --> 
+n  Ie, the smallest transitive relation  
+containing --> 
+11/19/13 13 
+Adding Local Declarations 
+n  Add to expressions: 
+n  E ::= … | let I = E in E’ | fun I -> E  | E E’ 
+n  fun I -> E is a value 
+n  Could handle local binding using state, but 
+have assumption that evaluating expressions 
+doesn’t alter the environment 
+n  We will use substitution here instead 
+n  Notation: E [E’ / I ] means replace all free 
+occurrence of I by E’ in E 
+11/19/13 14 
+Call-by-value (Eager Evaluation) 
+(let I = V in E, m) --> (E[V/ I ],m) 
+ 
+(E, m) --> (E’’,m) 
+(let I = E in E’, m) --> (let I = E’’ in E’) 
+ 
+((fun I -> E) V, m) --> (E[V / I ],m) 
+ 
+(E’, m) --> (E’’,m) 
+((fun I -> E) E’, m) --> ((fun I -> E) E’’, m)  
+11/19/13 15 
+Call-by-name (Lazy Evaluation) 
+n  (let I = E in E’, m) --> (E’ [E / I ],m) 
+n  ((fun I -> E’ ) E, m) --> (E’ [E / I ],m) 
+n  Question: Does it make a difference? 
+n  It can depending on the language 
+11/19/13 16 
+Church-Rosser Property 
+n  Church-Rosser Property:  If E-->* E1 
+and E-->* E2, if there exists a value V 
+such that E1 -->* V, then E2 -->* V 
+n  Also called confluence or diamond 
+property 
+n  Example:      E= 2 + 3 + 4 
+           E1 = 5 + 4                  E2= 2 + 7 
+                         V =9 
+11/19/13 17 
+Does It always Hold? 
+n  No. Languages with side-effects tend not be 
+Church-Rosser with the combination of call-by-
+name and call-by-value 
+n  Alonzo Church and Barkley Rosser proved in 1936 
+the λ-calculus does have it 
+n  Benefit of Church-Rosser: can check equality of 
+terms by evaluating them (Given evaluation 
+strategy might not terminate, though) 
+11/19/13 18 
+Lambda Calculus - Motivation 
+n  Aim is to capture the essence of 
+functions, function applications, and 
+evaluation 
+ 
+n  λ-calculus is a theory of computation 
+ 
+n  “The Lambda Calculus: Its Syntax and 
+Semantics”. H. P. Barendregt. North 
+Holland, 1984 
+11/19/13 19 
+Lambda Calculus - Motivation 
+n  All sequential programs may be viewed 
+as functions from input (initial state and 
+input values) to output (resulting state 
+and output values). 
+ 
+n  λ-calculus is a mathematical formalism 
+of functions and functional 
+computations 
+ 
+n  Two flavors: typed and untyped 
+11/19/13 20 
+Untyped λ-Calculus 
+n Only three kinds of 
+expressions: 
+n Variables: x, y, z, w, … 
+n Abstraction:  λ x. e    
+   (Function creation, think fun x -> e) 
+n Application:  e1 e2 
+11/19/13 21 
+Untyped λ-Calculus Grammar 
+n  Formal BNF Grammar: 
+n  <expression> ::= <variable> 
+                           | <abstraction>  
+                           | <application> 
+                           | (<expression>) 
+n  <abstraction>  
+                       ::= λ<variable>.<expression>  
+n  <application>  
+                  ::= <expression> <expression> 
+11/19/13 22 
+Untyped λ-Calculus Terminology 
+n  Occurrence: a location of a subterm in a 
+term 
+n  Variable binding: λ x. e is a binding of x in e 
+n  Bound occurrence: all occurrences of x in     
+λ x. e  
+n  Free occurrence: one that is not bound 
+n  Scope of binding: in λ x. e, all occurrences in 
+e not in a subterm of the form λ x. e’ (same 
+x) 
+n  Free variables: all variables having free 
+occurrences in a term 
+11/19/13 23 
+Example 
+n  Label occurrences and scope: 
+(λ x. λ y. y (λ x. x y) x) x 
+11/19/13 24 
+Example 
+n  Label occurrences and scope: 
+(λ x. y λ y. y (λ x. x y) x) x 
+11/19/13 25 
+Untyped λ-Calculus 
+n  How do you compute with the  
+   λ-calculus? 
+n  Roughly speaking, by substitution: 
+ 
+n  (λ x. e1) e2  ⇒* e1 [e2 / x] 
+ 
+n  * Modulo all kinds of subtleties to avoid 
+free variable capture 
+11/19/13 26 
+Transition Semantics for λ-Calculus  
+E --> E’’ 
+E E’ --> E’’ E’ 
+n  Application (version 1 - Lazy Evaluation) 
+(λ x . E) E’ --> E[E’/x] 
+n  Application (version 2 - Eager Evaluation) 
+E’ --> E’’ 
+(λ x . E) E’ --> (λ x . E) E’’ 
+ 
+(λ x . E) V --> E[V/x] 
+   V - variable or abstraction (value) 
+11/19/13 27 
+How Powerful is the Untyped λ-Calculus? 
+n  The untyped λ-calculus is Turing 
+Complete 
+n  Can express any sequential computation 
+n  Problems:  
+n  How to express basic data: booleans, 
+integers, etc? 
+n  How to express recursion? 
+n  Constants, if_then_else, etc, are 
+conveniences; can be added as syntactic 
+sugar 
+11/19/13 28 
+Typed vs Untyped λ-Calculus 
+n  The pure λ-calculus has no notion of 
+type: (f f) is a legal expression 
+n  Types restrict which applications are 
+valid 
+n  Types are not syntactic sugar! They 
+disallow some terms 
+n  Simply typed λ-calculus is less powerful 
+than the untyped λ-Calculus: NOT 
+Turing Complete (no recursion) 
+11/19/13 29 
+Uses of λ-Calculus 
+n  Typed and untyped λ-calculus used for 
+theoretical study of sequential 
+programming languages 
+n  Sequential programming languages are 
+essentially the λ-calculus, extended with 
+predefined constructs, constants, types, 
+and syntactic sugar 
+n  Ocaml is close to the λ-Calculus: 
+   fun x -> exp  --> λ x. exp 
+let x = e1 in e2 --> (λ x. e2)e1 
+11/19/13 30 
+α Conversion 
+n   α-conversion: 
+λ x. exp --α--> λ y. (exp [y/x]) 
+n  Provided that 
+1.  y is not free in exp 
+2.  No free occurrence of x in exp  
+becomes bound in exp when 
+replaced by y 
+11/19/13 31 
+α Conversion Non-Examples 
+1. Error: y is not free in termsecond 
+  λ x. x y --α--> λ y. y y 
+2. Error: free occurrence of x becomes 
+bound in wrong way when replaced by 
+y 
+ λ x. λ y. x y --α--> λ y. λ y. y y 
+           exp                     exp[y/x] 
+But  λ x. (λ y. y) x --α--> λ y. (λ y. y) y 
+And λ y. (λ y. y) y --α--> λ x. (λ y. y) x  
+ 11/19/13 32 
+Congruence 
+n  Let ~ be a relation on lambda 
+terms.  ~ is a congruence if  
+n  it is an equivalence relation 
+n  If e1 ~ e2 then 
+n   (e e1) ~ (e e2) and (e1e) ~ (e2 e) 
+n   λ x. e1 ~ λ x. e2 
+11/19/13 33 
+ α Equivalence 
+n   α equivalence is the smallest 
+congruence containing α 
+conversion 
+ 
+n  One usually treats  α-equivalent 
+terms as equal - i.e. use  α 
+equivalence classes of terms 
+11/19/13 34 
+Example 
+Show: λ x. (λ y. y x) x ~α~ λ y. (λ x. x y) y 
+n  λ x. (λ y. y x) x --α--> λ z. (λ y. y z) z  so  
+λ x. (λ y. y x) x ~α~ λ z. (λ y. y z) z 
+n  (λ y. y z) --α--> (λ x. x z)  so                 
+(λ y. y z) ~α~ (λ x. x z)  so                     
+λ z. (λ y. y z) z ~α~ λ z. (λ x. x z) z 
+n  λ z. (λ x. x z) z --α--> λ y. (λ x. x y) y  so 
+λ z. (λ x. x z) z ~α~ λ y. (λ x. x y) y 
+n  λ x. (λ y. y x) x ~α~ λ y. (λ x. x y) y 
+11/19/13 35 
+Substitution 
+n  Defined on α-equivalence classes of 
+terms 
+n  P [N / x] means replace every free 
+occurrence of x in P by N 
+n  P called redex; N called residue 
+n  Provided that no variable free in P 
+becomes bound in P [N / x] 
+n  Rename bound variables in P to avoid 
+capturing free variables of N 
+11/19/13 36 
+Substitution 
+n  x [N / x] = N 
+n  y [N / x] = y if y ≠ x 
+n  (e1 e2) [N / x] = ((e1 [N / x] ) (e2 [N / x] )) 
+n  (λ x. e) [N / x] = (λ x. e)  
+n  (λ y. e) [N / x] = λ y. (e [N / x] ) 
+provided y ≠ x and y not free in N 
+n  Rename y in redex if necessary 
+11/19/13 37 
+Example 
+(λ y. y z) [(λ x. x y) / z] = ? 
+n  Problems?  
+n  z in redex in scope of y binding 
+n  y free in the residue 
+n   (λ y. y z) [(λ x. x y) / z] --α-->    
+(λ w.w z) [(λ x. x y) / z] =                
+λ w. w (λ x. x y)  
+11/19/13 38 
+Example 
+n  Only replace free occurrences 
+n  (λ y. y z (λ z. z)) [(λ x. x) / z] = 
+λ y. y (λ x. x) (λ z. z) 
+Not 
+λ y. y (λ x. x) (λ z. (λ x. x)) 
+11/19/13 39 
+ β reduction 
+n   β Rule:  (λ x. P) N --β--> P [N /x] 
+ 
+n  Essence of computation in the lambda 
+calculus 
+n  Usually defined on α-equivalence 
+classes of terms 
+11/19/13 40 
+Example 
+n  (λ z. (λ x. x y) z) (λ y. y z) 
+ --β--> (λ x. x y) (λ y. y z) 
+ --β--> (λ y. y z) y --β--> y z 
+ 
+n  (λ x. x x) (λ x. x x)  
+ --β--> (λ x. x x) (λ x. x x)  
+ --β--> (λ x. x x) (λ x. x x) --β--> …. 
+11/19/13 41 
+ α β Equivalence 
+n  α β equivalence is the smallest 
+congruence containing α equivalence 
+and β reduction  
+n  A term is in normal form if no subterm 
+is α equivalent to a term that can be β 
+reduced 
+n  Hard fact (Church-Rosser): if e1 and e2 
+are αβ-equivalent and both are normal 
+forms, then they are α equivalent 
+11/19/13 42 
+Order of Evaluation 
+n  Not all terms reduce to normal forms 
+n  Not all reduction strategies will produce 
+a normal form if one exists 
+11/19/13 43 
+Lazy evaluation: 
+n   Always reduce the left-most application 
+in a top-most series of applications (i.e. 
+Do not perform reduction inside an 
+abstraction) 
+ 
+n  Stop when term is not an application, or 
+left-most application is not an 
+application of an abstraction to a term 
+11/19/13 44 
+Example 1 
+n  (λ z. (λ x. x)) ((λ y. y y) (λ y. y y)) 
+n  Lazy evaluation: 
+n  Reduce the left-most application: 
+n  (λ z. (λ x. x)) ((λ y. y y) (λ y. y y))         
+--β-->  (λ x. x) 
+ 
+11/19/13 45 
+Eager evaluation 
+n  (Eagerly) reduce left of top application 
+to an abstraction 
+n  Then (eagerly) reduce argument 
+n  Then β-reduce the application 
+11/19/13 46 
+Example 1 
+n  (λ z. (λ x. x))((λ y. y y) (λ y. y y)) 
+n  Eager evaluation: 
+n  Reduce the rator of the top-most application to 
+an abstraction: Done. 
+n  Reduce the argument: 
+n  (λ z. (λ x. x))((λ y. y y) (λ y. y y)) 
+--β--> (λ z. (λ x. x))((λ y. y y) (λ y. y y)) 
+--β--> (λ z. (λ x. x))((λ y. y y) (λ y. y y))… 
+11/19/13 47 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+ 
+11/19/13 48 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+ 
+11/19/13 49 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z)) ((λ y. y  y ) (λ z. z)) 
+11/19/13 50 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z)) ((λ y. y  y ) (λ z. z) 
+11/19/13 51 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z)) ((λ y. y  y ) (λ z. z)) 
+11/19/13 52 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z)) ((λ y. y  y ) (λ z. z))  
+--β--> ((λ z. z ) (λ z. z))((λ y. y  y ) (λ z. z)) 
+ 
+ 
+11/19/13 53 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z)) ((λ y. y  y ) (λ z. z))  
+--β--> ((λ z. z ) (λ z. z))((λ y. y  y ) (λ z. z)) 
+ 
+ 
+11/19/13 54 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z)) ((λ y. y  y ) (λ z. z))  
+--β--> ((λ z. z ) (λ z. z))((λ y. y  y ) (λ z. z)) 
+ 
+ 
+11/19/13 55 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z)) ((λ y. y  y ) (λ z. z))  
+--β--> ((λ z. z ) (λ z. z))((λ y. y  y ) (λ z. z)) 
+--β--> (λ z. z ) ((λ y. y  y ) (λ z. z)) 
+ 
+11/19/13 56 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z)) ((λ y. y  y ) (λ z. z))  
+--β--> ((λ z. z ) (λ z. z))((λ y. y  y ) (λ z. z)) 
+--β--> (λ z. z ) ((λ y. y  y ) (λ z. z)) --β-->  
+(λ y. y  y ) (λ z. z)  
+11/19/13 57 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z) ) ((λ y. y  y ) (λ z. z))  
+--β--> ((λ z. z ) (λ z. z))((λ y. y  y ) (λ z. z)) 
+--β--> (λ z. z ) ((λ y. y  y ) (λ z. z)) --β-->  
+(λ y. y  y ) (λ z. z)  
+11/19/13 58 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Lazy evaluation: 
+(λ x. x  x )((λ y. y y) (λ z. z)) --β-->  
+((λ y. y  y ) (λ z. z) ) ((λ y. y  y ) (λ z. z))  
+--β--> ((λ z. z ) (λ z. z))((λ y. y  y ) (λ z. z)) 
+--β--> (λ z. z ) ((λ y. y  y ) (λ z. z)) --β-->  
+(λ y. y  y ) (λ z. z) ~β~  λ z. z 
+11/19/13 59 
+Example 2 
+n  (λ x. x x)((λ y. y y) (λ z. z)) 
+n  Eager evaluation: 
+(λ x. x  x) ((λ y. y y) (λ z. z)) --β-->  
+(λ x. x  x) (( λ z. z ) (λ z. z)) --β--> 
+(λ x. x  x) (λ z. z) --β-->  
+(λ z. z) (λ z. z)  --β-->  λ z. z 
+11/19/13 60 
+ η (Eta) Reduction 
+n   η Rule: λ x. f x --η--> f if x not free in f 
+n  Can be useful in each direction 
+n  Not valid in Ocaml  
+n  recall lambda-lifting and side effects 
+n  Not equivalent to (λ x. f) x --> f  (inst of β) 
+ 
+n  Example: λ x. (λ y. y) x --η--> λ y. y 

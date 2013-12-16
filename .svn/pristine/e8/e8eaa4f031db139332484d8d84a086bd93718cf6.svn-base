@@ -1,0 +1,52 @@
+
+
+Decompose it into BCNF
+Relational Design Theory (25 of 31)
+Name City
+Alex Champaign IL
+Bob Urbana IL
+Name Beer
+Alex Bud
+Alex Michelob
+Bob Bud
+Bob Sam Adam
+Name CityLike LikeBeer
+Alex Champaign IL Bud
+Alex Champaign IL Michelob
+Bob Urbana IL Bud
+Bob Urbana IL Sam Adam
+Normal Forms (4 of 10)
+What About This?
+Name CityLike FaavoriteBeer
+Alex Champaign IL Bud
+Bob Urbana IL Sam Adam
+Normal Forms (5 of 10) Relational Design Theory (26 of 31)
+• Find a FD that violates the BCNF condition:
+ܣଵ	ܣଶ …	ܣ௡ → ܤଵ	ܤଶ …ܤ௡
+Heuristics: choose ܤଵ	ܤଶ …ܤ௡	“as large as possible”
+• Decompose into ܴଵ ܣ, ܤ 	and
+• Until no such FDs exist.
+Relational Design Theory (27 of 31)
+28
+A’sC’s B’s
+ܴଶ ܣ, ܥ ܴଵ ܣ, ܤ
+Until no more
+BCNF violations.
+Normal Forms (6 of 10)
+Example Decomposition 
+Relational Design Theory (28 of 31)
+More FD: Age  DraftWorthy
+Drinker
+Name SSN Age EyeColor Phone
+Name SSN Age EyeColor Phone DraftWorthy
+FD: SSN  Name, Age, EyeColor
+Normal Forms (7 of 10)
+• BCNF removes certain types of redundancy
+• those caused by adding many‐many or one‐many relations
+• For examples of redundancy that it cannot remove, see "multivalued 
+redundancy"
+• BCNF avoids information loss
+Properties of BCNF 
+Relational Design Theory (29 of 31)Normal Forms (8 of 10)
+Q: Is BCNF unique?
+Relational Design Theory (30 of 31)Normal Forms (9 of 10)

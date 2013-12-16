@@ -1,0 +1,146 @@
+MP6 available, due 11/19 11:59pm. EC due 11/12 11:59pm 
+Exam 2: returned in section this week. 
+ 
+ 
+ 
+ 
+  
+ 
+Today’s announcements: 
+This image reminds us of a ____________,  
+which is one way we can implement ADT ___________________,  
+whose functions include ___________ and ___________. 
+(min)Heap: tell me as many details as you can... 
+6 8 
+15 
+16 25 
+9 
+14 12 
+7 
+11 
+20 
+4 
+11 12 14 25 16 20 7 9 15 6 8 4 
+Structure: 
+•  
+ 
+•  
+ 
+Max ht: 
+Level order traversal: 
+Implementation: 
+• LeftChild(i) =  
+• RightChild(i) = 
+• Parent(i) = 
+(min)Heap: insert 
+6 8 
+15 
+16 25 
+9 
+14 12 
+7 
+11 
+20 
+4 
+11 12 14 25 16 20 7 9 15 6 8 4 
+Code: 
+template <class T> 
+void Heap<T>::insert(const T & key){ 
+ 
+   if (size==capacity) growArray(); 
+   size++; 
+   items[size] = key; 
+   heapifyUp(size); 
+   
+} 
+growArray() 
+template <class T> 
+void Heap<T>::insert(const T & key){ 
+ 
+   if (size==capacity) growArray(); 
+   size++; 
+   items[size] = key; 
+   heapifyUp(size); 
+   
+} 
+Code: 
+template <class T> 
+void Heap<T>::heapifyUp(int cIndex){ 
+   if (cIndex > ___){ 
+      if (items[cIndex] ___ items[parent(cIndex)]{ 
+         swap(_______________,_______________); 
+         heapifyUp(_______________); 
+      } 
+   } 
+} 
+(min)Heap: removeMin 
+6 5 
+15 
+16 25 
+9 
+14 12 
+7 
+11 
+20 
+4 
+11 12 14 25 16 20 7 9 15 6 5 4 
+Code: 
+template <class T> 
+T Heap<T>::removeMin(){ 
+    T minVal = items[1]; 
+    items[1] = items[size]; 
+    Size--; 
+    heapifyDown(1); 
+    return minVal; 
+} 
+Code: 
+template <class T> 
+void Heap<T>::removeMin(){ 
+   items[1] = items[size]; 
+   size--; 
+   heapifyDown(1); 
+} 
+template <class T> 
+void Heap<T>::heapifyDown(int cIndex){ 
+   if (hasAChild(cIndex)){ 
+      minChildIndex = minChild(cIndex); 
+      if (items[cIndex] ____ items[minChildIndex]{ 
+         swap(_____________,______________); 
+         _______________________; 
+   } 
+} 
+What have we done? 
+(min)Heap: buildHeap 
+I U 
+L 
+A P 
+D 
+N O 
+H 
+W 
+E 
+B 
+W O N P A E H D L I U B 
+(min)Heap: buildHeap - 3 alternatives 
+I U 
+L 
+A P 
+D 
+N O 
+H 
+W 
+E 
+B 
+W O N P A E H D L I U B 
+template <class T> 
+void Heap<T>::buildHeap(){ 
+   for (int i=2;i<=size;i++) 
+      heapifyUp(i) 
+} 
+template <class T> 
+void Heap<T>::buildHeap(){ 
+   for (int i=parent(size);i>0;i--) 
+      heapifyDown(i) 
+} 
+1. Sort the array: 
+2. 3. 

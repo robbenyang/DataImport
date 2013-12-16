@@ -1,0 +1,192 @@
+Administrivia
+1 Staff, and Office Hours
+Instructional Staff
+• Instructor:
+– Mahesh Viswanathan (vmahesh)
+• Teaching Assistants:
+– Santosh Prabhu (prabhum2)
+– Matt Wala (wala1)
+– Chao Xu (chaoxu3)
+• Office Hours: See course webpage
+2 Resources
+Electronic Bulletin Boards
+• Webpage: courses.engr.illinois.edu/cs373
+• Newsgroup: We will use Piazza. Sign up at piazza.com/illinois/fall2013/cs373. Piazza
+discussion page is piazza.com/illinois/fall2013/cs373/home
+Resources for class material
+• Prerequisites: All material in CS 173, and CS 225
+• Lecture Notes: Available on the web-page
+• Additional References
+– Introduction to the Theory of Computation: Michael Sipser
+– Introduction to Automata Theory, Languages, and Computation: Hopcroft, and Ullman
+– Introduction to Automata Theory, Languages, and Computation: Hopcroft, Motwani,
+and Ullman
+– Elements of the Theory of Computation: Lewis, and Papadimitriou
+1
+3 Grading Scheme
+Grading Policy: Overview
+Total Grade and Weight
+• Homeworks: 20%
+• Quizzes: 10%
+• Midterms: 40% (2× 20)
+• Finals: 30%
+Homeworks
+• One homework every week: Assigned on Thursday and due the following Thursday (midnight
+in homework drop boxes)
+• No late homeworks. Lowest two homework scores will be dropped.
+• Homeworks may be solved in groups of size at most 3 except homework 1.
+• Homework 1 will be solved online.
+• For the other homeworks, read Homework Guidelines on course website.
+Quizzes
+• The day before every class on Moodle.
+• About 25 to 26 in total.
+• We will drop the 5 lowest scores.
+Examinations
+• First Midterm: October 3, 7pm to 8:30pm
+• Second Midterm: October 31, 7pm to 8:30pm
+• Final Exam: December 18, 7pm to 10pm
+• Midterms will only test material since the previous exam
+• Final Exam will test all the course material
+Course Overview
+2
+4 Computation
+Objectives
+Understand the nature of computation in a manner that is independent of our understanding of
+physical laws (or of the laws themselves)
+• Its a fundamental scientific question
+• Provides the foundation for the science of computationally solving problems
+Problems through the Computational Lens
+Mathematical problems look fundamentally different when viewed through the computational lens
+• Not all problems equally easy to solve — some will take longer or use more memory, no matter
+how clever you are
+• Not all problems can be solved!
+• The “complexity” of the problem influences the nature of the solution
+– May explore alternate notions of “solving” like approximate solutions, “probabilistically
+correct” solutions, partial solutions, etc.
+5 Overview
+Course Overview
+The three main computational models/problem classes in the course
+Computational Model Applications
+Finite State Machines/
+Regular Expressions
+text processing, lexical analy-
+sis, protocol verification
+Pushdown Automata/
+Context-free Gram-
+mars
+compiler parsing, software
+modeling, natural language
+processing
+Turing machines undecidability, computational
+complexity, cryptography
+3
+6 Skills
+Skills
+• Comprehend mathematical definitions
+• Write mathematical definitions
+• Comprehend mathematical proofs
+• Write mathematical proofs
+Mathematics Background
+7 Sets, Functions, and Relations
+Sets
+Sets
+A set is a (unordered) collection of objects without repetition. The objects in the set are called
+elements/members. Sets can be described formally
+• By listing the elements inside braces, e.g. {3, 7, 10}
+• Using the set builder notation, like {w | p(w)} where p(·) is a predicate. For example, {n ∈
+N | n mod 2 = 0} is the set of all even natural numbers.
+We will denote: the set of natural numbers by N (0 ∈ N); the empty set ∅.
+A set A is finite if it has finitely many elements. A is an infinite set if it is not finite. For
+example N is an infinite set. The cardinality of a set A is the number of elements in A, and we
+denote that by |A|.
+A is a subset of B (denoted A ⊆ B) if every element of A is also an element of B. A is a proper
+subset of B (denoted A ( B) if A ⊆ B and A 6= B.
+Operations on Sets
+Given sets A and B subsets of a universe U , we can define the following operations
+union A ∪B = {w ∈ U | w ∈ A or w ∈ B}
+intersection A ∩B = {w ∈ U | w ∈ A and w ∈ B}
+difference A \B = {w ∈ U | w ∈ A and w 6∈ B}
+complement A = {w ∈ U | w 6∈ A}
+powerset P(A) = {K ⊆ U |K ⊆ A}
+4
+Sequences and Tuples
+• A sequence is a ordered list of elements. For example, the sequence 7,2,3,3 is different than
+2,7,3,3 and 7,2,3. Sequences maybe finite or infinite.
+• A tuple is a finite sequence. A k-tuple has k elements. A pair is a 2-tuple.
+• For sets A, B, the Cartesian product of A and B, denoted A×B, is the set of all pairs where
+the first element belongs to A and the second element belongs to B.
+• For sets A1, . . . Ak, the set A1 × A2 × · · · × Ak is the collection of all k-tuples where the ith
+element is a member of Ai.
+Functions and Relations
+Functions
+A function f : A → B maps each element of A to some element of B; A is said to be the domain
+of f and B is the co-domain. The range of f is the set {b ∈ B | ∃a ∈ A. f(a) = b}. A function
+f : A→ B is said to be onto if the range of f is B. f is 1-to-1 iff f(x) = f(y) implies that x = y.
+If f is 1-to-1 and onto then it is said to be bijective.
+When the domain of function f is a set of the form A1 × A2 × · · · × Ak then it called a k-ary
+function.
+Relations
+A k-ary relation on A is a R ⊆ A × A × A, i.e., it is a set of k-tuples all of whose elements are
+members of A. A 2-ary relation is called binary relation. A binary relation R ⊆ A×A is
+• reflexive if for every a ∈ A, (a, a) ∈ R,
+• symmetric if for every a, b ∈ A, (a, b) ∈ R implies (b, a) ∈ R.
+• transitive if for every a, b, c ∈ A, (a, b) ∈ R and (b, c) ∈ R implies (a, c) ∈ R.
+• equivalence if R is reflexive, symmetric, and transitive.
+7.1 Alphabets, Strings and Languages
+Alphabet
+Definition 1. An alphabet is any finite, non-empty set of symbols. We will usually denote it by Σ.
+Example 2. Examples of alphabets include {0, 1} (binary alphabet); {a, b, . . . , z} (English alpha-
+bet); the set of all ASCII characters; {moveforward, moveback, rotate90}.
+5
+Strings
+Definition 3. A string or word over alphabet Σ is a (finite) sequence of symbols in Σ. Examples
+are ‘0101001’, ‘string’, ‘〈moveback〉〈rotate90〉’
+•  is the empty string.
+• The length of string u (denoted by |u|) is the number of symbols in u. Example, || = 0,
+|011010| = 6.
+• Concatenation: uv is the string that has a copy of u followed by a copy of v. Example, if
+u = ‘cat′ and v = ‘nap′ then uv = ‘catnap′. If v =  the uv = vu = u.
+• u is a prefix of v if there is a string w such that v = uw. Example ‘cat′ is a prefix of ‘catnap′.
+Languages
+Definition 4. • For alphabet Σ, Σ∗ is the set of all strings over Σ. Σn is the set of all strings
+of length n.
+• A language over Σ is a set L ⊆ Σ∗. For example L = {1, 01, 11, 001} is a language over {0, 1}.
+8 Proofs
+8.1 Induction Proofs
+Induction Principle
+• Infinite sequence of statements S0, S1, . . .
+• Goal: Prove ∀i. Si is true
+• Prove S0 is true [Base Case]
+• For an arbitrary i, assuming Sj is true for all j < i [Induction Hypothesis], establishes Si to
+be true [Induction Step].
+• Conclude ∀i. Si is true.
+Why does induction work?
+• Assume S0 is true (Base case holds), and for any i, assuming Sj is true for all j < i, we can
+conclude Si is true (Induction step holds).
+6
+• Suppose (for contradiction) Si does not hold for some i.
+• Let k be the smallest i such that Si does not hold. Existence of such a smallest k is a
+consequence of a property of natural numbers that any non-empty set of natural numbers has
+a smallest element in it (Well-ordering principle).
+• That means for all j < k, Sj holds.
+• Then by the induction step, Sk holds! Contradiction, establishing that Si holds for all i.
+Example
+Proposition 5. Prove that the sum of the first k odd numbers is kth square. That is, for all k,∑k
+i=1(2i− 1) = k2.
+Proof. The result can be proved by induction on k.
+Base Case Consider the case when k = 1. Then
+∑k
+i=1(2i − 1) = 2.1 − 1 = 1 = 12. This proves
+the base case.
+Ind. Hyp. Assume that for all k < k0,
+∑k
+i=1(2i− 1) = k2.
+Ind. Step Consider k = k0. Then we have,∑k0
+i=1(2i− 1) =
+∑k0−1
+i=1 (2i− 1) + (2k0 − 1)
+= (k0 − 1)2 + (2k0 − 1) by ind. hyp.
+= (k20 − 2k0 + 1) + (2k0 − 1)
+= k20
+Thus, the induction step is established.
+7

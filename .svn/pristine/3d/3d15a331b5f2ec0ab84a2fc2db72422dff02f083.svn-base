@@ -1,0 +1,170 @@
+CS 241, Fall 2013 
+August 26, 2013 
+Operating Systems? 
+ 
+“System” 
+• system: 
+– A set of connected things or parts forming a larger 
+and more complex whole. 
+– An integrated set of elements that accomplish a 
+defined objective. 
+ 
+ 
+Challenges 
+• Accessing Resources: 
+– CPU (processes/threads), RAM, storage, network, 
+… 
+ 
+• Sharing/Coordinating Resources: 
+– Limited CPU, RAM, storage, network bandwidth 
+– Synchronization, deadlock, communication  
+ 
+• How it all works! 
+ 
+ 
+ 
+ 
+The Team 
+• Wade Fagen 
+– 2215 SC 
+– wfagen2@illinois.edu 
+The Team 
+• Teaching Assistants (TAs) 
+– Paul Bissonnette 
+– Bobby Chen 
+– Hongyang Li 
+– Reza Shiftehfar 
+ 
+• Lab Assistants: TBA 
+Communications 
+• Course announcements and discussion: 
+– Piazza (http://www.piazza.com/illinois/cs241/) 
+– Access Code: ___________ 
+ 
+• E-Mail 
+– cs241help-fa13@cs.illinois.edu 
+• Use for personal questions only.  We will be unable to 
+help on MP-related questions via e-mail! 
+Discussion Sections 
+• You must be registered for one discussion 
+section. 
+– Meets on Thursdays, starting next week 
+ 
+– Small-group programming with a TA.  Weekly 
+“MiniMPs” will be done that are highly relevant to 
+the MP and/or lecture material. 
+• Attendance isn’t required,  but it will be worth your 
+time. 
+ 
+Grading 
+Grading 
+Final Exam 
+30% 
+Midterm 
+20% 
+MPs 
+50% 
+MP0 = 3% 
+MP1 = 3% 
+MP2 = 7% 
+MP3 = 5% 
+MP4 = 5% 
+MP5 = 6% 
+MP6 = 6% 
+MP7 = 7% 
+MP8 = 8% 
+MPs 
+• Nine MPs: MP0 – MP8 
+– Length: 1 – 2 weeks 
+– Longer/harder MPs  Worth more of your grade! 
+ 
+– Usually released on a Monday 
+– Usually due on a Monday @11:59pm 
+ 
+Late Submissions 
+• MP Policy: 
+– Up to 24 hours late, score scaled to 70%. 
+ 
+Regrades 
+• Regrade requests must be made within one 
+week of the assignment grade being posted. 
+Exams 
+• Midterm Exam 
+– Monday, Oct 14th    7pm – 9pm 
+ 
+• Final Exam 
+– Friday, Dec. 20th    8am – 11am 
+ 
+– We are unable to give an earlier exam.  Schedule 
+your flights/travel accordingly! 
+Academic Honesty 
+• All work in this course is individual work. 
+ 
+• What is cheating? 
+– Copying code 
+– Coping pseudo-code 
+– Copying flow charts 
+– Diagraming a program with your friend 
+– Anything where someone else tells you how to do 
+it. 
+Academic Honesty 
+• What is not cheating? 
+– Talking about high-level concepts 
+– Discussing MP requirements 
+– Discussing the C language, compiler, or tools 
+– Helping with a very specific debugging question, 
+limited to a small portion of the program 
+• “He fixed my code” is not an excuse, your submission 
+must be your work. 
+Academic Honesty 
+• Penalty 
+– First infraction 
+• Exam: Automatic 0 on the exam. 
+• MP: All involved parties receive a 0 on the MP.  
+Additionally, a full letter grade may be deducted from 
+your grade. 
+– Next infraction: 
+• Grade of F 
+ 
+– See course website for more information. 
+ 
+ 
+What will you do? 
+• Week 1-2: Nuts & bolts 
+– Manipulate pointers and memory 
+– Use UNIX system calls from within C programs 
+– MP0: Introduction to C 
+– MP1: Working with C pointers & strings 
+ 
+• Week 3-4: Memory 
+– Understand memory allocation and virtualization 
+– MP2: malloc (+contest!) 
+What will you do? 
+• Week 5-6: Parallelism 
+– Create and manage processes and threads 
+– Control scheduling of proc./threads 
+– MP3: Shell 
+– MP4: Multithreaded sorting 
+– MP5: Scheduling algorithm simulator 
+ 
+• Week 7-11: Cooperating parallelism 
+– Communicating & sharing resources between 
+proc./threads 
+– MP6: Parallel make 
+– MP7: MapReduce 
+ 
+ 
+What will you do? 
+• Week 12-13: Networking 
+– Use communication protocols (TCP/IP) and interfaces 
+(Sockets) 
+– Write distributed multi-threaded apps that talk across a 
+network 
+– MP8: Web server 
+ 
+• Week 14: Additional OS concepts 
+– I/O and file systems 
+ 
+CS 241 
+http://courses.engr.illinois.edu/cs241/  
+ 

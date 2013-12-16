@@ -1,0 +1,113 @@
+Hoare Logic 2 
+slides by Chris Osborn 
+Hoare Triple 
+P { …code…} Q 
+P[e/x]  { x := e }  P 
+P  { C1; C2 }  Q 
+P { C1 } R R { C2 } Q 
+P  { if b then C1 else C2 }  Q 
+P ∧ b { C1 } Q P ∧ ¬ b { C2 } Q 
+While Rule 
+P {While b C} P ∧ ¬ b 
+P ∧ b { C } P 
+(P is a loop invariant) 
+Rule of Consequence 
+P  { C }  Q 
+P à Pʹ Qʹ à Q Pʹ { C } Qʹ 
+Sample Proofs 
+•  sum of n 
+•  fibonacci 
+•  list append 
+•  list reverse 
+•  termination 
+Sum of n 
+x = 0 & y = 0 
+{ 
+  While y < n 
+    y := y + 1; 
+    x := x + y 
+} 
+x = 1 + ... + n 
+P ≡ x = 1 + ... + y ∧ y ≤ n 
+x = 0 ∧ y = 0     {While ...}              x = 1 + ... + n 
+x = 1 + ... + y ∧ y ≤ n     {While y < n ...}     x = 1 + ... + y ∧ y ≤ n ∧ ¬(y < n) 
+x = 1 + ... + y ∧ y ≤ n ∧ y < n     {y := y + 1; x := x + y}     x = 1 + ... + y ∧ y ≤ n 
+                         ?                     {y := y + 1; x := x + y}     x = 1 + ... + y ∧ y ≤ n 
+x + y + 1 = (1 + ... + (y + 1))∧ y + 1 ≤ n   
+      {y := y + 1}     x + y = 1 + ... + y ∧ y ≤ n  
+      {x := x + y}     x = 1 + ... + y ∧ y ≤ n 
+x = 0 ∧ y = 0 è x = 1 + ... + y ∧ y ≤ n 
+x = 1 + ... + y ∧ y ≤ n ∧ ¬(y < n) è x = 1 + ... + n 
+x = 1 + ... + y ∧ y ≤ n ∧ y < n  è             ? 
+✔ 
+✔ 
+✔ 
+Fibonacci 
+x = 0 & y = 1 & z = 1 & 1 ≤ n 
+{ 
+  While z < n 
+    y := x + y; 
+    x := y – x; 
+    z := z + 1 
+} 
+y = fib n 
+P ≡ y = fib z ∧ x = fib (z-1) 
+       ∧ z ≤ n 
+x = 0 ∧ y = 1 ∧ z = 0 ∧ 1 ≤ n    {While ...}         y = fib n 
+y = fib z ∧ x = fib (z-1) ∧ z ≤ n     {While z < n ...}   y = fib z ∧ x = fib (z-1) ∧ z ≤ n ∧ ¬(z < n) 
+y = fib z ∧ x = fib (z-1) ∧ z ≤ n ∧ z < n   {y := x + y; x := y – x; z := z + 1}   y = fib z ∧ x = fib (z-1) ∧ z ≤ n 
+                         ?             {y := x + y; x := y – x; z := z + 1}   y = fib z ∧ x = fib (z-1) ∧ z ≤ n  
+x+y = fib (z+1) ∧ x+y-x = fib (z+1-1) ∧ z + 1 ≤ n 
+      {y := x + y}   y = fib (z+1) ∧ y-x = fib (z+1-1) ∧ z + 1 ≤ n  
+      {x := y - x}    y = fib (z+1) ∧ x = fib (z+1-1) ∧ z + 1 ≤ n  
+      {z := z + 1}   y = fib z ∧ x = fib (z-1) ∧ z ≤ n  
+x = 0 ∧ y = 1 ∧ z = 0 ∧ 1 ≤ n è  y = fib z ∧ x = fib (z-1) ∧ z ≤ n  
+y = fib z ∧ x = fib (z-1) ∧ z ≤ n ∧ ¬(z < n) è  y = fib n 
+y = fib z ∧ x = fib (z-1) ∧ z ≤ n ∧ z < n è             ? 
+✔ 
+✔ 
+✔ 
+List length 
+x = lst & y = 0 
+{ 
+  While x ≠ [] 
+    x := tl x; 
+    y := y + 1 
+} 
+y = len lst 
+P ≡ len lst = y + len x 
+x = lst ∧ y = 0     {While ...}               y = len lst 
+len lst = y + len x       {While x ≠ [] ...}      len lst = y + len x ∧ ¬(x ≠ []) 
+  len lst = y + len x ∧ x ≠ []        {x := tl x; y := y + 1}      len lst = y + len x  
+                         ?                    {x := tl x; y := y + 1}      len lst = y + len x  
+len lst = y + 1 + len(tl x) 
+      {x := tl x}        len lst = y + 1 + len x 
+      {y := y + 1}     len lst = y + len x 
+len lst = y + len x ∧ ¬(x ≠ []) è y = len lst 
+x = lst ∧ y = 0 è len lst = y + len x 
+len lst = y + len x ∧ x ≠ [] è        ? 
+✔ 
+✔ 
+✔ 
+List reverse 
+x = lst & y = [] 
+{ 
+  While x ≠ [] 
+    y := hd x :: y; 
+    x := tl x 
+} 
+y = rev lst 
+P ≡ lst = rev y @ x 
+x = lst ∧ y = []      {While ...}               y = rev lst 
+lst = rev y @ x           {While x ≠ [] ...}      lst = rev y @ x ∧ ¬(x ≠ []) 
+  lst = rev y @ x ∧ x ≠ []            {y := hd x @ y; x := tl x}      lst = rev y @ x 
+                         ?                    {y := hd x @ y; x := tl x}      lst = rev y @ x 
+lst = rev (hd x @ y) @ (tl x) 
+      {y := hd x @ y}     lst = rev y @ (tl x) 
+      {x := tl x}               lst = rev y @ x 
+x = lst ∧ y = [] è lst = rev y @ x 
+lst = rev y @ x ∧ ¬(x ≠ []) è y = rev lst 
+lst = rev y @ x ∧ x ≠ [] è         ? 
+✔ 
+✔ 
+✔ 

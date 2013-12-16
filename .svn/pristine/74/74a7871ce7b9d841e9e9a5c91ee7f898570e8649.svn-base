@@ -1,0 +1,302 @@
+MP7 available, due 12/10, 11:59p.
+ 
+Today’s announcements:
+How do we get from here to there?
+Need:
+1.  Common Vocabulary
+2. Graph implementation
+3. Traversal
+4. Algorithms.
+Algorithm BFS(G)
+     Input: graph G
+     Output:  labeling of the edges of G 
+as discovery edges and cross edges
+For all u in G.vertices()
+   setLabel(u, UNVISITED)
+For all e in G.edges()
+   setLabel(e, UNEXPLORED)
+For all v in G.vertices()
+   if getLabel(v) = UNVISITED
+      BFS(G,v)
+Algorithm BFS(G,v)
+     Input: graph G and start vertex v
+     Output:  labeling of the edges of G in the connected 
+component of v as discovery edges and cross edges
+queue q;
+setLabel(v, VISITED)
+q.enqueue(v);
+While !(q.isEmpty)
+   q.dequeue(v)
+   For all w in G.adjacentVertices(v)
+        if getLabel(w) = UNVISITED
+              setLabel((v,w),DISCOVERY)
+              setLabel(w, VISITED)
+              q.enqueue(w)
+        else if getLabel((v,w)) = UNEXPLORED
+              setLabel((v,w),CROSS)
+CB
+A
+E
+D
+F
+BFS:  How can we count the number of connected components in the graph?
+How can we determine if a graph has a cycle?
+Graphs: Traversal - DFS
+http://www.cs.duke.edu/csed/jawaa2/examples/DFS.html
+http://www.student.seas.gwu.edu/~idsv/idsv.html
+http://www.youtube.com/watch?v=8qrZ1clEp-Y 
+Ariadne, Theseus, and the 
+Minotaur
+ACROSS
+ 1 LPs and 45s
+ 6 Cools, as drinks
+10 Traffic 
+components
+14 With 5-Down, 
+where “Quiet!” is 
+often yelled
+15 “Not guilty,” e.g.
+16 Eye part
+17 Like some 
+stickers
+20 Spicy cuisine
+21 Sweetie
+22 Make fun of
+23 Enemy of  
+Spider-Man
+27 Identify in a 
+Facebook photo
+29 Source of stress 
+for a coll. senior
+30 Where shingles 
+go
+31 Mea ___
+33 Pants part
+34 Cutlass or Delta 
+88
+38 Navigation aid 
+for Hansel and 
+Gretel
+42 Tale
+43 Thumbs-up vote
+44 Card game of 
+Spanish origin
+45 Almanac contents
+47 Not Rep. or Ind.
+49 Wood in archery 
+bows
+50 Degrees of 
+separation in a 
+Hollywood parlor 
+game
+53 Building made of 
+bricks
+55 Branch
+56 Branch
+59 1976 Abba song 
+… or a hint to 
+the starts of 17-, 
+23-, 38- and 
+50-Across
+63 Prime draft status
+64 Possesses
+65 Probably will, 
+after “is”
+66 Deborah of “The 
+King and I”
+67 Bygone Tunisian 
+V.I.P.’s
+68 “Get clean” 
+program
+DOWN
+ 1 “O mighty 
+Caesar! ___ thou 
+lie so low?”: 
+Shak.
+ 2 Move slowly
+ 3 One finishing 
+a marathon in 
+eight hours, say
+ 4 Leader of a 
+meeting
+ 5 See 14-Across
+ 6 “There’s an app 
+for that” device
+ 7 Trolley sound
+ 8 Day’s end, to a 
+poet
+ 9 Downcast
+10 Writing with 
+wedges and such
+11 Birdlike
+12 Ones dressed in 
+stripes, for short
+13 Secure
+18 Often-
+impersonated 
+diva
+19 Normandy battle 
+site
+24 “Gosh almighty!”
+25 Utah city
+26 Crash and burn
+27 Franchise offering 
+“soft serve” and 
+“hand scooped”
+28 Subtle glow
+32 Chinese zoo 
+attraction
+33 Color
+35 Feature of the 
+ancient palace 
+of Minos at 
+Knossos
+36 Urgent
+37 Large amount
+39 Ancient Roman 
+censor
+40 Actress Meg
+41 Tut’s resting 
+place
+46 ___-deucy 
+(backgammon 
+variety)
+47 Compulsion by 
+threat
+48 TV award
+50 Screwup
+51 Mrs. Doubtfire, 
+e.g.
+52 Run to Las 
+Vegas, perhaps
+53 Crazedly
+54 Finished
+57 Self-referential, 
+in modern  
+lingo
+58 Like many 
+restaurants 
+without a  
+liquor lic.
+60 Like some  
+’60s fashion
+61 Run a tab
+62 Disfigure
+ANSWER TO PREVIOUS PUZZLE
+PUZZLE BY AIMEE LUCIDO
+11/29/11 (No. 1129)
+F L O W I M A C H A D A T
+D I D I S A R A O B E S E
+A M O S O N A N F I C H E
+P R E T T Y B O Y F L O Y D
+G O O S E E M E
+G A L U M P H R A N G I N
+U G L Y B E T T Y N E U R O
+E R A S T E E P L A M
+S E M I S P L A I N J A N E
+S E A M E N S L O E G I N
+A C E L A S H E
+G O R G E O U S G E O R G E
+A V O I D S H I N I R I S
+R E U N E T O N E N E R O
+B R E E D Y E A R G W E N
+1 2 3 4 5 6 7 8 9 10 11 12 13
+14 15 16
+17 18 19
+20 21 22
+23 24 25 26
+27 28 29 30
+31 32 33 34 35 36 37
+38 39 40 41
+42 43 44
+45 46 47 48 49
+50 51 52
+53 54 55 56 57 58
+59 60 61 62
+63 64 65
+66 67 68
+Crossword Edited by Will Shortz
+For answers, call 1-900-289-CLUE (289-2583), $1.49 a minute; 
+or, with a credit card, 1-800-814-5550.
+Online subscriptions: Today’s puzzle and more than 5,000 past puzzles, 
+nytimes.com/crosswords ($39.95 a year).
+Annual subscriptions are available for the best of Sunday crosswords 
+from the last 50 years: 1-888-7-ACROSS.
+Read about and comment on each puzzle: nytimes.com/wordplay. 
+Crosswords for young solvers: nytimes.com/learning/xwords. 
+AB
+C
+D E
+DFS:   “visits” each vertex
+classifies each edge as either “discovery” or “back”
+Algorithm DFS(G)
+     Input: graph G
+     Output:  labeling of the edges of G 
+as discovery edges and back edges
+For all u in G.vertices()
+   setLabel(u, UNVISITED)
+For all e in G.edges()
+   setLabel(e, UNEXPLORED)
+For all v in G.vertices()
+   if getLabel(v) = UNVISITED
+      DFS(G,v)
+Algorithm DFS(G,v)
+     Input: graph G and start vertex v
+     Output:  labeling of the edges of G in the 
+connected component of v as discovery 
+edges and back edges
+setLabel(v, VISITED)
+For all w in G.adjacentVertices(v)
+      if getLabel(w) = UNVISITED
+         setLabel((v,w),DISCOVERY)
+         DFS(G,w)
+      else if getLabel((v,w)) = UNEXPLORED
+         setLabel(e,BACK)
+Graphs: DFS example
+A B  C  D  E
+B A  C
+C B  A  D  E
+D A  C
+E A  C
+A
+B
+C
+D E
+Graphs: DFS Analysis
+setting/getting labels
+every vertex labeled twice
+every edge is labeled twice
+querying vertices
+each vertex
+total over algorithm
+querying edges
+TOTAL RUNNING TIME:
+AB
+C
+D E
+DFS:  How can we count the number of connected components in the graph?
+How can we determine if a graph has a cycle?
+Algorithm DFS(G)
+     Input: graph G
+     Output:  labeling of the 
+edges of G as discovery 
+edges and back edges
+For all u in G.vertices()
+   setLabel(u, UNVISITED)
+For all e in G.edges()
+   setLabel(e, UNEXPLORED)
+For all v in G.vertices()
+   if getLabel(v) = UNVISITED
+      DFS(G,v)
+Algorithm DFS(G,v)
+     Input: graph G and start vertex v
+     Output:  labeling of the edges of G in 
+the connected component of v as 
+discovery edges and back edges
+setLabel(v, VISITED)
+For all w in G.adjacentVertices(v)
+      if getLabel(w) = UNVISITED
+         setLabel((v,w),DISCOVERY)
+         DFS(G,w)
+      else if getLabel((v,w)) = UNEXPLORED
+         setLabel(e,BACK)

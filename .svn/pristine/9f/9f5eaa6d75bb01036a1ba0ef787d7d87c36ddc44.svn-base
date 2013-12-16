@@ -1,0 +1,29 @@
+Week #9: Deadlocks 
+Exam Review Question  
+CS 241: Fall 2013 
+These questions are provided to you to help you study material covered in CS 241 that may appear on the 
+final exam.  These exact questions may or may not appear on the final exam, but the topics they cover will 
+almost certainly be on the final exam. 
+1. What are the four conditions of deadlock? 
+ 
+2. Choose two of the conditions of deadlock you identified in (1). For each method chosen, provide 
+a set or rules for the philosophers in the Dinning Philosophers Problem that removes the deadlock 
+condition you picked. Explain how the rule you gave eliminated deadlock. 
+ 
+3. What is a Wait-For Graph? What kind of graph is needed in order to generate a WFG? 
+ 
+4. What are the three primary methods of dealing with (and not ignoring) deadlock? 
+ 
+5. Run the Banker’s Algorithm to determine if a request made by P1 for (A: 2, B: 2, C: 2) can be 
+allocated.  The maximum available resources in the system are (A: 10, B: 5, C: 5) and the current 
+and maximums (written as current / maximum) resources for each process in the system are as 
+follows: 
+ A B C 
+P1 0 / 7 1 / 5 0 / 3 
+P2 2 / 3 0 / 2 0 / 2 
+P3 3 / 9 0 / 0 0 / 2 
+P4 2 / 2 1 / 2 1 / 2 
+P5 0 / 4 0 / 3 2 / 3 
+ 
+ 
+ 

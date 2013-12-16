@@ -1,0 +1,113 @@
+MP5 available, due 11/1, 11:59p.  EC due 10/25, 11:59p.
+TODAY:  balanced BST
+(http://webdiis.unizar.es/asignaturas/EDA/AVLTree/avltree.html)
+1
+Announcements
+The “height balance” of a tree T is: 
+b = height(TL) - height(TR)
+A tree T is “height balanced” if:
+• T = {} OR
+• T = {r, TL, TR}, |b| ___  and TL and TR are ht balanced.
+operations on BST - rotations
+50
+90
+99
+95
+80
+60
+85
+4020
+30
+balanced trees - rotations
+70
+60
+80
+5020
+40
+balanced trees - rotations
+70
+60
+80
+5020
+40
+GOAL:  use rotations to maintain balance of BSTs.
+height balanced trees - we have a special name:
+Three issues to consider as we move toward implementation:  
+Rotating
+Maintaining height
+Detecting imbalance
+balanced trees - rotations summary:
+• there are 4 kinds: left, right, left-right, right-left (symmetric!)
+• local operations (subtrees not affected)
+• constant time operations
+• BST characteristic maintained
+84
+6
+5
+9 12
+10
+3
+1 11
+2
+Maintaining height upon a rotation:
+AVL trees: rotations (identifying the need)
+t1
+t2
+t3 t4
+if an insertion was in subtrees t3 or t4, 
+and if an imbalance is detected at 
+t, then a __________ rotation 
+about t rebalances the tree.
+We gauge this by noting that the 
+balance factor at t->right is _____
+t
+AVL trees: rotations (identifying the need)
+t1
+t2 t3
+t4
+If an insertion was in subtrees t2 or t3, 
+and if an imbalance is detected at 
+t,  then a ___________________ 
+rotation about t rebalances the 
+tree.
+We gauge this by noting that the 
+balance factor at t->right is _____
+t
+AVL trees:
+struct treeNode {
+   T key;
+   int height;
+   treeNode * left;
+   treeNode * right;
+};
+Insert:
+insert at proper place
+check for imbalance
+rotate if necessary
+update height
+AVL tree insertions:
+template <class T>
+void AVLTree<T>::insert(const T & x, treeNode<T> * & t ){
+   if( t == NULL ) t = new treeNode<T>( x, 0, NULL, NULL);
+   else if( x < t->key ){
+      insert( x, t->left );
+      int balance = height(t->right)-height(t->left);
+      int leftBalance = height(t->left->right)-height(t->left->left);
+      if( balance == -2 )
+         if( leftBalance == -1 )
+            rotate_____________( t );
+         else
+            rotate_____________( t );
+   }
+   else if( x > t->key ){
+      insert( x, t->right );
+      int balance = height(t->right)-height(t->left);
+      int rightBalance = height(t->right->right)-height(t->right->left);
+      if( balance == 2 )
+         if( rightBalance == 1 )
+            rotate_____________( t );
+         else
+            rotate_____________( t );
+      }
+   t->height=max(height(t->left ), height(t->right))+ 1;
+}

@@ -1,0 +1,345 @@
+Kevin C. Chang
+Project Overview: 
+The Incubator
+CS411 Database Systems
+• Project Option 1 (Application Oriented): 
+Building a Database‐Driven Web/Mobile 
+• Project Option 2 (System Oriented): 
+Enhancing an Open Source DBMS
+• More details, visit CS411 Web
+Project Options
+Default Section (1 of 3) Project Overview: The Incubator (1 of 30)
+• CS411 Web, Project Page
+• https://wiki.engr.illinois.edu/display/cs411fa13/Projects‐‐
++The+411+Incubator
+• Or:
+Project Gallery
+Default Section (2 of 3) Project Overview: The Incubator (2 of 30)
+• What are some cool projects in the past?
+• Illini Crime
+• http://www.illinicrime.com/
+• Pokedex 2.0
+• http://www.youtube.com/watch?v=YTYQuESBvbU
+• Ultimate Dining
+• http://www.youtube.com/watch?v=L_Wp_Y5yKoM
+Project Gallery
+Default Section (3 of 3) Project Overview: The Incubator (3 of 30)
+Track 1: Building a Database‐
+driven Web/Mobile App
+Project Overview: 
+The Incubator (4 of 30)
+Track 1: Building a Database‐driven 
+Web/Mobile App (0 of 14)
+• Project expectations
+• Example system: 
+• Apartment Search
+Overview
+Track 1: Building a Database‐driven 
+Web/Mobile App (1 of 14)
+Project Overview: 
+The Incubator (5 of 30)
+• Database‐Driven Web Information System
+• Web‐based application that needs a database
+• Must be useful and realistic
+Project
+Track 1: Building a Database‐driven 
+Web/Mobile App (2 of 14)
+Project Overview: 
+The Incubator (6 of 30)
+Two Essential Criteria:
+• Useful
+• Is your system useful? Why should people use your system?
+• Innovative
+• Is this anything new? A new concept? A new way of doing some thing?
+Two Plus Criteria:
+• Realness
+• Real data: Does your system have enough data to make it practical/interesting?
+• Fun
+• Are you having fun?
+How to Choose 
+a Good Project Topic?
+Track 1: Building a Database‐driven 
+Web/Mobile App (3 of 14)
+Project Overview: 
+The Incubator (7 of 30)
+•Basic Functions (must meet all)
+• Search database and list records
+• Insert, update, delete records into the database
+•Advanced Functions (must have at least 2)
+• Examples:
+• “Cool” user feature that goes beyond the basic functionalities
+• Support multi‐users at a time
+• Batch loads from other datasets
+• Additional administrative interface or role‐based interface
+Functionality Criteria
+Track 1: Building a Database‐driven 
+Web/Mobile App (4 of 14)
+Project Overview: 
+The Incubator (8 of 30)
+• Search
+• Insert
+• Update
+• Delete
+Basic Functions
+Track 1: Building a Database‐driven 
+Web/Mobile App (5 of 14)
+Project Overview: 
+The Incubator (9 of 30)
+Criteria
+• Data‐centric
+• Relevant, useful to your application
+• Specific to your application
+• Technically challenging
+• Significant work to implement
+Examples:
+• Creative search of data
+• Match movies by user profile?
+• Creative analysis of data 
+• Trend/patterns of tweets?
+• Creative visualization/presentation of data
+• Overlay Pokemon world onto google map
+Some Advanced Functions
+Track 1: Building a Database‐driven 
+Web/Mobile App (6 of 14)
+Project Overview: 
+The Incubator (10 of 30)
+• Front‐end: Browser rendering languages
+• HTML, JavaScript, CSS, DHTML
+•Backend: LAMP stuff
+• Operating system
+• Linux
+•Web server
+• Apache HTTP Server, Apache Tomcat
+• Database
+• MySQL, Oracle, SQLite
+• Scripting/programming language
+• PHP, Python, Perl, Java, Ruby, C++
+Common Tools
+Track 1: Building a Database‐driven 
+Web/Mobile App (7 of 14)
+Project Overview: 
+The Incubator (11 of 30)
+Web Apps 
+Share One Common Architecture
+Client
+Presentation
+Data
+Logic
+Web Browser
+Example: IE, Firefox
+Manages data access between 2 layers,
+processes data, performs calculations, makes 
+logical decisions, 
+Example: PHP, Python, Perl
+Renders information, generates webpages
+Example: HTML, DHTML, XSL, XML, 
+javascript
+Stores and manages data
+Example: MySQL, Oracle
+Track 1: Building a Database‐driven 
+Web/Mobile App (8 of 14)
+Project Overview: 
+The Incubator (12 of 30)
+Client vs Server
+Client
+Presentation
+Data
+Logic
+Client
+Server
+INTERNET
+Web Server
+DB Server
+Apache, Tomcat
+MySQL, Oracle, 
+SQLite
+Track 1: Building a Database‐driven 
+Web/Mobile App (9 of 14)
+Project Overview: 
+The Incubator (13 of 30)
+Client Side Scripting
+Client
+Presentation
+Data
+Logic
+HTML, JavaScript, CSS, 
+DHTML
+Client
+Track 1: Building a Database‐driven 
+Web/Mobile App (10 of 14)
+Project Overview: 
+The Incubator (14 of 30)
+Server Side Scripting
+Client
+Data
+Logic
+Server
+Web Server
+PHP , ASP, Java, Perl, C++, 
+Python, Ruby
+Presentation
+Track 1: Building a Database‐driven 
+Web/Mobile App (11 of 14)
+Project Overview: 
+The Incubator (15 of 30)
+Client vs Server
+Client
+Presentation
+Data
+Logic
+Client
+Server
+INTERNET
+Web Server
+DB Server
+Apache, Tomcat
+MySQL, Oracle, 
+SQLite
+Track 1: Building a Database‐driven 
+Web/Mobile App (12 of 14)
+Project Overview: 
+The Incubator (16 of 30)
+Web vs. DB
+Client
+Presentation
+Data
+Logic
+INTERNET
+DB Programming
+Web Programming
+Track 1: Building a Database‐driven 
+Web/Mobile App (13 of 14)
+Project Overview: 
+The Incubator (17 of 30)
+•Stage 0: Group formation
+•Stage 1: Functional description & ER design
+•Stage 2: Development plan
+•Stage 3: Setup development environment
+•Stage 4: Mid‐term checkpoint
+•Stage 5: Final demo
+Project Stages
+Track 1: Building a Database‐driven 
+Web/Mobile App (14 of 14)
+Project Overview: 
+The Incubator (18 of 30)
+Track 2: Enhancing an Open 
+Source DBMS
+Project Overview: 
+The Incubator (19 of 30)
+Track 2: Enhancing an Open Source 
+DBMS (0 of 7)
+• Project expectations
+• Example systems: 
+• Support text relevance natively within a DBMS
+• Support “Hibernation” in a DBMS
+Overview
+Track 2: Enhancing an Open Source 
+DBMS (1 of 7)
+Project Overview: 
+The Incubator (20 of 30)
+• Tweaking an Open Source DBMS System
+• Implement/Improve a system component of an open source DBMS system
+• Must be useful and novel
+• Open ended; you can propose your own ideas and discuss with the class staff
+Project
+Track 2: Enhancing an Open Source 
+DBMS (2 of 7)
+Project Overview: 
+The Incubator (21 of 30)
+DBMS Architecture
+Project Overview: 
+The Incubator (22 of 30)
+Track 2: Enhancing an Open Source 
+DBMS (3 of 7)
+Query Executor
+Buffer Manager
+Storage Manager
+torage
+Transaction Manager
+Logging & 
+Recovery
+Concurrency 
+Control
+Buffer: 
+data, indexes, log, etc
+Lock Tables
+Main Memory
+query transaction
+Query Optimizer
+Query Rewriter
+Query Parser
+Records
+data, metadata, indexes, log, etc
+DDL Processor
+DDL commands
+Indexes
+• How to make DBMS aware of texts, and support query relevance over them
+• Why is it useful?
+• Nowadays, many data comes with attributes, as well as a text description
+• E.g., product specs with a detailed review
+• Why is it novel?
+• Many DBMS nowadays only support simple text matching
+• E.g., description contains “good quality”
+Topic Example: 
+DBMS with text relevance
+Track 2: Enhancing an Open Source 
+DBMS (4 of 7)
+Project Overview: 
+The Incubator (23 of 30)
+• How to make DBMS Hibernate/Resume like an OS does?
+• Why is it useful?
+• Nowadays, many data processing takes a long time, and you may need to halt the processing
+• Why is it novel?
+• Most DBMS nowadays do not support such functionality. There is some recent research, though.
+Topic Example: DBMS Hibernation
+Track 2: Enhancing an Open Source 
+DBMS (5 of 7)
+Project Overview: 
+The Incubator (24 of 30)
+•DBMS Systems: 
+•MySQL
+• PostgreSQL
+• SQLite
+•Text Retrieval Systems: 
+• Lucene
+Open Source Systems
+Track 2: Enhancing an Open Source 
+DBMS (6 of 7)
+Project Overview: 
+The Incubator (25 of 30)
+•Stage 0: Group formation 
+•Stage 1: Development plan
+•Stage 2: Mid‐term checkpoint
+•Stage 3: Final demo & report
+Project Stages
+Track 2: Enhancing an Open Source 
+DBMS (7 of 7)
+Project Overview: 
+The Incubator (26 of 30)
+Conclusion
+Project Overview: 
+The Incubator (27 of 30)Conclusion (0 of 3)
+• Start early
+• “Unexpected issues”
+• Data collection can take some time
+• Schema may change
+• Web space, database access will take some time to get familiar with
+• Get the basics out of the way. Then focus on the challenging parts.
+Project Tips
+Conclusion (1 of 3) Project Overview: The Incubator (28 of 30)
+• Group size 3‐4 is recommended
+• Talk to your fellow classmates in class
+• Newsgroup
+• Give a short intro about your background, and your interest on project
+• Come give a pitch up here
+• Put a flyer at Illini Union
+• Hold a parade at Illinois Homecoming (a little too late)
+• Or, talk to staff
+How to find partners for project
+Conclusion (2 of 3) Project Overview: The Incubator (29 of 30)
+• Midterm pitch in class
+• Ideas, mockups, questions
+• Final demos open to the public
+• VCs from the valley and the prairie will be in disguise
+And, the highlights
+Conclusion (3 of 3) Project Overview: The Incubator (30 of 30)

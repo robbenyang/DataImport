@@ -1,0 +1,83 @@
+1 Operations on Languages
+Operations on Languages
+• Recall: A language is a set of strings
+• We can consider new languages derived from operations on given languages
+– e.g., L1 ∪ L2, L1 ∩ L2, . . .
+• A simple but powerful collection of operations:
+– Union, Concatenation and Kleene Closure
+Union is a familiar operation on sets. We define and explain the other two operations below.
+Concatenation of Languages
+Definition 1. Given languages L1 and L2, we define their concatenation to be the language L1 ◦
+L2 = {xy | x ∈ L1, y ∈ L2}
+Example 2. • L1 = {hello} and L2 = {world} then L1 ◦ L2 = {helloworld}
+• L1 = {00, 10}; L2 = {0, 1}. L1 ◦ L2 = {000, 001, 100, 101}
+• L1 = set of strings ending in 0; L2 = set of strings beginning with 01. L1 ◦L2 = set of strings
+containing 001 as a substring
+• L ◦ {} = L. L ◦ ∅ = ∅.
+Kleene Closure
+Definition 3.
+Ln =
+{
+{} if n = 0
+Ln−1 ◦ L otherwise L
+∗ =
+⋃
+i≥0
+Li
+i.e., Li is L ◦ L ◦ · · · ◦ L (concatenation of i copies of L), for i > 0.
+L∗, the Kleene Closure of L: set of strings formed by taking any number of strings (possibly
+none) from L, possibly with repetitions and concatenating all of them.
+• If L = {0, 1}, then L0 = {}, L2 = {00, 01, 10, 11}. L∗ = set of all binary strings (including
+).
+• ∅0 = {}. For i > 0, ∅i = ∅. ∅∗ = {}
+• ∅ is one of only two languages whose Kleene closure is finite. Which is the other? {}∗ = {}.
+1
+2 Regular Expressions
+2.1 Definition and Identities
+Regular Expressions
+A Simple Programming Language
+Figure 1: Stephen Cole Kleene
+A regular expression is a formula for representing a (complex) language in terms of “elementary”
+languages combined using the three operations union, concatenation and Kleene closure.
+Regular Expressions
+Formal Inductive Definition
+Syntax and Semantics
+A regular expression over an alphabet Σ is of one of the following forms:
+Syntax Semantics
+∅ L(∅) = {}
+Basis  L() = {}
+a L(a) = {a}
+(R1 ∪R2) L((R1 ∪R2)) = L(R1) ∪ L(R2)
+Induction (R1 ◦R2) L((R1 ◦R2)) = L(R1) ◦ L(R2)
+(R∗1) L((R∗1)) = L(R1)∗
+Notational Conventions
+Removing the brackets To avoid cluttering of parenthesis, we adopt the following conventions.
+• Precedence: ∗, ◦,∪. For example, R ∪ S∗ ◦ T means (R ∪ ((S∗) ◦ T ))
+• Associativity: (R∪(S∪T )) = ((R∪S)∪T ) = R∪S∪T and (R◦(S◦T )) = ((R◦S)◦T ) = R◦S◦T .
+Also will sometimes omit ◦: e.g. will write RS instead of R ◦ S
+Regular Expression Examples
+2
+R L(R)
+(0 ∪ 1)∗ = ({0} ∪ {1})∗ = {0, 1}∗
+0∅ ∅
+0∗ ∪ (0∗10∗10∗10∗)∗ Strings where the number of 1s is divisible by 3
+(0 ∪ 1)∗001(0 ∪ 1)∗ Strings that have 001 as a substring
+(10)∗ ∪ (01)∗ ∪ 0(10)∗ ∪ 1(01)∗ Strings that consist of alternating 0s and 1s
+( ∪ 1)(01)∗( ∪ 0) Strings that consist of alternating 0s and 1s
+(0 ∪ )(1 ∪ 10)∗ Strings that do not have two consecutive 0s
+Regular Languages
+Definition 4. A language L ⊆ Σ∗ is a regular language iff there is a regular expression R such that
+L(R) = L.
+Some Regular Expression Identities
+We say R1 = R2 if L(R1) = L(R2).
+• Commutativity: R1 ∪R2 = R2 ∪R1 (but R1 ◦R2 6= R2 ◦R1 typically)
+• Associativity: (R1 ∪R2) ∪R3 = R1 ∪ (R2 ∪R3) and (R1 ◦R2) ◦R3 = R1 ◦ (R2 ◦R3)
+• Distributivity: R ◦ (R1 ∪R2) = R ◦R1 ∪R ◦R2 and (R1 ∪R2) ◦R = R1 ◦R ∪R2 ◦R
+• Concatenating with : R ◦  =  ◦R = R
+• Concatenating with ∅: R ◦ ∅ = ∅ ◦R = ∅
+• R ∪ ∅ = R. R ∪  = R iff  ∈ L(R)
+• (R∗)∗ = R∗
+• ∅∗ = 
+Useful Notation
+Definition 5. Define R+ = RR∗. Thus, R∗ = R+ ∪ . In addition, R+ = R∗ iff  ∈ L(R).
+3

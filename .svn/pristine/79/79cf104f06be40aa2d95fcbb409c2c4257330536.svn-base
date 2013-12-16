@@ -1,0 +1,411 @@
+1 
+Propoga'on  Delay  and  State  
+	  
+2 
+Today’s  lecture  
+  Propoga'on  Delay  
+  Timing	  diagrams.	  
+  Delay	  of	  ALU32	  
+  Storing  State  
+  SR	  Latch	  
+  Synchronous  Design  
+  Clocks	  
+  D	  Flip	  Flops	  
+3 
+Propoga'on  Delay  
+  Real  gates  don’t  switch  instantaneously  
+  There	  is	  a	  latency	  between	  when	  the	  input	  changes	  and	  
+the	  output	  changes.	  
+  We	  call	  this	  latency	  the	  propagaDon	  delay	  
+  Consider  an  inverter:   NOTA   B  
+A
+0
+1
+B
+0
+1
+Time
+propogationt
+(input)   (output)  
+4 
+Ring  Oscillator  
+  What  happens  when  you  connect  an  odd  number  of  
+inverters  in  a  circle?  
+NOT NOTNOT
+0
+1
+0
+1
+Time
+0
+1
+5 
+Timing  analysis  
+  
+  In  reality,  'ming  is  very  complicated  
+  The	  delay	  from	  x	  to	  z	  can	  be	  different	  on	  an	  01	  transiDon	  
+than	  it	  is	  for	  a	  10	  transiDon.	  	  
+  The	  delay	  from	  x	  to	  z	  can	  differ	  from	  the	  delay	  from	  y	  to	  z.	  
+  The	  number	  of	  gates	  connected	  to	  the	  same	  output	  (the	  
+fanout),	  the	  longer	  it	  will	  take	  to	  switch.	  	  	  
+  Long	  wires	  between	  gates	  slow	  things	  down	  as	  well.	  
+  In  this  class,  we’ll  use  simplifying  assump'ons:  
+  Delay  is  a  constant  from  any  input  to  the  output.  
+  We’ll  ignore  fanout  and  wire  delay  
+NAND
+x
+y
+z
+6 
+Analyzing  propaga'on  delay  of  circuits  
+  Assume:    
+  Inverter:	  20ps	  delay	  
+  2-­‐input	  gate:	  30ps	  delay	  
+  4-­‐input	  gate:	  50ps	  delay	  
+  Find  longest  paths  from  input  to  output  
+In Out Delay 
+X S 
+Y S 
+Cin S 
+X Cout 
+Y Cout 
+Cin Cout 
+7 
+  What  is  likely  to  be  the  longest  path  through  this  circuit?  
+  From  any  data  input  (A,  B)  bit  to  any  output  bit    
+  How  long  will  it  take?  
+  
+Compu'ng  the  delay  of  alu32  
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+A B ctrl
+3
+cincout
+out
+8 
+Compu'ng  components  from  ALU1  
+A
+B
+control[0]
+Full 
+Adder
+0
+1
+Logic
+Unit
+carryin
+out
+carryout
+A
+B
+Cin
+Sum
+Cout
+A
+B
+R[0]
+ out
+1-bit ALU slice
+control[1]
+control[2]
+R[1]
+XOR
+In Out Delay 
+A,B out 110ps 
+R out 10ps 
+In Out Delay 
+A,B out 60ps 
+R out 80ps 
+In Out Delay 
+A,B out 30ps 
+XOR  
+gate  
+Logic    
+Unit  
+2-­‐to-­‐1    
+Mul'plexor  
+tPropBCarryout  +  30(tPropCarryinCarryout  )  +  tPropCarryinOut  =    
+In Out Delay 
+A,B Sum 
+Cin Sum 
+A,B Cout 
+Cin Cout 
+Full    
+Adder  
+9 
+Thinking  about  ALU32’s  delay  
+  That  is  really  bad.    Really,  really  bad.  
+  Processors  don’t  really  implement  ADDs  this  way  
+  This	  is	  what	  is	  called	  a	  “ripple	  carry	  adder”	  
+  It	  has	  latency	  O(n)  where	  n	  is	  the	  #	  bits	  being	  added	  
+  There  are  much  smarter  ways  to  handle  carries  
+  E.g.,	  “carry	  lookahead	  adder”	  	  	  (Google	  it)	  
+  Has	  latency	  O(log2(N))	  and	  only	  slightly	  larger	  
+  But,  we  won’t  cover  them  in  this  class.  
+10 
+Rings  of  Inverters  
+  We  saw  an  odd  number  of  inverters  creates  a  ring  oscillator:  
+  What  happens  if  you  have  an  even  number  of  inverters?  
+NOT NOTNOT
+NOT NOT
+11 
+Building  a  useful  storage  mechanism  
+  A  memory  should  have  at  least  three  proper'es.  
+1.	  It	  should	  be	  able	  to	  hold	  a	  value.	  
+2.	  You	  should	  be	  able	  to	  read	  the	  value	  that	  was	  saved.	  
+3.	  You	  should	  be	  able	  to	  change	  the	  value	  that’s	  saved.	  
+Cross-­‐coupled  inverters:   NOT
+NOT
+Q
+Q'
+12 
+Set/Reset  Latch    (SR  latch)  
+  Cross-­‐coupled  NOR  gates  
+  Two	  inputs:	  
+  reset:	  when	  1,	  sets	  Q=0	  
+  set:	  when	  1,	  sets	  Q=1	  
+  When	  reset=set=0,	  Q	  keeps	  its	  value	  
+  reset=set=1  causes  bad  things.    Make  sure  this  doesn’t  happen.  
+  This  circuit  has  feedback,  its  outputs  (Q,  Q’)  are  also  inputs!  
+  Current	  values	  of	  Q,	  Q’	  depend	  on	  past	  values	  of	  Q,	  Q’	  
+NOR
+NOR
+Q
+Q'
+reset
+set
+Qt=x    =    
+Q’t=x  =    
+13 
+Analyzing  SR  latch  
+  Case  1:  reset  =  set  =  0  @  t  =  0  
+  Case  2:  reset  =  1,  set  =  0  
+  Case  3:  reset  =  0,  set  =  1  
+Qt=x    =  (reset  +  Q’t=x-­‐1)’  
+Q’t=x  =  (set  +  Qt=x-­‐1)’  
+Qt=1    =    
+Q’t=1  =    
+Qt=1    =    
+Q’t=1  =    
+Qt=1    =    
+Q’t=1  =    
+14 
+Timing  diagram  of  an  SR  Latch  
+0
+1
+0
+1
+Time
+0
+1
+0
+1
+R
+S
+Q'
+Q
+Qt=x    =  (reset  +  Q’t=x-­‐1)’  
+Q’t=x  =  (set  +  Qt=x-­‐1)’  
+Ini'alized  to  Q=0  
+15 
+SR  Latches  are  a  useful  storage  mechanism  
+  An  SR  latch  provides  the  three  features:    
+  It	  holds	  its	  value	  
+  We	  can	  read	  its	  value	  
+  We	  can	  change	  its	  value	  
+  We  call  the  data  stored  (Q)  the  state  of  the  latch.  
+  1	  bit	  of	  informaDon	  is	  stored	  
+  
+Inputs' Current' Next'
+S' R' Q' Q’' Q' Q’'
+0' 0' 0' 1' 0' 1'
+0' 0' 1' 0' 1' 0'
+0' 1' 0' 1' 0' 1'
+0' 1' 1' 0' 0' 1'
+1' 0' 0' 1' 1' 0'
+1' 0' 1' 0' 1' 0'
+'
+'
+ 
+  We  the  behavior  as  a  state  table,  
+which  explicitly  shows  that  the  next  
+values  of  Q  and  Q’  depend  on  their  
+current  values,  as  well  as  on  the  
+inputs  S  and  R.  
+S" R" Q"
+0" 0" No"change"
+0" 1" 0"(reset)"
+1" 0" 1"(set)"
+"
+"
+16 
+Aside:  SR  Latches  are  not  combina?onal  circuits  
+  In  the  2nd  lecture  we  defined  Comina'onal  Logic  as:    
+  Boolean  circuits  where  the  output  is  a  pure  func'on  of  
+the  present  input  only.  
+  Below  we  can  see  this  doesn’t  hold  for  the  SR  Latch  
+  When	  S  =  R  =  0  we	  can	  have	  two	  different	  outputs	  
+  The  SR  Latch  is  a  Sequen'al  circuit  
+Inputs' Current' Next'
+S' R' Q' Q’' Q' Q’'
+0' 0' 0' 1' 0' 1'
+0' 0' 1' 0' 1' 0'
+0' 1' 0' 1' 0' 1'
+0' 1' 1' 0' 0' 1'
+1' 0' 0' 1' 1' 0'
+1' 0' 1' 0' 1' 0'
+'
+'
+ 
+The outputs of a sequential circuit 
+depend on not only the inputs, but 
+also the state, or the current contents 
+of some memory. 
+17 
+Synchronous  Design  
+  The  easiest  (and  most  common)  way  to  build  computers  
+  All  state  elements  get  updated  at  the  same  'me  
+  Using	  a	  clock	  signal	  
+  Clock  signal  
+  A	  square	  wave	  with	  a	  constant	  period	  
+  We  always  update  state  at  the  same  point  in  wave  
+  E.g.,	  the	  rising	  edge	  
+0
+1
+Time
+clk
+clock period
+18 
+Synchronous  Design,  cont.  
+  Alternate  between  computa'on  and  upda'ng  state.  
+Computation
+(combinational
+logic)
+State
+(memory)
+0
+1
+Time
+clk
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+ST
+OR
+E
+Compute
+19 
+The  state  element  that  we  really  want…  
+  The  D  flip  flop  
+  Holds	  1	  bit	  of	  state	  
+  Output	  as	  Q.	  
+  Inputs	  
+  Copies	  D	  input	  into	  state	  on	  rising	  edge	  of	  clock.	  
+QD
+0
+1
+0
+1
+Time
+Q
+D
+0
+1clk
+20 
+Implemen'ng  the  D-­‐type  Flip  Flop  
+  Remember  the  SR  Latch?  
+  We’re  going  to  two  special  kinds  of  latches.  
+  SR	  Latch	  with	  enable	  
+  D	  Latch	  with	  enable	  
+NOR
+NOR
+Q
+Q'
+reset
+set
+S" R" Q"
+0" 0" No"change"
+0" 1" 0"(reset)"
+1" 0" 1"(set)"
+"
+"
+21 
+SR  Latch  with  Enable  
+  Take  SR  Latch,  make  it  ignore  input  when  enable  =  0  
+NOR
+NOR
+Q
+Q'
+reset
+set
+AND
+AND
+enable
+SR Latch
+22 
+D-­‐latch  with  Enable  
+  Take  SR  Latch  with  Enable,  make  reset  =  !set  
+  State	  get	  set	  to	  whatever	  D	  is.	  
+NOR
+NOR
+Q
+Q'
+D
+AND
+AND
+enable
+SR Latch
+NOT
+Enable D Q 
+0 X No change 
+1 0 0 
+1 1 1 
+23 
+The  D  Flip  Flop  
+  Only  one  of  the  latches  is  enabled  at  a  'me  
+  When	  clk=0,	  the	  master	  is	  transparent;	  slave	  holds	  its	  value	  
+  When	  clk=1,	  the	  master	  holds	  its	  value;	  slave	  transparent	  
+  On  rising  edge,  value  at  master’s  input  passed  to  slaves  output.  
+QD
+Q'
+enable
+QS
+Q'
+enable
+R
+NOT
+D
+clk
+Q
+Master
+(D Latch w/Enable)
+Slave
+(SR Latch w/Enable)

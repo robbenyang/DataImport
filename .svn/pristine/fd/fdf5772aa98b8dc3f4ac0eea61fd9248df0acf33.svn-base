@@ -1,0 +1,706 @@
+10/31/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+10/31/13 2 
+Using Ocamlyacc 
+n  Input attribute grammar is put in file 
+<grammar>.mly 
+n  Execute 
+ocamlyacc <grammar>.mly 
+n  Produces code for parser in 
+<grammar>.ml  
+   and interface (including type declaration for 
+tokens) in 
+<grammar>.mli 
+10/31/13 3 
+Parser Code 
+n  <grammar>.ml defines one parsing 
+function per entry point 
+n  Parsing function takes a lexing function 
+(lexer buffer to token) and a lexer 
+buffer as arguments  
+n  Returns semantic attribute of 
+corresponding entry point 
+10/31/13 4 
+Ocamlyacc Input 
+n  File format: 
+%{ 
+     <header> 
+%} 
+     <declarations> 
+%% 
+     <rules> 
+%% 
+     <trailer> 
+10/31/13 5 
+Ocamlyacc <header> 
+n  Contains arbitrary Ocaml code 
+n  Typically used to give types and 
+functions needed for the semantic 
+actions of rules and to give specialized 
+error recovery 
+n  May be omitted 
+n  <footer> similar.  Possibly used to call 
+parser 
+10/31/13 6 
+Ocamlyacc <declarations> 
+n  %token symbol … symbol 
+n     Declare given symbols as tokens 
+n  %token <type> symbol … symbol 
+n     Declare given symbols as token 
+constructors, taking an argument of type 
+<type> 
+n  %start symbol … symbol 
+n     Declare given symbols as entry points; 
+functions of same names in <grammar>.ml  
+10/31/13 7 
+Ocamlyacc <declarations> 
+n  %type <type> symbol … symbol 
+   Specify type of attributes for given symbols. 
+Mandatory for start symbols 
+n  %left symbol … symbol 
+n  %right symbol … symbol 
+n  %nonassoc symbol … symbol 
+   Associate precedence and associativity to 
+given symbols. Same line,same precedence; 
+earlier line, lower precedence (broadest 
+scope) 
+10/31/13 8 
+Ocamlyacc <rules> 
+n  nonterminal : 
+      symbol ... symbol { semantic_action } 
+    | ... 
+    | symbol ... symbol { semantic_action } 
+  ; 
+n  Semantic actions are arbitrary Ocaml 
+expressions 
+n  Must be of same type as declared (or inferred) 
+for nonterminal 
+n  Access semantic attributes (values) of symbols 
+by position: $1 for first symbol, $2 to second … 
+10/31/13 9 
+Ocamlyacc <rules> 
+n  Rules without semantic actions form a context 
+free grammar 
+n  Without associativity and precedence 
+declarations, Ocamlyacc can only accept 
+unambiguous grammars. 
+n  With such declaration, associativity and 
+precedence must be only source of ambiguity 
+n  Your main job: Disambiguate input grammar 
+Example 
+n  Given grammar: 
+<exp> ::= <exp> * <exp> | <exp> / <exp> 
+              | <exp> + <exp> | <exp> - <exp> 
+              | <ident>| ( <exp> ) 
+ 
+n  Disambiguate to: 
+<exp> ::= <term> | <term> + <exp> | <term> - <exp>  
+<term> ::= <factor>|<factor> * <term>|<factor> / <term> 
+<factor> ::= <id> | ( <exp> ) 
+  
+10/31/13 10 
+10/31/13 11 
+Example - Base types 
+(* File: expr.ml *) 
+type expr = 
+    Term_as_Expr of term 
+  | Plus_Expr of (term * expr) 
+  | Minus_Expr of (term * expr) 
+and term = 
+    Factor_as_Term of factor  
+  | Mult_Term of (factor * term) 
+  | Div_Term of (factor * term) 
+and factor = 
+    Id_as_Factor of string 
+  | Parenthesized_Expr_as_Factor of expr 
+10/31/13 12 
+Example - Lexer (exprlex.mll) 
+{ (*open Exprparse*) } 
+let numeric = ['0' - '9'] 
+let letter =['a' - 'z' 'A' - 'Z'] 
+rule token = parse 
+  | "+" {Plus_token} 
+  | "-"  {Minus_token} 
+  | "*"  {Times_token} 
+  | "/"  {Divide_token} 
+  | "("  {Left_parenthesis} 
+  | ")"  {Right_parenthesis} 
+  | letter (letter|numeric|"_")* as id  {Id_token id} 
+  | [' ' '\t' '\n'] {token lexbuf} 
+  | eof {EOL} 
+10/31/13 13 
+Example - Parser (exprparse.mly) 
+%{ open Expr 
+%} 
+%token <string> Id_token 
+%token Left_parenthesis Right_parenthesis 
+%token Times_token Divide_token 
+%token Plus_token Minus_token 
+%token EOL 
+%start main 
+%type <expr> main 
+%% 
+10/31/13 14 
+Example - Parser (exprparse.mly) 
+(*<exp> ::= <term> | <term> + <exp>  
+                | <term> - <exp> *) 
+expr: 
+   term        
+ { Term_as_Expr $1 } 
+ | term Plus_token expr     
+ { Plus_Expr ($1, $3) } 
+ | term Minus_token expr    
+ { Minus_Expr ($1, $3) } 
+10/31/13 15 
+Example - Parser (exprparse.mly) 
+(*<term> ::= <factor>|<factor> * <term>|
+<factor> / <term> *) 
+term: 
+   factor        
+ { Factor_as_Term $1 } 
+ | factor Times_token term    
+ { Mult_Term ($1, $3) } 
+ | factor Divide_token term    
+ { Div_Term ($1, $3) } 
+10/31/13 16 
+Example - Parser (exprparse.mly) 
+(*<factor> ::= <id> | ( <exp> ) *) 
+factor: 
+   Id_token       
+ { Id_as_Factor $1 } 
+ | Left_parenthesis expr Right_parenthesis      
+ {Parenthesized_Expr_as_Factor $2 } 
+main: 
+ | expr EOL                   
+  { $1 } 
+10/31/13 17 
+Example - Using Parser 
+# #use "expr.ml";; 
+… 
+# #use "exprparse.ml";; 
+… 
+# #use "exprlex.ml";; 
+… 
+# let test s = 
+  let lexbuf = Lexing.from_string (s^"\n") in 
+       main token lexbuf;; 
+10/31/13 18 
+Example - Using Parser 
+# test "a + b";; 
+- : expr = 
+Plus_Expr 
+ (Factor_as_Term (Id_as_Factor "a"), 
+  Term_as_Expr (Factor_as_Term 
+(Id_as_Factor "b"))) 
+10/31/13 19 
+LR Parsing 
+n  Read tokens left to right (L) 
+n  Create a rightmost derivation (R) 
+n  How is this possible? 
+n  Start at the bottom (left) and work your way up 
+n  Last step has only one non-terminal to be 
+replaced so is right-most 
+n  Working backwards, replace mixed strings by 
+non-terminals 
+n  Always proceed so that there are no non-
+terminals to the right of the string to be replaced 
+10/31/13 20 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                                            
+                  
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 21 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                                            
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 22 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 23 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 24 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                  
+                  
+                  
+                  
+                  
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 25 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                  
+                  
+                  
+                  
+                 => ( <Sum> + 1  ) + 0      reduce 
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 26 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                  
+                  
+                  
+                 => ( <Sum> + <Sum>  ) + 0     reduce 
+                 => ( <Sum> + 1  ) + 0      reduce 
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 27 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                  
+                  
+                 =   ( <Sum> ) + 0       shift     
+                 => ( <Sum> + <Sum>  ) + 0     reduce 
+                 => ( <Sum> + 1  ) + 0      reduce 
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 28 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                  
+                 => ( <Sum> )  + 0      reduce  
+                 =   ( <Sum> ) + 0       shift     
+                 => ( <Sum> + <Sum>  ) + 0     reduce 
+                 => ( <Sum> + 1  ) + 0      reduce 
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 29 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                  
+                 =   <Sum>  + 0      shift 
+                 => ( <Sum> )  + 0      reduce  
+                 =   ( <Sum> ) + 0       shift     
+                 => ( <Sum> + <Sum>  ) + 0     reduce 
+                 => ( <Sum> + 1  ) + 0      reduce 
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 30 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+           
+                 =   <Sum> +  0      shift 
+                 =   <Sum>  + 0      shift 
+                 => ( <Sum> )  + 0      reduce  
+                 =   ( <Sum> ) + 0       shift     
+                 => ( <Sum> + <Sum>  ) + 0     reduce 
+                 => ( <Sum> + 1  ) + 0      reduce 
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 31 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => 
+          => <Sum> + 0       reduce 
+                 =   <Sum> +  0      shift 
+                 =   <Sum>  + 0      shift 
+                 => ( <Sum> )  + 0      reduce  
+                 =   ( <Sum> ) + 0       shift     
+                 => ( <Sum> + <Sum>  ) + 0     reduce 
+                 => ( <Sum> + 1  ) + 0      reduce 
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 32 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => <Sum> + <Sum >      reduce 
+          => <Sum> + 0       reduce 
+                 =   <Sum> +  0      shift 
+                 =   <Sum>  + 0      shift 
+                 => ( <Sum> )  + 0      reduce  
+                 =   ( <Sum> ) + 0       shift     
+                 => ( <Sum> + <Sum>  ) + 0     reduce 
+                 => ( <Sum> + 1  ) + 0      reduce 
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 33 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+<Sum>   => <Sum> + <Sum >      reduce 
+          => <Sum> + 0       reduce 
+                 =   <Sum> +  0      shift 
+                 =   <Sum>  + 0      shift 
+                 => ( <Sum> )  + 0      reduce  
+                 =   ( <Sum> ) + 0       shift     
+                 => ( <Sum> + <Sum>  ) + 0     reduce 
+                 => ( <Sum> + 1  ) + 0      reduce 
+                 =   ( <Sum> +  1 ) + 0      shift 
+                 =   ( <Sum>  + 1 ) + 0      shift 
+                 => ( 0  + 1 ) + 0       reduce                           
+                 =   ( 0 + 1 ) + 0       shift 
+                 =    ( 0 + 1 ) + 0       shift 
+10/31/13 34 
+Example 
+                                        
+                                                       
+                  
+                         
+                         
+        
+ 
+ (         0        +     1               )    +       0 
+10/31/13 35 
+Example 
+                                        
+                                                       
+                  
+                  
+                         
+        
+ 
+ (         0        +     1               )    +       0 
+10/31/13 36 
+Example 
+                                        
+                                                       
+                  
+                  
+                         
+        
+ 
+ (         0        +     1               )    +       0 
+10/31/13 37 
+Example 
+                                        
+                                                       
+                  
+                  
+                         
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 38 
+Example 
+                                        
+                                                       
+                  
+                  
+                         
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 39 
+Example 
+                                        
+                                                       
+                  
+                  
+                         
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 40 
+Example 
+                                        
+                                                       
+                  
+                  
+                        <Sum> 
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 41 
+Example 
+                                        
+                                                       
+                  
+                 <Sum>        
+                        <Sum> 
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 42 
+Example 
+                                        
+                                                       
+                  
+                 <Sum>        
+                        <Sum> 
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 43 
+Example 
+                                        
+                                                       
+                 <Sum> 
+                 <Sum>        
+                        <Sum> 
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 44 
+Example 
+                                        
+                                                       
+                 <Sum> 
+                 <Sum>        
+                        <Sum> 
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 45 
+Example 
+                                        
+                                                       
+                 <Sum> 
+                 <Sum>        
+                        <Sum> 
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 46 
+Example 
+                                        
+                                                     <Sum>                                  
+                 <Sum> 
+                 <Sum>        
+                        <Sum> 
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 47 
+Example 
+                                       <Sum> 
+                                                     <Sum>                                  
+                 <Sum> 
+                 <Sum>        
+                        <Sum> 
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 48 
+Example 
+                                       <Sum> 
+                                                     <Sum>                                  
+                 <Sum> 
+                 <Sum>        
+                        <Sum> 
+       <Sum> 
+ 
+ (         0        +     1               )    +       0 
+10/31/13 49 
+LR Parsing Tables 
+n  Build a pair of tables, Action and Goto, from 
+the grammar 
+n  This is the hardest part, we omit here 
+n  Rows labeled by states 
+n  For Action, columns labeled by terminals 
+and “end-of-tokens” marker 
+n  (more generally strings of terminals of fixed 
+length) 
+n  For Goto, columns labeled by non-
+terminals 
+10/31/13 50 
+Action and Goto Tables 
+n  Given a state and the next input, Action 
+table says either 
+n  shift and go to state n, or 
+n  reduce by production k (explained in a 
+bit) 
+n  accept or error 
+n  Given a state and a non-terminal, Goto table 
+says  
+n  go to state m 
+10/31/13 51 
+LR(i) Parsing Algorithm 
+n  Based on push-down automata 
+n  Uses states and transitions (as recorded 
+in Action and Goto tables) 
+n  Uses a stack containing states, 
+terminals and non-terminals 
+10/31/13 52 
+LR(i) Parsing Algorithm 
+0.  Insure token stream ends in special “end-
+of-tokens” symbol 
+1.  Start in state 1 with an empty stack 
+2.  Push state(1) onto stack 
+3.  Look at next i tokens from token stream 
+(toks) (don’t remove yet) 
+4.  If top symbol on stack is state(n), look 
+up action in  Action table at (n, toks) 
+10/31/13 53 
+LR(i) Parsing Algorithm 
+5. If action = shift m, 
+a)  Remove the top token from token 
+stream and push it onto the stack 
+b)  Push state(m) onto stack 
+c)  Go to step 3 
+10/31/13 54 
+LR(i) Parsing Algorithm 
+6. If action = reduce k where production k is 
+E ::= u 
+a)  Remove 2 * length(u) symbols from 
+stack (u and all the interleaved states) 
+b)  If new top symbol on stack is state(m), 
+look up new state p in Goto(m,E) 
+c)  Push E onto the stack, then push 
+state(p) onto the stack 
+d)  Go to step 3 
+10/31/13 55 
+LR(i) Parsing Algorithm 
+7. If action = accept 
+n  Stop parsing, return success 
+8. If action = error, 
+n  Stop parsing, return failure 
+10/31/13 56 
+Adding Synthesized Attributes 
+n  Add to each reduce a rule for calculating 
+the new synthesized attribute from the 
+component attributes 
+n  Add to each non-terminal pushed onto the 
+stack, the attribute calculated for it 
+n  When performing a reduce, 
+n  gather the recorded attributes from each non-
+terminal popped from stack 
+n  Compute new attribute for non-terminal pushed 
+onto stack 
+10/31/13 57 
+Shift-Reduce Conflicts 
+n  Problem: can’t decide whether the 
+action for a state and input character 
+should be shift or reduce 
+n  Caused by ambiguity in grammar 
+n  Usually caused by lack of associativity 
+or precedence information in grammar 
+10/31/13 58 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+        0 + 1 + 0      shift 
+ ->  0  + 1 + 0       reduce  
+ -> <Sum>  + 1 + 0      shift 
+ -> <Sum> +  1 + 0      shift 
+ -> <Sum> + 1  + 0      reduce 
+ -> <Sum> + <Sum>  + 0 
+10/31/13 59 
+Example - cont 
+n  Problem: shift or reduce? 
+n  You can shift-shift-reduce-reduce or   
+reduce-shift-shift-reduce 
+n  Shift first - right associative 
+n  Reduce first- left associative 
+10/31/13 60 
+Reduce - Reduce Conflicts 
+n  Problem: can’t decide between two 
+different rules to reduce by 
+n  Again caused by ambiguity in grammar 
+n  Symptom: RHS of one production 
+suffix of another 
+n  Requires examining grammar and 
+rewriting it 
+n  Harder to solve than shift-reduce errors 
+10/31/13 61 
+Example 
+n  S ::= A | aB     A ::= abc       B ::= bc 
+ 
+   abc       shift 
+  a  bc      shift 
+  ab  c       shift 
+  abc         
+n  Problem: reduce by B ::= bc then by     
+S ::= aB, or by A::= abc then S::A? 

@@ -1,0 +1,351 @@
+11/7/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+11/7/13 2 
+Semantics 
+n  Expresses the meaning of syntax 
+n  Static semantics 
+n  Meaning based only on the form of the 
+expression without executing it 
+n  Usually restricted to type checking / type 
+inference 
+11/7/13 3 
+Dynamic semantics 
+n  Method of describing meaning of 
+executing a program 
+n  Several different types: 
+n  Operational Semantics 
+n  Axiomatic Semantics 
+n  Denotational Semantics 
+11/7/13 4 
+Dynamic Semantics 
+n Different languages better suited 
+to different types of semantics 
+n Different types of semantics 
+serve different purposes 
+11/7/13 5 
+Operational Semantics 
+n  Start with a simple notion of machine 
+n  Describe how to execute (implement) 
+programs of language on virtual machine, by 
+describing how to execute each program 
+statement (ie, following the structure of the 
+program) 
+ 
+n  Meaning of program is how its execution 
+changes the state of the machine 
+n  Useful as basis for implementations 
+11/7/13 6 
+Axiomatic Semantics 
+n  Also called Floyd-Hoare Logic 
+n  Based on formal logic (first order 
+predicate calculus) 
+n  Axiomatic Semantics is a logical system 
+built from axioms and inference rules 
+n  Mainly suited to simple imperative 
+programming languages 
+11/7/13 7 
+Axiomatic Semantics 
+n  Used to formally prove a property 
+(post-condition) of the state (the 
+values of the program variables) after 
+the execution of program, assuming 
+another property (pre-condition) of the 
+state before execution 
+n  Written : 
+{Precondition} Program {Postcondition} 
+n  Source of idea of loop invariant  
+11/7/13 8 
+Denotational Semantics 
+n  Construct a function M assigning a 
+mathematical meaning to each program 
+construct 
+n  Lambda calculus often used as the range 
+of the meaning function 
+n  Meaning function is compositional: 
+meaning of construct built from meaning 
+of parts 
+n  Useful for proving properties of programs 
+11/7/13 9 
+Natural Semantics 
+n  Aka Structural Operational Semantics, aka 
+“Big Step Semantics” 
+n  Provide value for a program by rules and 
+derivations, similar to type derivations 
+n  Rule conclusions look like  
+(C, m) ⇓ m’ 
+or 
+(E, m) ⇓ v 
+11/7/13 10 
+Simple Imperative Programming Language 
+n  I ∈ Identifiers 
+n  N ∈ Numerals 
+n  B ::= true | false | B & B | B or B | not B      
+| E < E | E = E 
+n  E::= N | I | E + E | E * E | E - E | - E 
+n  C::= skip | C;C | I ::= E  
+| if B then C else C fi | while B do C od 
+11/7/13 11 
+Natural Semantics of Atomic Expressions 
+ 
+n  Identifiers: (I,m) ⇓ m(I) 
+n  Numerals are values: (N,m) ⇓ N 
+n  Booleans:   (true,m) ⇓ true 
+                   (false ,m) ⇓ false 
+11/7/13 12 
+Booleans:  
+(B, m) ⇓ false       (B, m) ⇓ true  (B’, m) ⇓ b 
+(B & B’, m) ⇓ false          (B & B’, m) ⇓ b 
+ 
+  (B, m) ⇓ true         (B, m) ⇓ false  (B’, m) ⇓ b 
+(B or B’, m) ⇓ true           (B or B’, m) ⇓ b 
+ 
+(B, m) ⇓ true                 (B, m) ⇓ false 
+(not B, m) ⇓ false        (not B, m) ⇓ true 
+11/7/13 13 
+Relations 
+(E, m) ⇓ U     (E’, m) ⇓ V   U ~ V = b 
+(E ~ E’, m) ⇓ b 
+ 
+n  By U ~ V = b, we mean does (the meaning 
+of) the relation ~ hold on the meaning of U 
+and V 
+n  May be specified by a mathematical 
+expression/equation or rules matching U and 
+V 
+11/7/13 14 
+Arithmetic Expressions 
+ 
+(E, m) ⇓ U     (E’, m) ⇓ V   U op V = N 
+(E op E’, m) ⇓ N 
+where N is the specified value for U op V 
+11/7/13 15 
+Commands 
+Skip:                 (skip, m) ⇓ m 
+ 
+ 
+Assignment:             (E,m) ⇓ V 
+          (I::=E,m) ⇓ m[I <-- V ] 
+ 
+ 
+Sequencing:     (C,m) ⇓ m’    (C’,m’) ⇓ m’’ 
+             (C;C’, m) ⇓ m’’ 
+11/7/13 16 
+If Then Else Command 
+ 
+(B,m) ⇓ true   (C,m) ⇓ m’ 
+(if B then C else C’ fi, m) ⇓ m’ 
+ 
+(B,m) ⇓ false   (C’,m) ⇓ m’ 
+(if B then C else C’ fi, m) ⇓ m’ 
+11/7/13 17 
+While Command 
+(B,m) ⇓ false 
+(while B do C od, m) ⇓ m 
+ 
+(B,m)⇓true (C,m)⇓m’  (while B do C od, 
+m’ )⇓m’’ 
+(while B do C od, m) ⇓ m’’ 
+11/7/13 18 
+Example: If Then Else Rule 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+                                             (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) ⇓ ? 
+11/7/13 19 
+Example: If Then Else Rule 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+                                             (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓?                  ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓  ? {x->7, y->5}  
+11/7/13 20 
+Example: Arith Relation 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    ? > ? = ?                           (2+3, {x->7})⇓5 
+(x,{x->7})⇓?   (5,{x->7})⇓?        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓?                 ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓ ? {x->7, y->5}  
+11/7/13 21 
+Example: Identifier(s) 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+     7 > 5 = true                           (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓?                 ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓ ? {x->7, y->5}  
+11/7/13 22 
+Example: Arith Relation 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                      {x -> 7}) ⇓ ? {x->7, y->5}  
+11/7/13 23 
+Example: If Then Else Rule 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+     7 > 5 = true                     (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓ ?                    . 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                      {x -> 7}) ⇓ ? {x->7, y->5}  
+11/7/13 24 
+Example: Assignment 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓? 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓ ? {x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                      {x -> 7}) ⇓ ?  {x->7, y->5}  
+11/7/13 25 
+Example: Arith Op 
+                                                ? + ? = ? 
+                                  (2,{x->7})⇓?    (3,{x->7}) ⇓? 
+     7 > 5 = true                      (2+3, {x->7})⇓? 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓?                     . 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓ ? {x->7, y->5}  
+11/7/13 26 
+Example: Numerals 
+                                                2 + 3 = 5 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓? 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓ ?{x->7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                      {x -> 7}) ⇓ ? {x->7, y->5}  
+11/7/13 27 
+Example: Arith Op 
+                                                2 + 3 = 5 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓? {x->7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                       {x -> 7}) ⇓  ? {x->7, y->5}  
+11/7/13 28 
+Example: Assignment 
+                                                2 + 3 = 5 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+(x > 5, {x -> 7})⇓true            ⇓ {x->7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓?  {x->7, y->5}  
+11/7/13 29 
+Example: If Then Else Rule 
+                                                2 + 3 = 5 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓ {x->7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+     {x -> 7}) ⇓  {x->7, y->5}  
+11/7/13 30 
+Let in Command 
+ 
+(E,m) ⇓v  (C,m[I<-v]) ⇓ m’ 
+(let I = E in C, m) ⇓ m’ ’ 
+ 
+ 
+Where m’’ (y) = m’ (y) for y≠ I and  
+m’’ (I) = m (I) if m(I) is defined, 
+and m’’ (I) is undefined otherwise 
+11/7/13 31 
+Example 
+ 
+ 
+                      (x,{x->5}) ⇓ 5   (3,{x->5}) ⇓ 3 
+                           (x+3,{x->5}) ⇓ 8 
+(5,{x->17}) ⇓ 5     (x:=x+3,{x->5}) ⇓ {x->8} 
+  (let x = 5 in (x:=x+3), {x -> 17}) ⇓ ? 
+11/7/13 32 
+Example 
+ 
+ 
+                      (x,{x->5}) ⇓ 5   (3,{x->5}) ⇓ 3 
+                           (x+3,{x->5}) ⇓ 8 
+(5,{x->17}) ⇓ 5     (x:=x+3,{x->5}) ⇓ {x->8} 
+  (let x = 5 in (x:=x+3), {x -> 17}) ⇓ {x->17} 
+11/7/13 33 
+Comment 
+n  Simple Imperative Programming Language 
+introduces variables implicitly through 
+assignment 
+n  The let-in command introduces scoped 
+variables explictly 
+n  Clash of constructs apparent in awkward 
+semantics 
+11/7/13 34 
+Interpretation Versus Compilation 
+n  A compiler from language L1 to language 
+L2 is a program that takes an L1 program 
+and for each piece of code in L1 generates a 
+piece of code in L2 of same meaning 
+n  An interpreter of L1 in L2 is an L2 program 
+that executes the meaning of a given L1 
+program 
+n  Compiler would examine the body of a loop 
+once; an interpreter would examine it every 
+time the loop was executed 
+11/7/13 35 
+Interpreter  
+n  An Interpreter represents the operational 
+semantics of a language L1 (source 
+language) in the language of implementation 
+L2 (target language) 
+n  Built incrementally 
+n  Start with literals 
+n  Variables 
+n  Primitive operations 
+n  Evaluation of expressions 
+n  Evaluation of commands/declarations 
+11/7/13 36 
+Interpreter 
+n  Takes abstract syntax trees as input  
+n  In simple cases could be just strings 
+n  One procedure for each syntactic category 
+(nonterminal) 
+n  eg one for expressions, another for commands 
+n  If Natural semantics used, tells how to 
+compute final value from code 
+n  If Transition semantics used, tells how to 
+compute next “state” 
+n  To get final value, put in a loop 
+11/7/13 37 
+Natural Semantics Example 
+n  compute_exp (Var(v), m) = look_up v m 
+n  compute_exp (Int(n), _) = Num (n) 
+n  … 
+n  compute_com(IfExp(b,c1,c2),m) = 
+       if compute_exp (b,m) = Bool(true) 
+       then compute_com (c1,m) 
+       else compute_com (c2,m) 
+11/7/13 38 
+Natural Semantics Example 
+n  compute_com(While(b,c), m) = 
+      if compute_exp (b,m) = Bool(false) 
+      then m 
+      else compute_com 
+              (While(b,c), compute_com(c,m)) 
+ 
+n  May fail to terminate - exceed stack limits 
+n  Returns no useful information then 

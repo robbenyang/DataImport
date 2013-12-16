@@ -1,0 +1,119 @@
+MP6 available, due 11/19, 11:59p.  
+Lab Race really is due 11/17 
+Exam 2: average 82 
+ 
+ 
+ 
+ 
+  
+ 
+Today’s announcements: 
+Disjoint Sets ADT 
+We will implement a data structure in support of “Disjoint Sets”: 
+•  Maintains a collection S = {s0, s1, … sk} of disjoint sets. 
+•  Each set has a representative member. 
+•  Supports functions: void MakeSet(const T & k); 
+void Union(const T & k1, const T & k2); 
+T & Find(const T & k); 
+A first data structure for Disjoint Sets: 
+Running Times 
+Find: 
+Union: 
+0 1 2 3 0 1 2 3 
+0 1 2 3 
+A better data structure for Disjoint Sets:  UpTrees 
+• if array value is -1, then we’ve found a root, o/w value is index of parent. 
+• x and y are in the same tree iff they are in the same set. 
+A Disjoint Sets example: 
+Let R be an equivalence relation on the set of students in this room, where 
+(s,t)    R if s and t have the same major. 
+0 1 4 8 2 5 9 3 6 7 
+0 1 2 3 4 5 6 7 8 9 
+4 8 5 6 -1 -1 -1 -1 4 5 
+1.  Find(4) 
+2.  Find(4)==Find(8) 
+3.  If (!(Find(7)==Find(2)) then Union(Find(7),Find(2)) 
+A better data structure for Disjoint Sets: 
+int DS::Find(int i) { 
+   if (s[i] < 0) return i; 
+   else return Find(s[i]); 
+} 
+void DS::Union(int root1, int root2) { 
+   ________________________; 
+} 
+Running time depends on ___________. 
+Worst case? 
+What’s an ideal tree? 
+something to consider… 
+Smart unions: 
+Union by height: 
+Union by size: 
+Keeps overall height of tree 
+as small as possible. 
+Increases distance to root 
+for fewest nodes. 
+Both of these schemes for Union guarantee the height of the tree is __________. 
+Smart unions: 
+int DS::Find(int i) { 
+   if (s[i] < 0) return i; 
+   else return Find(s[i]); 
+} 
+void DS::UnionBySize(int root1, int root2) { 
+   int newSize = s[root1]+s[root2]; 
+   if (isBigger(root1,root2)) { 
+      s[root2]= root1; 
+      s[root1]= newSize; 
+   } 
+   else { 
+      s[root1] = root2; 
+      s[root2]= newSize; 
+   } 
+} 
+Path Compression: 
+10 
+9 11 
+1 7 
+2 8 
+4 3 
+5 6 
+Path Compression: 
+int DS::Find(int i) { 
+   if (s[i] < 0) return i; 
+   else return      Find(s[i]); 
+} 
+void DS::UnionBySize(int root1, int root2) { 
+   int newSize = s[root1]+s[root2]; 
+   if (isBigger(root1,root2)) { 
+      s[root2]= root1; 
+      s[root1]= newSize; 
+   } 
+   else { 
+      s[root1] = root2; 
+      s[root2]= newSize; 
+   } 
+} 
+Analysis: 
+ 
+ 
+Example: 
+265536 
+Relevant result: 
+In an upTree implementation of Disjoint Sets using smart union and 
+path compression upon find... 
+any sequence of m union and find operations results in worst case 
+running time of O(__________), where n is the number of items. 
+http://research.cs.vt.edu/AVresearch/UF/ 
+A B C 
+D E F 
+If (Find(A) != Find(B) 
+ Union(Find(A),Find(B)); 
+If (Find(D) != Find(E) 
+ Union(Find(D),Find(E)); 
+If (Find(A) != Find(C) 
+ Union(Find(A),Find(C)); 
+If (Find(C) != Find(B) 
+ Union(Find(C),Find(B)); 
+If (Find(B) != Find(F)) 
+ Union(Find(B),Find(F)); 
+If (Find(D) != Find(F)) 
+ Union(Find(D),Find(F)); 

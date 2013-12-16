@@ -1,0 +1,735 @@
+10/3/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+10/3/13 2 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Start building the proof tree from the 
+bottom up   
+      
+                          
+?  
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 3 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Which rule has this as a conclusion? 
+    
+      
+                          
+?  
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 4 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Boolean Connectives: || 
+                  
+                          
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+ 
+10/3/13 5 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Pick an assumption to prove 
+                  
+              ?                  
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 6 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Which rule has this as a conclusion? 
+                  
+              ?                  
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 7 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Axiom for variables 
+                  
+                                
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 8 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Pick an assumption to prove 
+                    
+                                              ? 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 9 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Which rule has this as a conclusion? 
+                    
+                                              ? 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 10 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Arithmetic relations 
+                   
+                       Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 11 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Pick an assumption to prove 
+ 
+                                                         ? 
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 12 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Which rule has this as a conclusion? 
+                                                         ? 
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 13 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Axiom for constants 
+                  
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 14 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Pick an assumption to prove 
+                                   ? 
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 15 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Which rule has this as a conclusion? 
+                                   ? 
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 16 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Arithmetic operations 
+                 Γ |- x : int  Γ |- 3 : int  
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 17 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Pick an assumption to prove 
+                                        ? 
+                 Γ |- x : int  Γ |- 3 : int  
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 18 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Which rule has this as a conclusion? 
+                                        ? 
+                 Γ |- x : int  Γ |- 3 : int  
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 19 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Axiom for constants 
+                                         
+                 Γ |- x : int  Γ |- 3 : int  
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 20 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Pick an assumption to prove 
+                       ? 
+                 Γ |- x : int  Γ |- 3 : int  
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 21 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Which rule has this as a conclusion? 
+                       ? 
+                 Γ |- x : int  Γ |- 3 : int  
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 22 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   Axiom for variables 
+                 Γ |- x : int  Γ |- 3 : int  
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 23 
+Simple Example 
+n   Let Γ = [ x:int ; y:bool] 
+n   Show Γ |- y || (x + 3 > 6) : bool 
+n   No more assumptions! DONE! 
+                 Γ |- x : int  Γ |- 3 : int  
+                         Γ |- x + 3 : int    Γ |- 6 : int 
+ Γ |- y : bool        Γ |- x + 3 > 6 : bool 
+ Γ |- y || (x + 3 > 6) : bool 
+10/3/13 24 
+Type Variables in Rules 
+n  If_then_else rule: 
+ Γ |- e1 : bool   Γ |- e2  : τ   Γ |- e3  : τ 
+ Γ |- (if e1 then e2  else e3) : τ 
+n   τ is a type variable (meta-variable) 
+n   Can take any type at all 
+n   All instances in a rule application must get 
+same type 
+n   Then branch, else branch and if_then_else 
+must all have same type 
+10/3/13 25 
+Function Application 
+n  Application rule: 
+ Γ |- e1 : τ1 → τ2   Γ |- e2  : τ1 
+ Γ |- (e1 e2) : τ2 
+n   If you have a function expression e1 of 
+type  τ1 → τ2 applied to an argument of 
+type τ1, the resulting expression has 
+type τ2  
+10/3/13 26 
+Application Examples 
+ Γ |- print_int : int → unit    Γ |- 5 : int  
+ Γ |- (print_int 5) : unit 
+n  e1 = print_int,  e2 = 5,  
+n   τ1 = int,  τ2 = unit 
+Γ |- map print_int : int list → unit list    Γ |- [3;7] : int list 
+ Γ |- (map print_int [3; 7]) : unit list 
+n  e1 = map print_int,  e2 = [3; 7],  
+n   τ1 = int list,  τ2 = unit list 
+10/3/13 27 
+Fun Rule 
+n  Rules describe types, but also how the 
+environment Γ may change 
+n   Can only do what rule allows! 
+n   fun rule: 
+ [x : τ1 ] + Γ |- e  : τ2 
+ Γ |- fun x -> e  : τ1 → τ2 
+10/3/13 28 
+Fun Examples 
+[y : int ] + Γ |- y + 3  : int 
+Γ |- fun y -> y + 3  : int → int  
+[f : int → bool] + Γ |- f 2 :: [true]  : bool list 
+Γ |- (fun f -> f 2 :: [true])  
+                       : (int → bool) → bool list  
+ 
+10/3/13 29 
+(Monomorphic) Let and Let Rec 
+n  let rule: 
+ Γ |- e1  : τ1       [x : τ1 ] + Γ |- e2  : τ2 
+Γ |- (let x = e1 in e2 ) : τ2 
+n  let rec rule: 
+ [x: τ1 ] + Γ |- e1:τ1  [x: τ1 ] + Γ |- e2:τ2 
+Γ |- (let rec x = e1 in e2 ) : τ2 
+10/3/13 30 
+Example (Assume Prim Op rule for ::) 
+n  Which rule do we apply? 
+                                   
+ 
+ ? 
+  |- (let rec one = 1 :: one in  
+      let x = 2 in 
+        fun y -> (x :: y :: one) ) : int → int list 
+10/3/13 31 
+Example 
+n  Let rec rule:      2   [one : int list] |- 
+  1                                (let x = 2 in 
+[one : int list] |-        fun y -> (x :: y :: one)) 
+ (1 :: one) : int list          : int → int list 
+  |- (let rec one = 1 :: one in  
+      let x = 2 in 
+        fun y -> (x :: y :: one) ) : int → int list 
+10/3/13 32 
+Proof of 1 
+n  Which rule? 
+ 
+                                    
+[one : int list] |- (1 :: one) : int list 
+10/3/13 33 
+Proof of 1 
+n  Prim Op rule for :: (at int) 
+3                                           4 
+                                   [one : int list] |- 
+[one : int list] |- 1: int         one : int list 
+[one : int list] |- (1 :: one) : int list 
+10/3/13 34 
+Proof of 3 
+n  Constant Rule 
+3                                           4 
+                                   [one : int list] |- 
+[one : int list] |- 1: int         one : int list 
+[one : int list] |- (1 :: one) : int list 
+10/3/13 35 
+Proof of 4 
+n  Rule for variables 
+[one : int list] |- one:int list 
+10/3/13 36 
+Proof of 2 
+                             5    [x:int; one : int list] |- 
+n  Constant                    fun y -> 
+                                      (x :: y :: one)) 
+[one : int list] |- 2:int       : int → int list 
+    [one : int list] |-  (let x = 2 in 
+     fun y -> (x :: y :: one)) : int → int list 
+10/3/13 37 
+Proof of 5 
+Use function rule 
+ 
+ 
+  
+? 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+10/3/13 38 
+Proof of 5 
+Use Prim Op rule for :: 
+                    
+ 
+ ? 
+[y:int; x:int; one : int list] |- (x :: y :: one) : int list 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+10/3/13 39 
+Proof of 5 
+Use Prim Op rule for :: 
+  6                      7 
+ 
+ 
+[y:int; x:int; one:int list]|-  [y:int; x:int; one:int list] |-  
+    x:int     (y :: one) : int list 
+[y:int; x:int; one : int list] |- (x :: y :: one) : int list 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+10/3/13 40 
+Proof of 6 
+ 
+  6   Variable Rule      7 
+ 
+ 
+[y:int; x:int; one:int list]|-  [y:int; x:int; one:int list] |-  
+    x:int     (y :: one) : int list 
+[y:int; x:int; one : int list] |- (x :: y :: one) : int list 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+10/3/13 41 
+Proof of 7 
+ 
+Prim Op Rule :: 
+   8        9 
+    
+[y:int; x:int; one:int list]|-  [y:int; x:int; one:int list] |-  
+    y:int     one : int list 
+[y:int; x:int; one : int list] |- (y :: one)): int list 
+10/3/13 42 
+Proof of 8 and 9 
+ 
+Variable Rule 
+  8        9 
+ 
+[y:int; x:int; one:int list]|-  [y:int; x:int; one:int list] |-  
+    y:int     (y :: one) : int list 
+[y:int; x:int; one : int list] |- (y :: one)): int list 
+10/3/13 43 
+Curry - Howard Isomorphism 
+n  Type Systems are logics; logics are type 
+systems 
+n  Types are propositions; propositions are 
+types 
+n  Terms are proofs; proofs are terms 
+n  Functions space arrow corresponds to 
+implication; application corresponds to 
+modus ponens  
+10/3/13 44 
+Curry - Howard Isomorphism 
+n  Modus Ponens 
+A ⇒ B   A 
+B 
+•  Application 
+ Γ |- e1 : α → β   Γ |- e2  : α 
+ Γ |- (e1 e2) : β 
+10/3/13 45 
+Mia Copa 
+n  The above system can’t handle polymorphism as 
+in OCAML 
+n  No type variables in type language (only meta-
+variable in the logic) 
+n  Would need:  
+n  Object level type variables and some kind of 
+type quantification 
+n  let and let rec rules to introduce polymorphism 
+n  Explicit rule to eliminate (instantiate) 
+polymorphism 
+Support for Polymorphic Types 
+n  Monomorpic Types (τ): 
+n  Basic Types: int, bool, float, string, unit, … 
+n  Type Variables: α, β, γ δ ε 
+n  Compound Types: α → β, int * string, bool list, … 
+n  Polymorphic Types: 
+n  Monomorphic types τ 
+n  Universally quantified monomorphic types 
+n      α1, … , αn . τ 
+n   Can think of τ as same as    . τ 
+10/3/13 46 
+A 
+A 
+Support for Polymorphic Types 
+n  Typing Environment Γ supplies polymorphic types 
+(which will often just be monomorphic) for 
+variables 
+n  Free variables of monomorphic type just type 
+variables that occur in it 
+n  Write FreeVars(τ) 
+n  Free variables of polymorphic type removes 
+variables that are universally quantified 
+n  FreeVars(  α1, … , αn . τ) = FreeVars(τ) – {α1, … , αn } 
+n  FreeVars(Γ) = all FreeVars of types in range of Γ 
+10/3/13 47 
+A 
+Monomorphic to Polymorphic 
+n  Given: 
+n  type environment Γ 
+n  monomorphic type τ 
+n  τ shares type variables with Γ 
+n  Want most polymorphic type for τ that 
+doesn’t break sharing type variables with Γ 
+n  Gen(τ, Γ) =   α1, … , αn . τ where  
+   {α1, … , αn} = freeVars(τ) – freeVars(Γ) 
+10/3/13 48 
+A 
+Polymorphic Typing Rules 
+n  A type judgement  has the form 
+Γ |- exp : τ 
+n   Γ uses polymorphic types 
+n   τ still monomorphic 
+n  Most rules stay same (except use more general 
+typing environments) 
+n  Rules that change: 
+n  Variables 
+n  Let and Let Rec 
+n  Allow polymorphic constants 
+n  Worth noting functions again 
+10/3/13 49 10/3/13 50 
+Polymorphic Let and Let Rec 
+n  let rule: 
+ Γ |- e1  : τ1    [x : Gen(τ1,Γ)] + Γ |- e2  : τ2 
+Γ |- (let x = e1 in e2 ) : τ2 
+n  let rec rule: 
+ [x: τ1 ] + Γ |- e1:τ1  [x:Gen(τ1,Γ)] + Γ |- e2:τ2 
+Γ |- (let rec x = e1 in e2 ) : τ2 
+Polymorphic Variables (Identifiers) 
+Variable axiom: 
+ 
+ Γ |- x : ϕ(τ)     if Γ(x) =   α1, … , αn . τ 
+ 
+n  Where ϕ replaces all occurrences of  
+   α1, … , αn   by monotypes τ1, … , τn 
+n  Note: Monomorphic rule special case: 
+Γ |- x : τ     if Γ(x) = τ  
+n  Constants treated same way 
+10/3/13 51 
+A 
+10/3/13 52 
+Fun Rule Stays the Same 
+n  fun rule: 
+ [x : τ1 ] + Γ |- e  : τ2 
+ Γ |- fun x -> e  : τ1 → τ2 
+ 
+n  Types τ1, τ2 monomorphic  
+n  Function argument must always be 
+used at same type in function body 
+ 
+Polymorphic Example 
+n  Assume additional constants: 
+n  hd :  α. α list -> α 
+n  tl:   α. α list -> α list 
+n  is_empty :   α. α list -> bool 
+n  :: :   α. α -> α list -> α list 
+n  [] :   α. α list 
+10/3/13 53 
+A 
+A 
+A 
+A 
+A 
+Polymorphic Example 
+n  Show: 
+ 
+ 
+ ? 
+{} |- let rec length = 
+         fun l -> if is_empty l then 0 
+                     else 1 + length (tl l)  
+  in length ((::) 2 []) + length((::) true []) : int 
+10/3/13 54 
+Polymorphic Example: Let Rec Rule 
+n  Show:   (1)                       (2) 
+{length:α list -> int}  {length:  α. α list -> int}  
+|- fun l -> …              |- length ((::) 2 []) +   
+ : α list -> int                length((::) true []) : int 
+{} |- let rec length = 
+         fun l -> if is_empty l then 0 
+                     else 1 + length (tl l)  
+  in length ((::) 2 []) + length((::) true []) : int 
+10/3/13 55 
+A 
+Polymorphic Example (1) 
+n  Show: 
+ 
+ 
+     ?      
+{length:α list -> int} |- 
+fun l -> if is_empty l then 0 
+                     else 1 + length (tl l)  
+: α list -> int 
+10/3/13 56 
+Polymorphic Example (1): Fun Rule 
+n  Show:        (3) 
+{length:α list -> int,  l: α list } |- 
+if is_empty l then 0 
+     else length (hd l) + length (tl l)  : int 
+{length:α list -> int} |- 
+fun l -> if is_empty l then 0 
+                     else 1 + length (tl l)  
+: α list -> int 
+10/3/13 57 
+Polymorphic Example (3) 
+n  Let  Γ ={length:α list -> int,  l: α list }  
+n  Show 
+         
+ 
+      
+                                ? 
+         Γ|- if is_empty l then 0 
+              else 1 + length (tl l)  : int 
+10/3/13 58 
+Polymorphic Example (3):IfThenElse  
+n  Let  Γ ={length:α list -> int,  l: α list }  
+n  Show 
+        (4)                (5)        (6) 
+Γ|- is_empty l   Γ|- 0:int   Γ|- 1 +  
+     : bool                         length (tl l)  : int     
+         Γ|- if is_empty l then 0 
+              else 1 + length (tl l)  : int 
+10/3/13 59 
+Polymorphic Example (4) 
+n  Let  Γ ={length:α list -> int,  l: α list }  
+n  Show 
+ 
+ 
+ 
+ 
+? 
+Γ|- is_empty l : bool 
+10/3/13 60 
+Polymorphic Example (4):Application 
+n  Let  Γ ={length:α list -> int,  l: α list }  
+n  Show 
+ 
+ 
+                     ?                              ? 
+                                     
+Γ|- is_empty : α list -> bool       Γ|- l : α list  
+Γ|- is_empty l : bool 
+10/3/13 61 
+Polymorphic Example (4) 
+n  Let  Γ ={length:α list -> int,  l: α list }  
+n  Show 
+ 
+By Const since α list -> bool is 
+instance of   α. α list -> bool             ? 
+ 
+Γ|- is_empty : α list -> bool       Γ|- l : α list  
+Γ|- is_empty l : bool 
+10/3/13 62 
+A 
+Polymorphic Example (4) 
+n  Let  Γ ={length:α list -> int,  l: α list }  
+n  Show 
+ 
+By Const since α list -> bool is    By Variable 
+instance of   α. α list -> bool      Γ(l) = α list  
+ 
+Γ|- is_empty : α list -> bool       Γ|- l : α list  
+Γ|- is_empty l : bool 
+n  This finishes (4) 
+10/3/13 63 
+A 
+Polymorphic Example (5):Const 
+n  Let  Γ ={length:α list -> int,  l: α list }  
+n  Show 
+By Const Rule 
+ 
+Γ|- 0:int 
+      
+                                       
+10/3/13 64 
+Polymorphic Example (6):Arith Op  
+n  Let  Γ ={length:α list -> int,  l: α list }  
+n  Show 
+                   By Variable 
+                    Γ|- length                 (7) 
+By Const       : α list -> int    Γ|- (tl l) : α list 
+Γ|- 1:int                  Γ|- length (tl l) : int  
+Γ|- 1 + length (tl l) : int 
+10/3/13 65 
+Polymorphic Example (7):App Rule 
+n  Let  Γ ={length:α list -> int,  l: α list }  
+n  Show 
+       By Const                             By Variable 
+ Γ|- (tl l) : α list -> α list              Γ|- l : α list 
+                    Γ|- (tl l) : α list 
+ 
+By Const since α list -> α list is instance of  
+    α. α list -> α list 
+ 
+10/3/13 66 
+A 
+Polymorphic Example: (2) by ArithOp 
+n  Let Γ’ = {length:  α. α list -> int}          
+n  Show: 
+ 
+          (8)                             (9) 
+Γ’ |-                           Γ’ |-  
+length ((::) 2 []) :int    length((::) true []) : int 
+{length:  α. α list -> int}          
+|- length ((::) 2 []) + length((::) true []) : int 
+10/3/13 67 
+A 
+Polymorphic Example: (8)AppRule 
+n  Let Γ’ = {length:  α. α list -> int}          
+n  Show: 
+ 
+ 
+ 
+Γ’ |- length : int list ->int   Γ’ |- ((::)2 []):int 
+list 
+            Γ’ |- length ((::) 2 []) :int 
+10/3/13 68 
+A 
+Polymorphic Example: (8)AppRule 
+n  Let Γ’ = {length:  α. α list -> int}          
+n  Show: 
+By Var since int list -> int  is instance of  
+    α. α list -> int 
+                                               (10) 
+Γ’ |- length : int list ->int   Γ’ |- ((::)2 []):int 
+list 
+            Γ’ |- length ((::) 2 []) :int 
+10/3/13 69 
+A 
+A 
+Polymorphic Example: (10)AppRule 
+n  Let Γ’ = {length:  α. α list -> int}          
+n  Show: 
+n  By Const since α list  is instance of  
+    α. α list 
+               (11) 
+Γ’|-((::) 2) : int list -> int list    Γ’ |- [] : int list 
+                  Γ’ |- ((::) 2 []) :int list 
+10/3/13 70 
+A 
+A 
+Polymorphic Example: (11)AppRule 
+n  Let Γ’ = {length:  α. α list -> int}          
+n  Show: 
+n  By Const since α list 
+   is instance of  
+     α. α list                                     By Const 
+Γ’ |- (::) : int -> int list -> int list     Γ’ |- 2 : 
+int 
+           Γ’ |- ((::) 2) : int list -> int list 
+10/3/13 71 
+A 
+A 
+Polymorphic Example: (9)AppRule 
+n  Let Γ’ = {length:  α. α list -> int}          
+n  Show: 
+ 
+ 
+ 
+Γ’ |-                              Γ’ |-  
+length:bool list ->int      ((::) true []):bool list 
+            Γ’ |- length ((::) true []) :int 
+10/3/13 72 
+A 
+Polymorphic Example: (9)AppRule 
+n  Let Γ’ = {length:  α. α list -> int}          
+n  Show: 
+By Var since bool list -> int  is instance of  
+    α. α list -> int 
+                                               (12) 
+Γ’ |-                              Γ’ |- 
+length:bool list ->int      ((::) true []):bool list 
+            Γ’ |- length ((::) true []) :int 
+10/3/13 73 
+A 
+A 
+Polymorphic Example: (12)AppRule 
+n  Let Γ’ = {length:  α. α list -> int}          
+n  Show: 
+n  By Const since α list  is instance of  
+    α. α list 
+               (13) 
+Γ’|-((::)true):bool list ->bool list  Γ’|- []:bool 
+list 
+                  Γ’ |- ((::) true []) :bool list 
+10/3/13 74 
+A 
+A 
+Polymorphic Example: (13)AppRule 
+n  Let Γ’ = {length:  α. α list -> int}          
+n  Show: 
+   By Const since bool list 
+   is instance of   α. α list                By Const 
+Γ’ |-                                         Γ’ |-  
+(::):bool ->bool list ->bool list     true : bool 
+       Γ’ |- ((::) true) : bool list -> bool list 
+10/3/13 75 
+A 
+A 

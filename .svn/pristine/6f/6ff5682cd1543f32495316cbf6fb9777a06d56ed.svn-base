@@ -1,0 +1,435 @@
+10/22/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+10/22/13 2 
+Where We Are Going 
+n  We want to turn strings (code) into 
+computer instructions 
+n  Done in phases 
+n  Turn strings into abstract syntax trees 
+(parse) 
+n  Translate abstract syntax trees into 
+executable instructions (interpret or compile) 
+Major Phases of a Compiler 
+Source Program 
+Lex 
+Tokens 
+Parse 
+Abstract Syntax 
+Semantic 
+Analysis 
+Symbol Table 
+Translate 
+Intermediate 
+Representation 
+Modified from “Modern Compiler Implementation in ML”, by Andrew Appel 
+Instruction 
+Selection 
+Optimized Machine-Specific 
+Assembly Language 
+Optimize 
+Unoptimized Machine-
+Specific Assembly Language 
+Emit code 
+Assembler 
+Relocatable 
+ Object Code 
+Assembly Language 
+Linker 
+Machine 
+Code 
+Optimize 
+Optimized IR 
+10/22/13 4 
+Meta-discourse 
+n  Language Syntax and Semantics 
+n  Syntax 
+      - Regular Expressions, DFSAs and NDFSAs 
+      - Grammars    
+n  Semantics 
+      - Natural Semantics 
+      - Transition Semantics 
+10/22/13 5 
+Language Syntax 
+n  Syntax is the description of which strings of 
+symbols are meaningful expressions in a 
+language 
+n  It takes more than syntax to understand a 
+language; need meaning (semantics) too 
+n  Syntax is the entry point 
+10/22/13 6 
+Syntax of English Language 
+n  Pattern 1 
+n  Pattern 2 
+10/22/13 7 
+Elements of Syntax 
+n  Character set – previously always ASCII, 
+now often 64 character sets 
+n  Keywords – usually reserved 
+n  Special constants – cannot be assigned to 
+n  Identifiers – can be assigned to 
+n  Operator symbols 
+n  Delimiters (parenthesis, braces, brackets) 
+n  Blanks (aka white space) 
+10/22/13 8 
+Elements of Syntax 
+n  Expressions 
+           if ... then begin ... ; ... end else begin ... ; ... end 
+n  Type expressions 
+            typexpr1 ->  typexpr2        
+n  Declarations (in functional languages) 
+            let pattern =  expr     
+n  Statements (in imperative languages) 
+           a = b + c   
+n  Subprograms 
+             let pattern1 =  expr1 in  expr 
+10/22/13 9 
+Elements of Syntax 
+n  Modules 
+n  Interfaces 
+n  Classes (for object-oriented languages) 
+10/22/13 10 
+Lexing and Parsing 
+n  Converting strings to abstract syntax trees 
+done in two phases 
+n  Lexing: Converting string (or streams of 
+characters) into lists (or streams) of 
+tokens (the “words” of the language) 
+n  Specification Technique: Regular Expressions 
+n  Parsing: Convert a list of tokens into an 
+abstract syntax tree 
+n  Specification Technique: BNF Grammars 
+10/22/13 11 
+Formal Language Descriptions 
+n  Regular expressions, regular grammars, 
+finite state automata 
+n  Context-free grammars, BNF grammars, 
+syntax diagrams 
+n  Whole family more of grammars and 
+automata – covered in automata theory 
+10/22/13 12 
+Grammars 
+n  Grammars are formal descriptions of which 
+strings over a given character set are in a 
+particular language 
+n  Language designers write grammar 
+n  Language implementers use grammar to 
+know what programs to accept 
+n  Language users use grammar to know how 
+to write legitimate programs 
+10/22/13 13 
+Regular Expressions - Review 
+n  Start with a given character set –           
+a, b, c… 
+n  Each character is a regular expression 
+n  It represents the set of one string 
+containing just that character 
+10/22/13 14 
+Regular Expressions 
+n  If x and y are regular expressions, then xy is 
+a regular expression 
+n  It represents the set of all strings made from first 
+a string described by x then a string described by 
+y 
+If x={a,ab} and y={c,d} then xy ={ac,ad,abc,abd}. 
+n  If x and y are regular expressions, then x∨y 
+is a regular expression 
+n  It represents the set of strings described by either 
+x or y 
+ If x={a,ab} and y={c,d} then x ∨ y={a,ab,c,d} 
+10/22/13 15 
+Regular Expressions 
+n  If x is a regular expression, then so is (x) 
+n  It represents the same thing as x 
+n  If x is a regular expression, then so is x* 
+n  It represents strings made from concatenating 
+zero or more strings from x 
+If x = {a,ab} 
+then x* ={“”,a,ab,aa,aab,abab,aaa,aaab,…} 
+n   ε 
+n  It represents {“”}, set containing the empty 
+string 
+10/22/13 16 
+Example Regular Expressions 
+n  (0∨1)*1 
+n  The set of all strings of 0’s and 1’s ending in 1,   
+{1, 01, 11,…} 
+n  a*b(a*) 
+n  The set of all strings of a’s and b’s with exactly 
+one b 
+n  ((01) ∨(10))* 
+n  You tell me 
+n  Regular expressions (equivalently, regular 
+grammars) important for lexing, breaking 
+strings into recognized words 
+10/22/13 17 
+Example: Lexing 
+n  Regular expressions good for describing 
+lexemes (words) in a programming language 
+n  Identifier = (a ∨ b ∨ … ∨ z ∨ A ∨ B ∨ … ∨ Z) (a 
+∨ b ∨ … ∨ z ∨ A ∨ B ∨ … ∨ Z ∨ 0 ∨ 1 ∨ … ∨ 9)* 
+n  Digit = (0 ∨ 1 ∨ … ∨ 9) 
+n  Number = 0 ∨ (1 ∨ … ∨ 9)(0 ∨ … ∨ 9)* ∨         
+~ (1 ∨ … ∨ 9)(0 ∨ … ∨ 9)* 
+n  Keywords: if = if, while = while,… 
+10/22/13 18 
+Implementing Regular Expressions 
+n  Regular expressions reasonable way to 
+generate strings in language 
+n  Not so good for recognizing when a 
+string is in language 
+n  Problems with Regular Expressions 
+n  which option to choose, 
+n   how many repetitions to make 
+n  Answer: finite state automata 
+n  Should have covered this in CS373 
+10/22/13 19 
+Lexing 
+n  Different syntactic categories of “words”: 
+tokens 
+Example: 
+n  Convert sequence of characters into 
+sequence of strings, integers, and floating 
+point numbers. 
+n  "asd 123 jkl 3.14" will become: 
+ [String "asd"; Int 123; String "jkl"; Float 
+3.14] 
+10/22/13 20 
+Lex, ocamllex 
+n  Could write the reg exp, then translate to 
+DFA by hand 
+n  A lot of work  
+n  Better: Write program to take reg exp as 
+input and automatically generates automata  
+n  Lex is such a program 
+n  ocamllex version for ocaml 
+10/22/13 21 
+How to do it 
+n  To use regular expressions to parse 
+our input we need: 
+n  Some way to identify the input string 
+— call it a lexing buffer  
+n  Set of regular expressions, 
+n  Corresponding set of actions to take 
+when they are matched. 
+10/22/13 22 
+How to do it 
+n  The lexer will take the regular expressions 
+and generate a state 
+machine.  
+n  The state machine will take our lexing buffer 
+and apply the transitions...  
+n  If we reach an accepting state from which 
+we can go no further, the machine will 
+perform the appropriate action. 
+10/22/13 23 
+Mechanics 
+n  Put table of reg exp and corresponding 
+actions (written in ocaml) into a file 
+<filename>.mll 
+n  Call 
+ocamllex <filename>.mll 
+n  Produces Ocaml code for a lexical analyzer in 
+file  <filename>.ml 
+10/22/13 24 
+Sample Input 
+rule main = parse 
+ ['0'-'9']+ { print_string "Int\n"} 
+ | ['0'-'9']+'.'['0'-'9']+ { print_string "Float\n"} 
+ | ['a'-'z']+ { print_string "String\n"} 
+ | _ { main lexbuf } 
+ { 
+ let newlexbuf = (Lexing.from_channel stdin) in 
+ print_string "Ready to lex.\n"; 
+ main newlexbuf 
+}  
+10/22/13 25 
+General Input 
+{ header } 
+let ident = regexp ... 
+rule entrypoint [arg1... argn] = parse     
+       regexp { action }  
+    | ...  
+    | regexp { action } 
+and entrypoint [arg1... argn] =  
+parse ...and ... 
+{ trailer } 
+10/22/13 26 
+Ocamllex Input 
+n  header and trailer contain arbitrary 
+ocaml code put at top an bottom of 
+<filename>.ml 
+n  let ident = regexp ...  Introduces ident 
+for use in later regular expressions 
+10/22/13 27 
+Ocamllex Input 
+n  <filename>.ml contains one lexing 
+function per entrypoint 
+n  Name of function is name given for 
+entrypoint 
+n  Each entry point becomes an Ocaml 
+function that takes n+1 arguments, the 
+extra implicit last argument being of type 
+Lexing.lexbuf 
+n  arg1... argn are for use in action 
+10/22/13 28 
+Ocamllex Regular Expression 
+n  Single quoted characters for letters: 
+‘a’ 
+n  _: (underscore) matches any letter 
+n  Eof: special “end_of_file” marker 
+n  Concatenation same as usual 
+n  “string”: concatenation of sequence 
+of characters 
+n  e1 | e2 : choice - what was e1 ∨ e2 
+10/22/13 29 
+Ocamllex Regular Expression 
+n  [c1 - c2]: choice of any character 
+between first and second inclusive, as 
+determined by character codes 
+n  [^c1 - c2]: choice of any character NOT 
+in set 
+n  e*: same as before 
+n  e+: same as e e* 
+n  e?: option - was e1 ∨ ε 
+10/22/13 30 
+Ocamllex Regular Expression 
+n  e1 # e2: the characters in e1 but not in 
+e2; e1 and e2 must describe just sets of 
+characters 
+n  ident: abbreviation for earlier reg exp in 
+let ident = regexp  
+n   e1 as id: binds the result of e1 to id to 
+be used in the associated action 
+10/22/13 31 
+Ocamllex Manual 
+n  More details can be found at 
+ 
+http://caml.inria.fr/pub/docs/manual-ocaml/
+manual026.html 
+10/22/13 32 
+Example : test.mll 
+{ type result = Int of int | Float of float | 
+String of string } 
+let digit = ['0'-'9'] 
+let digits = digit + 
+let lower_case = ['a'-'z'] 
+let upper_case = ['A'-'Z'] 
+let letter = upper_case | lower_case 
+let letters = letter + 
+10/22/13 33 
+Example : test.mll 
+rule main = parse 
+   (digits)'.'digits as f  { Float (float_of_string f) } 
+ | digits as n              { Int (int_of_string n) } 
+ | letters as s             { String s} 
+ | _ { main lexbuf } 
+ { let newlexbuf = (Lexing.from_channel stdin) in 
+ print_string "Ready to lex."; 
+ print_newline (); 
+ main newlexbuf  } 
+10/22/13 34 
+Example 
+# #use "test.ml";; 
+… 
+val main : Lexing.lexbuf -> result = <fun> 
+val __ocaml_lex_main_rec : Lexing.lexbuf -> int -> 
+result = <fun> 
+Ready to lex. 
+hi there 234 5.2 
+- : result = String "hi" 
+What happened to the rest?!? 
+10/22/13 35 
+Example 
+# let b = Lexing.from_channel stdin;; 
+# main b;; 
+hi 673 there 
+- : result = String "hi" 
+# main b;; 
+- : result = Int 673 
+# main b;; 
+- : result = String "there" 
+10/22/13 36 
+Problem 
+n  How to get lexer to look at more than the 
+first token at one time? 
+n  Answer: action has to tell it to -- recursive 
+calls 
+n  Side Benefit: can add “state” into lexing 
+n  Note: already used this with the _ case 
+10/22/13 37 
+Example 
+rule main = parse 
+   (digits) '.' digits as f { Float 
+(float_of_string f) :: main lexbuf} 
+ | digits as n          { Int (int_of_string n) :: 
+main lexbuf } 
+ | letters as s         { String s :: main 
+lexbuf} 
+ | eof                     { [] } 
+ | _                        { main lexbuf } 
+10/22/13 38 
+Example Results 
+Ready to lex. 
+hi there 234 5.2 
+- : result list = [String "hi"; String "there"; Int 
+234; Float 5.2] 
+#  
+ 
+Used Ctrl-d to send the end-of-file signal 
+10/22/13 39 
+Dealing with comments 
+First Attempt 
+let open_comment = "(*" 
+let close_comment = "*)" 
+rule main = parse 
+   (digits) '.' digits as f { Float (float_of_string 
+f) :: main lexbuf} 
+ | digits as n          { Int (int_of_string n) :: 
+main lexbuf } 
+ | letters as s         { String s :: main lexbuf} 
+10/22/13 40 
+Dealing with comments 
+ | open_comment         { comment  lexbuf} 
+ | eof                  { [] } 
+ | _ { main lexbuf } 
+and comment = parse 
+   close_comment       { main lexbuf } 
+ | _                   { comment lexbuf } 
+10/22/13 41 
+Dealing with nested comments 
+rule main = parse … 
+ | open_comment         { comment 1 lexbuf} 
+ | eof                  { [] } 
+ | _ { main lexbuf } 
+and comment depth = parse 
+   open_comment        { comment (depth+1) 
+lexbuf } 
+ | close_comment       { if depth = 1 
+                          then main lexbuf 
+                         else comment (depth - 1) lexbuf } 
+ | _                   { comment depth lexbuf } 
+10/22/13 42 
+Dealing with nested comments 
+rule main = parse 
+   (digits) '.' digits as f { Float (float_of_string f) :: 
+main lexbuf} 
+ | digits as n          { Int (int_of_string n) :: main 
+lexbuf } 
+ | letters as s         { String s :: main lexbuf} 
+ | open_comment         { (comment 1 lexbuf} 
+ | eof                  { [] } 
+ | _ { main lexbuf } 
+10/22/13 43 
+Dealing with nested comments 
+and comment depth = parse 
+   open_comment        { comment (depth+1) lexbuf } 
+ | close_comment       { if depth = 1 
+                          then main lexbuf 
+                         else comment (depth - 1) lexbuf } 
+ | _                   { comment depth lexbuf } 

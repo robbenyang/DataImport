@@ -1,0 +1,35 @@
+Logic&gate:&
+AND&(product)&
+of&two&inputs&
+OR&(sum)&of&
+two&inputs&
+NOT&(complement)&
+on&one&input&
+xy,&or&x•y& x&+&y& x&
+OperaAon:&
+Expression:&
+x y xy
+0 0 0
+0 1 0
+1 0 0
+1 1 1
+x y x+y
+0 0 0
+0 1 1
+1 0 1
+1 1 1
+x x’
+0 1
+1 0
+Truth&table:&
+f(x,y,z)&=&(x&+&y)z&+&x’&
+f(1,0,1)&=&(___&&+&___)___&+&___&=&&___&
+OR
+AND
+NOT f(x,y)
+x
+y
+f(x,y)&=&______________&
+Always'bring'a'pencil'to'class!'
+Verilog:& and a0(z, x, y) or o0(z, x, y) not n0(z, x) 
+(assuming the output wire is called “z”; names of gates are arbitrary.) 

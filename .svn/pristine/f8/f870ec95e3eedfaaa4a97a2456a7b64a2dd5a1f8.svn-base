@@ -1,0 +1,635 @@
+Kevin C. Chang
+Query Optimization
+Database Systems
+1
+• Query optimization, query optimizer
+• Logical query plans
+• Algebraic laws of equivalence
+• Rule‐based optimization, Heuristic
+• Cost‐based optimization
+• Join trees
+• Dynamic programming
+• Physical query plans
+• Intermediate results, pipeline, materialization
+• Estimating sizes
+Concepts You Will Learn
+Query Optimization (1 of 63)Default Section (1 of 2)
+The Big Picture: Where We Are
+Query Optimization (2 of 63)
+Data Access
+Data Modeling
+Data/Query Processing
+Data Acquisition
+Relational NonRelational
+S
+t
+r
+u
+c
+t
+u
+r
+e
+d
+S
+e
+m
+i
+S
+t
+r
+u
+c
+t
+u
+r
+e
+d
+Transaction Management
+N
+o
+S
+Q
+L
+ 
+D
+a
+t
+a
+b
+a
+s
+e
+s
+X
+M
+L
+ 
+D
+a
+t
+a
+b
+a
+s
+e
+s
+U
+n
+t
+r
+u
+c
+t
+u
+r
+e
+d
+Relational Databases
+• SQL
+• Relational Algebra
+• Query Optimization
+• Query Execution
+• Indexing
+• Concurrency Control
+• Logging Recovery
+Database Systems Toolkits
+M
+a
+p
+ 
+R
+e
+d
+u
+c
+e
+(
+P
+a
+r
+a
+l
+l
+e
+l
+)
+S
+t
+o
+r
+m
+ 
+(
+S
+t
+r
+e
+a
+m
+)
+Information Extraction
+ER  Relational Model
+Query Language
+Default Section (2 of 2)
+Why Do We Learn This?
+Query Optimization (3 of 63)Why Do We Learn This? (0 of 0)
+Overview
+Query Optimization (4 of 63)Overview (0 of 5)
+• At the heart of the database engine
+• Step 1: convert the SQL query to some logical plan
+• Step 2: find a better logical plan, find an associated 
+physical plan
+Optimization
+Query Optimization (5 of 63)Overview (1 of 5)
+SELECT a1, …, an
+FROM R1, …, Rk
+WHERE C
+ଵ ௡
+Converting from SQL to Logical Plans
+Query Optimization (6 of 63)Overview (2 of 5)
+• Now we have one logical plan
+• Algebraic laws:
+• foundation for every optimization
+• Two approaches to optimizations:
+• Rule‐based (heuristics): apply laws that seem to result in 
+cheaper plans
+• Cost‐based: estimate size and cost of intermediate 
+results, search systematically for best plan
+Optimization: Logical Query Plan
+Query Optimization (7 of 63)Overview (3 of 5)
+Select S.name, C.instructor
+From Students S, Enrollment E, Course C
+Where S.dept = ‘CS’ and 
+S.sid=E.sid and E.cid = C.cid
+Motivating Example
+Query Optimization (8 of 63)Overview (4 of 5)
+• We need three things in an optimizer:
+• Algebraic laws
+• A cost estimator
+• An optimization algorithm
+The three components of an optimizer
+Query Optimization (9 of 63)Overview (5 of 5)
+Algebraic Laws
+Query Optimization (10 of 63)Algebraic Laws (0 of 4)
+• Commutative and Associative Laws
+• ܴ ∪ ܵ	 ൌ 	ܵ ∪ ܴ, ܴ ∪ ሺܵ ∪ ܶሻ 	ൌ 	 ሺܴ ∪ ܵሻ ∪ ܶ
+• ܴ	 ∩ 	ܵ	 ൌ 	ܵ	 ∩ 	ܴ, ܴ	 ∩ 	ሺܵ	 ∩ 	ܶሻ 	ൌ 	 ሺܴ	 ∩ 	ܵሻ 	∩ 	ܶ
+• ܴ	 ⋈ 	ܵ	 ൌ 	ܵ	 ⋈ 	ܴ, ܴ	 ⋈ 	 ሺܵ	 ⋈ 	ܶሻ 	ൌ 	 ሺܴ	 ⋈ 	ܵሻ 	⋈ 	ܶ
+• Distributive Laws
+• ܴ	 ⋈ 	 ሺܵ ∪ ܶሻ 		ൌ 		 ሺܴ	 ⋈ 	ܵሻ ∪ ሺܴ	 ⋈ 	ܶሻ
+Algebraic Laws
+Query Optimization (11 of 63)
+Q: How to prove these laws?
+Algebraic Laws (1 of 4)
+• Laws involving selection:
+• 	ߪ஼	஺ே஽	஼ᇱ	ሺܴሻ 	ൌ ߪ஼ሺߪ஼ᇲ	 ܴ ሻ ൌ ߪ஼ሺܴሻ 	∩ ߪ஼ᇱሺܴሻ
+• ߪ஼	ைோ	஼ᇱ	 ܴ ൌ ߪ஼ ܴ ∪ ߪ஼ᇱሺܴሻ
+• ߪ஼	ሺܴ	 ⋈ 	ܵሻ 	ൌ ߪ஼ ܴ ⋈ 	ܵ	
+• When C involves only attributes of R
+• ߪ஼	 ܴ	 െ 	ܵ ൌ ߪ஼ ܴ െ 	ܵ	
+• ߪ஼	 ܴ ∪ ܵ ൌ ߪ஼ ܴ ∪ ܵ
+• ߪ஼ ܴ	 ∩ 	ܵ 	ൌ ߪ஼ ܴ ∩ 	ܵ
+• Q: What do they mean? Make sense?
+Algebraic Laws
+Query Optimization (12 of 63)Algebraic Laws (2 of 4)
+• Example:  
+• 	ݏிୀଷ	ሺܴ	 ⋈஽ୀா ܵሻ 	ൌ																																							?
+• 	ݏ஺ୀହ	஺ே஽	ீୀଽ	ሺܴ ⋈஽ୀா ܵሻ 	ൌ																									?
+Algebraic Laws
+Query Optimization (13 of 63)Algebraic Laws (3 of 4)
+• Laws involving projections
+• 	ߨெሺܴ	 ⋈ 	ܵሻ 	ൌ ߨேሺߨ௉ሺܴሻ 	⋈ ߨொሺܵሻሻ
+• Where N, P, Q are appropriate subsets of attributes of M
+• 		ߨெሺߨேሺܴሻሻ 	ൌ 	ߨெ∩ேሺܴሻ
+• Example 
+• ߨ஺,஻,ீሺܴ ⋈஽ୀா ܵሻ 	ൌ ߨ?	ሺߨ?ሺܴሻ 	⋈ ߨ?ሺܵሻሻ	
+Algebraic Laws
+Query Optimization (14 of 63)Algebraic Laws (4 of 4)
+Optimizer
+Query Optimization (15 of 63)Optimizer (0 of 2)
+Behind the Scene: Oracle RBO and CBO
+Query Optimization (16 of 63)
+• Oracle 7 (1992) prior (since 1979): RBO.
+• Oracle 7-10: RBO + CBO.
+• Oracle 10g (2003): CBO.
+Optimizer (1 of 2)
+Behind the Scene: Oracle RBO and CBO
+Query Optimization (17 of 63)Optimizer (2 of 2)
+Rule‐based Optimization
+Query Optimization (18 of 63)Rule‐based Optimization (0 of 2)
+• Query rewriting based on heuristic/algebraic laws
+• Result in better queries most of the time
+• Heuristics number 1:
+• Push selections down
+• Heuristics number 2:
+• Sometimes push selections up, then down
+Ruler‐ased Optimizations
+Query Optimization (19 of 63)Rule‐based Optimization (1 of 2)
+Predicate Pushdown
+Product Company
+࢖࢘࢏ࢉࢋவ૚૙૙	࡭ࡺࡰ	ࢉ࢏࢚࢟ୀ"ࢁ࢘࢈ࢇ࢔ࢇ"
+࢖࢔ࢇ࢓ࢋ
+௠௔௞௘௥ୀ௖௡௔௠௘
+Product(pname, maker, price) Company(cname, city)
+Rule‐based Optimization (2 of 2) Query Optimization (20 of 63)
+Cost‐based Optimization
+Query Optimization (21 of 63)Cost‐based Optimization (0 of 5)
+Behind the Scene: The Selinger Style!
+Query Optimization (22 of 63)Cost‐based Optimization (1 of 5)
+Behind the Scene: The Selinger Style!
+Query Optimization (23 of 63)Cost‐based Optimization (2 of 5)
+• Main idea: apply algebraic laws, until estimated 
+cost is minimal
+• Practically: start from partial plans, introduce 
+operators one by one
+• Will see in a few slides
+• Problem: there are too many ways to apply the 
+laws, hence too many (partial) plans
+Cost‐based Optimization
+Query Optimization (24 of 63)Cost‐based Optimization (3 of 5)
+• Approaches:
+• Top‐down: the partial plan is a top fragment of the 
+logical plan
+• Bottom up: the partial plan is a bottom fragment of 
+the logical plan
+Cost‐based Optimization
+Query Optimization (25 of 63)Cost‐based Optimization (4 of 5)
+• Branch‐and‐bound:
+• Remember the cheapest complete plan P seen so far and 
+its cost C
+• Stop generating partial plans whose cost is > C
+• If a cheaper complete plan is found, replace P, C
+• Hill climbing:
+• Remember only the cheapest partial plan seen so far
+• Dynamic programming:
+• Remember the all cheapest partial plans
+Search Strategies
+Query Optimization (26 of 63)Cost‐based Optimization (5 of 5)
+Dynamic Programming
+Query Optimization (27 of 63)Dynamic Programming (0 of 12)
+•
+• Join tree:
+• A plan = a join tree
+• A partial plan = a subtree of a join tree
+Join Trees
+Query Optimization (28 of 63)
+R3 R1 R2 R4
+Dynamic Programming (1 of 12)
+• Left deep:
+Types of Join Trees
+Query Optimization (29 of 63)
+R3 R1
+R5
+R2
+R4
+Dynamic Programming (2 of 12)
+• Bushy:
+Types of Join Trees
+Query Optimization (30 of 63)
+R3
+R1
+R2 R4
+R5
+Dynamic Programming (3 of 12)
+• Right deep:
+Types of Join Trees
+Query Optimization (31 of 63)
+R3
+R1
+R5
+R2 R4
+Dynamic Programming (4 of 12)
+• Given: a query  
+• Assume we have a function cost() that gives us the 
+cost of every join tree
+• Find the best join tree for the query
+Problem
+Query Optimization (32 of 63)Dynamic Programming (5 of 12)
+• Idea: for each subset of  ܴଵ,… , ܴ௡ ,	compute the best 
+plan for that subset
+• In increasing order of set cardinality:
+• ܵݐ݁݌	1: 	݂݋ݎ	ሼܴଵሽ, ሼܴଶሽ, … , ሼܴ௡ሽ
+• ܵݐ݁݌	2: 	݂݋ݎ	ሼܴଵ, ܴଶሽ, ሼܴଵ, ܴଷሽ, … , ሼܴ௡ିଵ, ܴ௡ሽ
+• …
+• ܵݐ݁݌	݊: 	݂݋ݎ	ሼܴଵ, … , ܴ௡ሽ
+• For each subset of  ܴଵ,… , ܴ௡ , also called a subquery, 
+compute the following:
+• Size(Q)
+• Best plan for Q: Plan(Q)
+• Cost of that plan: Cost(Q)
+Dynamic Programming
+Query Optimization (33 of 63)Dynamic Programming (6 of 12)
+• To illustrate, we will make the following 
+simplifications:
+•
+•
+• Intermediate results:
+• If P1 = a join, then the size of the intermediate result is 
+size(P1), otherwise the size is 0
+• Similarly for P2
+• Cost of a scan = 0
+Dynamic Programming
+Query Optimization (34 of 63)Dynamic Programming (7 of 12)
+• Example:
+• (no intermediate 
+results)
+•
+•
+Dynamic Programming
+Query Optimization (35 of 63)Dynamic Programming (8 of 12)
+• Relations: 
+• Number of tuples: 2000, 5000, 3000, 1000
+• Size estimation: 
+Dynamic Programming
+Query Optimization (36 of 63)Dynamic Programming (9 of 12)
+Query Optimization (37 of 63)
+Subquery Size Cost Plan
+RS
+RT
+RU
+ST
+SU
+TU
+RST
+RSU
+RTU
+STU
+RSTU
+Dynamic Programming (10 of 12)
+Query Optimization (38 of 63)
+Subquery Size Cost Plan
+RS 100k 0 RS
+RT 60k 0 RT
+RU 20k 0 RU
+ST 150k 0 ST
+SU 50k 0 SU
+TU 30k 0 TU
+RST 3M 60k (RT)S
+RSU 1M 20k (RU)S
+RTU 0.6M 20k (RU)T
+STU 1.5M 30k (TU)S
+RSTU 30M 60k+50k=110k (RT)(SU)
+Dynamic Programming (11 of 12)
+• Summary: computes optimal plans for subqueries:
+• Step 1: {R1},  {R2}, …, {Rn}
+• Step 2:  {R1, R2}, {R1, R3}, …, {Rn‐1, Rn}
+• …
+• Step n: {R1, …, Rn}
+• We used naïve size/cost estimations
+• In practice:
+• more realistic size/cost estimations (next time)
+• heuristics for Reducing the Search Space 
+• Restrict to left linear trees
+• Restrict to trees “without Cartesian product”: 
+• R(A,B), S(B,C), T(C,D)
+• (R join T) join S has a Cartesian product
+Dynamic Programming
+Query Optimization (39 of 63)Dynamic Programming (12 of 12)
+Completing Physical Query Plan
+Query Optimization (40 of 63)Completing Physical Query Plan (0 of 13)
+• Choose algorithm to implement each operator
+• Need to account for more than cost:
+• How much memory do we have ?
+• Are the input operand(s) sorted ?
+• Decide for each intermediate result:
+• To materialize
+• To pipeline
+Completing the Physical Query Plan
+Query Optimization (41 of 63)Completing Physical Query Plan (1 of 13)
+Materialize Intermediate Results Between 
+Operators
+Query Optimization (42 of 63)
+T
+R S
+U
+HashTable  S
+repeat read(R, x)
+y  join(HashTable, x)
+write(V1, y)
+HashTable  T
+repeat read(V1, y)
+z  join(HashTable, y)
+write(V2, z)
+HashTable  U
+repeat read(V2, z)
+u  join(HashTable, z)
+write(Answer, u)
+V1
+V2
+Completing Physical Query Plan (2 of 13)
+• Given B(R), B(S), B(T), B(U)
+• What is the total cost of the plan ?
+• Cost = 
+• How much main memory do we need ?
+• M = 
+Materialize Intermediate Results Between 
+Operators
+Query Optimization (43 of 63)Completing Physical Query Plan (3 of 13)
+Pipeline Between Operators
+Query Optimization (44 of 63)
+T
+R S
+U
+HashTable1  S
+HashTable2  T
+HashTable3  U
+repeat read(R, x)
+y  join(HashTable1, x) 
+z  join(HashTable2, y)
+u  join(HashTable3, z)
+write(Answer, u)
+How much main memory do we need ? M =
+Completing Physical Query Plan (4 of 13)
+• Given B(R), B(S), B(T), B(U)
+• What is the total cost of the plan ?
+• Cost = 
+• How much main memory do we need ?
+• M = 
+Pipeline Between Operators
+Query Optimization (45 of 63)Completing Physical Query Plan (5 of 13)
+• Choose algorithm to implement each operator
+• Need to account for more than cost:
+• How much memory do we have ?
+• Are the input operand(s) sorted ?
+• Decide for each intermediate result:
+• To materialize
+• To pipeline
+Completing the Physical Query Plan
+Query Optimization (46 of 63)Completing Physical Query Plan (6 of 13)
+• Logical plan is:
+• Main memory M = 101 buffers
+Example
+Query Optimization (47 of 63)
+R(w,x)
+5,000 blocks
+S(x,y)
+10,000 blocks
+U(y,z)
+10,000 blocks
+k blocks
+Completing Physical Query Plan (7 of 13)
+• Naïve evaluation: 
+• 2 partitioned hash‐joins
+• Cost 3B(R) + 3B(S) + 4k + 3B(U) = 75000 + 4k
+Example
+Query Optimization (48 of 63)
+R(w,x)
+5,000 blocks
+S(x,y)
+10,000 blocks
+U(y,z)
+10,000 blocks
+k blocks
+Completing Physical Query Plan (8 of 13)
+• Smarter:
+• Step 1: hash R on x into 100 buckets, each of 50 
+blocks; to disk
+• Step 2: hash S on x into 100 buckets; to disk
+• Step 3: read each Ri in memory (50 buffer) join with 
+Si (1 buffer); hash result on y into 50 buckets (50 
+buffers)   ‐‐ here we pipeline
+• Cost so far: 3B(R) + 3B(S)
+Example
+Query Optimization (49 of 63)
+R(w,x)
+5,000 blocks
+S(x,y)
+10,000 blocks
+U(y,z)
+10,000 blocks
+k blocks
+Completing Physical Query Plan (9 of 13)
+• Continuing:
+• How large are the 50 buckets on y ?  Answer: k/50.
+• If k <= 50 then keep all 50 buckets in Step 3 in 
+memory, then:
+• Step 4: read U from disk, hash on y and join with 
+memory
+• Total cost: 3B(R) + 3B(S) + B(U) = 55,000
+Example
+Query Optimization (50 of 63)
+R(w,x)
+5,000 blocks
+S(x,y)
+10,000 blocks
+U(y,z)
+10,000 blocks
+k blocks
+Completing Physical Query Plan (10 of 13)
+• Continuing:
+• If 50 < k <= 5000 then send the 50 buckets in Step 3 
+to disk
+• Each bucket has size k/50 <= 100
+• Step 4: partition U into 50 buckets
+• Step 5: read each partition and join in memory
+• Total cost: 3B(R) + 3B(S) + 2k + 3B(U) = 75,000 + 2k
+Example
+Query Optimization (51 of 63)
+R(w,x)
+5,000 blocks
+S(x,y)
+10,000 blocks
+U(y,z)
+10,000 blocks
+k blocks
+Completing Physical Query Plan (11 of 13)
+• Continuing:
+• If k > 5000 then materialize instead of pipeline
+• 2 partitioned hash‐joins
+• Cost 3B(R) + 3B(S) + 4k + 3B(U) = 75000 + 4k
+Example
+Query Optimization (52 of 63)
+R(w,x)
+5,000 blocks
+S(x,y)
+10,000 blocks
+U(y,z)
+10,000 blocks
+k blocks
+Completing Physical Query Plan (12 of 13)
+• Summary:
+• If k <= 50,  cost = 55,000
+• If 50 < k <=5000, cost = 75,000 + 2k
+• If k > 5000, cost = 75,000 + 4k
+Example
+Query Optimization (53 of 63)Completing Physical Query Plan (13 of 13)
+Estimating Sizes
+Query Optimization (54 of 63)Estimating Sizes (0 of 9)
+• Need size in order to estimate cost
+• Example:
+• Cost of partitioned hash‐join ܧ1 ⋈ ܧ2	is 3ܤሺܧ1ሻ 	൅
+	3ܤሺܧ2ሻ
+• ܤሺܧ1ሻ 	ൌ 	ܶሺܧ1ሻ/	ܾ݈݋ܿ݇	ݏ݅ݖ݁
+• ܤሺܧ2ሻ 	ൌ 	ܶሺܧ2ሻ/	ܾ݈݋ܿ݇	ݏ݅ݖ݁
+• So, we need to estimate ܶሺܧ1ሻ, ܶሺܧ2ሻ
+Estimating Sizes
+Query Optimization (55 of 63)Estimating Sizes (1 of 9)
+• Estimating the size of a projection
+• Easy:  ௅
+• A projection doesn’t eliminate duplicates
+Estimating Sizes
+Query Optimization (56 of 63)Estimating Sizes (2 of 9)
+• Estimating the size of a selection
+• ஺ୀ௖
+• T(S) can be anything from 0 to ܶሺܴሻ	– 	ܸሺܴ, ܣሻ 	൅ 	1
+• Mean value: ܶሺܵሻ 	ൌ 	ܶሺܴሻ/ܸሺܴ, ܣሻ
+• ஺ழ௖
+• T(S) can be anything from 0 to ܶሺܴሻ
+• Heuristics: ܶሺܵሻ 	ൌ 	ܶሺܴሻ/3
+Estimating Sizes
+Query Optimization (57 of 63)Estimating Sizes (3 of 9)
+• Estimating the size of a natural join,  ஺
+• When the set of A values are disjoint, then 
+• ஺
+• When A is a key in S and a foreign key in R, then 
+஺
+• When A has a unique value, the same in R and S, 
+then  ஺ .
+Estimating Sizes
+Query Optimization (58 of 63)Estimating Sizes (4 of 9)
+• Assumptions:
+• Containment of values: if 
+then the set of R.A values is included in 
+the set of S.A values
+• Indeed holds when A is a foreign key in R, and a key in S
+• Preservation of values: for any other attribute  ,  
+• ஺ or  .
+Estimating Sizes
+Query Optimization (59 of 63)Estimating Sizes (5 of 9)
+• Assume 
+• Then each tuple  in  joins some tuple(s) in 
+• How many?
+• On average ܵ/ܸሺܵ, ܣሻ
+• It will contribute ܵ/ܸሺܵ, ܣሻ tuples in ܴ ⋈஺ ܵ
+• Hence ܶ ܴ ⋈஺ ܵ ൌ ܶ ܴ ܶሺܵሻ/ܸሺܵ, ܣሻ
+• In general: 
+• ܶ ܴ ⋈஺ ܵ ൌ ܶ ܴ ܶሺܵሻ/maxሺܸ ܴ, ܣ , ܸ ܵ, ܣ ሻ
+Estimating Sizes
+Query Optimization (60 of 63)Estimating Sizes (6 of 9)
+• Example:
+•
+•
+• How large is  ஺ ?
+• Answer: 
+• ஺
+Estimating Sizes
+Query Optimization (61 of 63)Estimating Sizes (7 of 9)
+• Joins on more than one attribute:
+• ஺
+் ோ ் ௌ
+୫ୟ୶ ௏ ோ,஺ ,௏ ௌ,஺ ⋅୫ୟ୶	ሺ௏ ோ,஻ ,௏ ௌ,஻ ሻ
+Estimating Sizes
+Query Optimization (62 of 63)Estimating Sizes (8 of 9)
+• Statistics on data maintained by the RDBMS
+• Makes size estimation much more accurate (hence, 
+cost estimations are more accurate)
+• Ranks(rankName, salary)
+• Estimate the size of  ௌ௔௟௔௥௬
+More statistics helps: E.g., Histograms
+Query Optimization (63 of 63)
+Employee 0..20k 20k..40k 40k..60k 60k..80k 80k..100k > 100k
+200 800 5000 12000 6500 500
+Ranks 0..20k 20k..40k 40k..60k 60k..80k 80k..100k > 100k
+8 20 40 80 100 2
+Estimating Sizes (9 of 9)

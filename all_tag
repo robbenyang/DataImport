@@ -1,0 +1,812 @@
+242.22	ADA
+242.22	Adaptive and fuzzy control
+
+242.22	Adaptive systems
+242.22	Administrative data processing
+
+242.22	Algebra-linear
+
+242.22	Algebraic languages
+
+242.22	Algebras-boolean
+
+242.22	Algorithmic game theory
+
+242.22	Algorithmic mechanism design
+
+242.22	Algorithmic social choice
+242.22	
+242.22	Analog computers
+242.22	
+242.22	Analog-digital converters
+
+242.22	Animation
+242.22	Architecture
+242.22	Arithmetic
+242.22	Arithmetic units
+242.22	Arithmetics / Hardware
+242.22	Array processors
+242.22	Artificial intelligence
+242.22	Assemblers
+242.22	Assemblers conventional
+242.22	Automata theory
+242.22	Automated reasoning
+242.22	Auxiliary off-line equipment
+242.22	Auxiliary on-line equipment
+242.22	AWK
+242.22	Axiomatic semantics
+
+
+B
+242.22	BASIC
+
+243.1	Basic monitors
+
+209     Bibliographies
+
+231.2   Bioinformatics
+        biology
+231.2   Biotechnology
+
+261.12	Boolean algebra
+
+252.11	Boolean algebras
+
+
+C
+242.35	C
+
+242.75	C++
+
+242.53  CUDA
+
+252.22	Cellular automata
+
+231.3	Chemistry
+
+263.1	Circuit theory
+
+232.3	Civil engineering
+
+241.2	Code generation
+
+241.2	Code optimization
+
+256	Coding
+
+258.2	Cognitive science
+
+253	Combinatorial mathematics
+
+262.14	Commercially available machines
+
+235.7	Communication
+
+241.2	Compiler generators 
+
+241.2	Compilers
+
+259     Complex Systems
+
+263	Component circuits
+
+263	Component modules
+
+252.7	Computability
+
+252.5	Computational complexity
+
+282.3	Computational geometry
+
+251.1   Computer arithmetic
+
+262	Computer Systems Organization
+233.2	Computer assisted instruction
+
+215	Computer education 
+
+239.2	Computer games
+
+232.2	Computer-aided design
+        CAD
+        CAI
+
+239.3   Computer-supported cooperative work
+
+243.9	Concurrency control
+
+210	Conference proceedings
+
+252.12  Constraint satisfaction systems
+
+237.1	Content analysis
+
+259.3   Control systems and theory
+
+259.31  Control systems
+
+259     Control theory
+
+259.34  Control
+
+252.4	Correctness
+
+243.7	Cryptography
+
+258	Cybernetics
+
+
+D
+243.32	DB languages
+
+243.32	DB2
+
+243.32  Database
+
+243.3   Data bases
+
+243.32  Database Software and systems 
+
+256     Data compression
+
+243.4	Data structures
+
+243.4	Data types
+
+242.6	Data-flow languages
+
+244.2	Debugging
+
+235.1	Decision tables
+
+241.85	Denotational semantics
+
+262.1	Descriptions of machines
+
+261.2	Design automation
+
+261.7   Design language
+
+211	Dictionaries
+        dictionary
+
+
+251.1	Digital filters
+
+237.8   Digital libraries
+
+236.31	Digital signal
+
+253	Discrete mathematics
+
+251.9   Distributed algorithms
+
+262.17  Distributed memory computers
+
+243.8	Distributed processing
+
+243.9	Distributed systems
+
+262.8   DNA Computation
+
+217	Documentation
+
+240.3	Documentation practices
+
+252.13	Dynamic logic
+
+254.2	Dynamic programming
+
+
+E
+235.8	EDP
+
+233.1	Economics
+
+241.1	Editors
+
+233.2	Education
+
+252.5	Efficiency of algorithms
+
+232.4	Electrical engineering
+
+232.4	Electronic engineering
+
+252.6   Electronic commerce
+
+225	Electronic data processing
+
+211	Encyclopedias
+
+232	Engineering
+
+251.1	Error analysis
+
+223	Evaluation of computer systems
+
+262.32	Evaluation of hardware
+
+237.2	Evaluation of systems
+
+236.6	Expert systems
+
+
+F
+242.21	FORTRAN
+
+242.23	FORTRAN dialects
+        MAD
+
+262.4	Fault detection
+
+262.39	Fault-tolerant design
+
+259.31  Feedback control systems
+
+237.3	File maintenance
+
+243.4	File systems
+
+235.2	Financial
+
+234.1	Fine arts
+
+252.21	Finite state automata
+
+254.1   Flows 
+
+252.3	Formal languages
+
+252.1	Formal systems
+
+242.46	Formula manipulation languages
+
+251.2	Function evaluation
+
+251.3	Functional approximation
+
+251.5	Functional equations
+
+242.42	Functional programming
+
+236.8   Fuzzy logic
+
+236.6   Fuzzy systems
+
+
+G
+244.3	Garbage collection
+
+221	General non-technical articles
+
+210	General topics
+
+236.5	Genetic algorithms
+
+282	Geometric modeling 
+
+211	Glossaries
+
+253.2   Graph algorithms
+
+252.8	Graph reductions
+
+253.2	Graph theory
+
+282	Graphic modeling
+
+
+H
+211	Handbooks
+
+222	Hardware selection
+
+233.4	Health
+
+236.6	Heuristic methods
+
+242.17	High level machine oriented languages
+
+251.9   High performance systems
+
+212	History
+
+239.1   Human-Machine interaction
+
+234	Humanities
+
+262.8	Hybrid computers
+
+262.8   Hybrid systems
+
+262.17	Hypecube multiprocessors
+
+
+I
+242.44	ICON
+
+236.34  Image compression
+
+236.3	Image processing
+
+241.83	Implementation models
+
+241	Implementation of software
+
+238.2	Industrial process control
+
+237	Information retrieval
+
+235.8	Information systems
+
+256	Information theory
+
+244.1	Input/Output
+
+263.5	Input/Output equipment
+
+251.8	Integral equations
+
+262.9	Interfaces
+
+262.9	Interfacing
+
+237.7   Internet
+
+262.36  Internet protocols
+ 
+251.3	Interpolation
+
+241.3	Interpreters
+
+213	Introductory
+
+
+J
+242.77  Java
+
+
+K
+236.8	Knowledge representation
+
+
+L
+242.42	LISP
+
+242.25	LOTUS
+
+234.2	Language translations
+
+262.34	Languages for describing architecture
+
+234.5	Law
+
+236.2	Learning
+
+221.2   Legal implications
+
+241.2	Lexical analysis
+
+237.8   Libraries, Digital
+
+251.4	Linear algebra
+
+254.1	Linear programming
+
+259.1   Linear Systems
+
+234.2	Linguistics
+
+243.51  LINUX
+
+242.4	List
+
+241.4	Loaders
+
+252.1	Logic
+
+261	Logic design
+
+242.47	Logic programming
+
+261	Logics
+
+261.1	Logics
+
+242.13	Low level machine oriented
+
+
+M
+242.42  ML
+
+242.33	MODULA
+
+242.51  MPI
+
+243.54	MS-DOS
+
+217     MATLAB
+
+262.3	Machine organization-concepts
+
+262.3	Machine organization-consideration
+
+242.1	Machine oriented languages
+
+242.11	Macro assemblers 
+
+241.1	Macro generators
+242.48	Macro languages
+
+242.15	Macro techniques
+
+235.8	Management systems
+
+232.7   Manufacturing and management
+
+254	Mathematical programming
+
+231.5	Mathematics
+
+232.6	Mechanical engineering
+
+233.4	Medicine
+
+262.37	Memory organization
+
+252	Metatheory
+
+262.13	Microcomputers
+
+262.13	Microprogramming
+
+240.4   Microsoft 
+        .net
+
+262.12	Minicomputer systems
+
+281	Modeling
+
+262.39	Modular construction
+
+255.4	Monte-Carlo methods
+
+239.1   Multimedia
+
+261.16	Multiple-valued logic
+
+243.2	Multiprocessing
+
+243.2	Multiprogramming
+
+234.4	Music
+
+
+N
+243.51  NT
+
+236.9	Natural language generation
+
+236.9	Natural language understanding
+
+231	Natural sciences
+
+254.1   Network flows
+
+262.36	Networks
+
+258.1	Neural Networks
+
+259.2   Nonlinear and complex systems
+
+254.1	Non-linear programming
+
+251.5	Nonlinear equations
+
+251	Numerical analysis
+
+251.6	Numerical differentiation
+
+251.6	Numerical integration
+
+
+O
+243.54  OS-2
+
+243.31  Object oriented databases
+
+242.7	Object oriented languages
+
+240.6   Object oriented software engineering
+
+235.9	Office automation
+
+239	On-line systems
+
+242.52  openCL
+
+242.51  openMP
+
+243.5	Operating systems
+
+236.32	Optical
+
+262.35	Optical computers
+
+259.35  Optimal control
+
+254.3	Optimization of application programs
+
+251.7	Ordinary differential equations
+
+
+P
+242.33	PASCAL
+
+242.37	PL/1
+
+242.33	PL2
+
+243.53	PRIME/PRIMOS
+
+242.47	PROLOG
+
+251.9	Parallel algorithms
+
+243.8	Parallel processing
+
+262.16	Parallel processors
+
+242.5	Parallel programming languages
+
+241.2	Parsing
+
+251.7	Partial differential equations
+
+245	Patents
+
+236.3	Pattern recognition
+
+258.2	Perception
+
+246	Performance
+
+246	Performance evaluation
+
+234.1	Performing arts
+
+242.41  Perl
+
+252.14	Petri Nets
+
+221.1	Philosophical
+
+232	Physical Sciences
+
+263.1	Physical electronics
+
+231.7	Physics
+
+241.5	Portability
+
+241.5	Portability via higher level languages
+
+255	Probability
+
+236.4	Problem planning
+
+236.4	Problem solving
+
+259.34  Process control
+
+241.88	Program correctness
+
+217	Program listings
+
+240.1	Program specifications
+
+252.4	Program specifications
+
+240	Programming Techniques
+
+240.4	Programming environment
+
+242	Programming languages 
+
+248     Programming paradigm
+
+240.4	Programming systems
+
+252.4	Programs schemata
+
+240.2	Proper programming practices
+
+262.36  Protocols, Internet
+
+233.6	Psychology
+
+242.41  Python
+
+Q
+225	Quality control
+
+262.8   Quantum Computation
+
+243.6	Queuing theory
+
+
+R
+238	Real-time systems
+
+252.7	Recursive functions
+
+247	Reliability software
+
+252.8	Rewriting systems
+
+236.1	Robotics
+
+
+S
+242.8	SAS
+
+242.24	SIMSCRIPT
+
+242.32	SIMULA
+
+242.76	SMALLTALK
+
+242.44	SNOBOL
+
+242.8	SPSS
+
+243.32  SQL
+
+252.12  Constraint satisfaction systems
+
+243.6	Scheduling algorithms
+
+242.42	Scheme
+
+242.41  Scripting Languages
+
+237.4	Searching
+
+243.7	Security
+
+241.2	Semantic analysis
+
+252.4	Semantics
+
+241.8	Semantics of programming languages
+
+252.24	Sequential machines
+
+236.31  Signal processing
+
+281	Simulation
+
+236.5	Simulation of natural systems
+
+233	Social
+
+221.1	Social implications
+
+233.7	Sociology
+
+245	Software copyrights
+ 
+241	Software definition
+
+240.2	Software engineering
+
+246	Software evaluation
+
+262.34	Software for describing architecture
+
+222	Software selection
+
+253.1	Sorting
+
+262.16	Special-purpose machines
+
+242.2	Specific languages
+
+236.33	Speech 
+
+255	Statistics
+
+252.23	Stochastic automata
+
+263.4	Storage units
+
+242.44	String languages
+
+262.15	Super computer applications
+
+262.15	Super computers
+
+243	Supervisory systems
+
+213	Survey articles
+
+261	Switching theory
+
+236.7	Symbol manipulation
+
+242.4	Symbol manipulation languages
+
+257	Symbolic algebraic computations
+
+237.2   System analysis
+
+242.1	System implementation languages
+
+242.17	System implementation languages
+
+259     Systems and control theory
+
+259.1   linear Systems
+
+259.2   Nonlinear and complex systems
+
+T
+262.36  TCP/IP
+
+252.13	Temporal logic
+
+261.16	Ternary logic
+
+246	Tests
+
+237.6	Text editing
+
+252.12	Theorem proving
+
+261.3	Theoretical logic design
+
+261.14	Threshold logic
+
+243.2	Timesharing
+
+235.7	Transportation
+
+225.25  Tree automata
+
+240.1   Unified modeling language
+        UML
+
+243.51	UNIX
+
+262.16	Unique machines
+
+252.7	Unsolvability
+
+244	Utility programs
+
+243.52	VAX/VMS
+
+261.6	VLSI Systems
+
+242.6	Value oriented languages
+
+236.32	Vision
+
+240.5	Visual Programming
+
+282.2	Visualization 
+
+214	Vocabulary
+
+237.5	Vocabulary
+
+243.54  Windows
+
+262.36  Wireless communications
+
+235.9	Word processing
+
+237.7   WWW
+
+240.4	X-Window system

@@ -1,0 +1,643 @@
+9/26/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+9/26/13 2 
+Mutually Recursive Types 
+# type 'a tree = TreeLeaf of 'a 
+   | TreeNode of 'a treeList 
+and 'a treeList = Last of 'a tree 
+   | More of ('a tree * 'a treeList);; 
+type 'a tree = TreeLeaf of 'a | TreeNode of 'a 
+treeList 
+and 'a treeList = Last of 'a tree | More of ('a 
+tree * 'a treeList) 
+9/26/13 3 
+Mutually Recursive Types - Values 
+# let tree = 
+   TreeNode 
+    (More (TreeLeaf 5, 
+           (More (TreeNode 
+                  (More (TreeLeaf 3, 
+                         Last (TreeLeaf 2))), 
+                  Last (TreeLeaf 7)))));; 
+9/26/13 4 
+Mutually Recursive Types - Values 
+ val tree : int tree = 
+  TreeNode 
+   (More 
+     (TreeLeaf 5, 
+      More 
+       (TreeNode (More (TreeLeaf 3, Last 
+(TreeLeaf 2))), Last (TreeLeaf 7)))) 
+9/26/13 5 
+Mutually Recursive Types - Values 
+TreeNode 
+ 
+More              More           Last  
+ 
+TreeLeaf       TreeNode            TreeLeaf 
+ 
+    5                More           Last       7 
+ 
+                      TreeLeaf        TreeLeaf 
+ 
+                           3                   2 
+9/26/13 6 
+Mutually Recursive Types - Values 
+A more conventional picture  
+ 
+ 
+ 
+            5                                    7 
+ 
+ 
+                        3               2 
+9/26/13 7 
+Mutually Recursive Functions 
+# let rec fringe tree = 
+    match tree with (TreeLeaf x) -> [x] 
+  | (TreeNode list) -> list_fringe list 
+and list_fringe tree_list = 
+    match tree_list with (Last tree) -> fringe tree 
+  | (More (tree,list)) -> 
+    (fringe tree) @ (list_fringe list);; 
+ 
+val fringe : 'a tree -> 'a list = <fun> 
+val list_fringe : 'a treeList -> 'a list = <fun> 
+9/26/13 8 
+Problem 
+# type 'a tree = TreeLeaf of ’a | TreeNode of 'a treeList 
+and 'a treeList = Last of 'a tree | More of ('a tree * 'a treeList);; 
+Define tree_size  
+9/26/13 9 
+Problem 
+# type 'a tree = TreeLeaf of ’a | TreeNode of 'a treeList 
+and 'a treeList = Last of 'a tree | More of ('a tree * 'a treeList);; 
+Define tree_size  
+let rec tree_size t = 
+      match t with TreeLeaf _ -> 1 
+      | TreeNode ts -> treeList_size  ts 
+and 
+9/26/13 10 
+Problem 
+# type 'a tree = TreeLeaf of ’a | TreeNode of 'a treeList 
+and 'a treeList = Last of 'a tree | More of ('a tree * 'a treeList);; 
+Define tree_size and treeList_size  
+let rec tree_size t = 
+      match t with TreeLeaf _ -> 1 
+      | TreeNode ts -> treeList_size  ts 
+and 
+9/26/13 11 
+Problem 
+# type 'a tree = TreeLeaf of ’a | TreeNode of 'a treeList 
+and 'a treeList = Last of 'a tree | More of ('a tree * 'a treeList);; 
+Define tree_size and treeList_size 
+let rec tree_size t = 
+      match t with TreeLeaf _ -> 1 
+      | TreeNode ts -> treeList_size  ts 
+and treeList_size ts = 
+      match ts with Last t -> tree_size t  
+      | More t ts’ -> tree_size t + treeList_size ts’ 
+9/26/13 12 
+Mutually Recursive Functions 
+# fringe tree;; 
+-  : int list = [5; 3; 2; 7] 
+9/26/13 13 
+Nested Recursive Types 
+# type 'a labeled_tree = 
+ TreeNode of ('a * 'a labeled_tree 
+list);; 
+type 'a labeled_tree = TreeNode of ('a 
+* 'a labeled_tree list) 
+9/26/13 14 
+Nested Recursive Type Values 
+# let ltree = 
+  TreeNode(5, 
+    [TreeNode (3, []); 
+     TreeNode (2, [TreeNode (1, []); 
+                   TreeNode (7, [])]); 
+     TreeNode (5, [])]);; 
+9/26/13 15 
+Nested Recursive Type Values 
+val ltree : int labeled_tree = 
+  TreeNode 
+   (5, 
+    [TreeNode (3, []); TreeNode (2, 
+[TreeNode (1, []); TreeNode (7, [])]); 
+     TreeNode (5, [])]) 
+9/26/13 16 
+Nested Recursive Type Values 
+Ltree =  TreeNode(5) 
+          ::                ::                 ::           [ ] 
+ 
+TreeNode(3)   TreeNode(2)   TreeNode(5) 
+ 
+      [ ]             ::             ::    [ ]        [ ]    
+ 
+                 TreeNode(1)  TreeNode(7) 
+ 
+                       [ ]              [ ] 
+9/26/13 17 
+Nested Recursive Type Values 
+ 
+5 
+ 
+ 
+3           2           5 
+ 
+ 
+1           7 
+9/26/13 18 
+Mutually Recursive Functions 
+# let rec flatten_tree labtree = 
+    match labtree with TreeNode (x,treelist) 
+      -> x::flatten_tree_list treelist 
+    and flatten_tree_list treelist = 
+    match treelist with [] -> [] 
+    | labtree::labtrees 
+      -> flatten_tree labtree 
+        @ flatten_tree_list labtrees;; 
+9/26/13 19 
+Mutually Recursive Functions 
+val flatten_tree : 'a labeled_tree -> 'a list = 
+<fun> 
+val flatten_tree_list : 'a labeled_tree list -> 'a 
+list = <fun> 
+# flatten_tree ltree;; 
+- : int list = [5; 3; 2; 1; 7; 5] 
+n  Nested recursive types lead to mutually 
+recursive functions 
+9/26/13 20 
+Infinite Recursive Values 
+# let rec ones = 1::ones;; 
+val ones : int list = 
+  [1; 1; 1; 1; ...] 
+# match ones with x::_ -> x;; 
+Characters 0-25: 
+Warning: this pattern-matching is not exhaustive. 
+Here is an example of a value that is not matched: 
+[] 
+  match ones with x::_ -> x;; 
+  ^^^^^^^^^^^^^^^^^^^^^^^^^ 
+- : int = 1 
+9/26/13 21 
+Infinite Recursive Values 
+# let rec lab_tree = TreeNode(2, tree_list) 
+    and tree_list = [lab_tree; lab_tree];; 
+val lab_tree : int labeled_tree = 
+  TreeNode (2, [TreeNode(...); TreeNode(...)]) 
+val tree_list : int labeled_tree list = 
+  [TreeNode (2, [TreeNode(...); 
+TreeNode(...)]); 
+   TreeNode (2, [TreeNode(...); 
+TreeNode(...)])] 
+ 9/26/13 22 
+Infinite Recursive Values 
+# match lab_tree 
+   with TreeNode (x, _) -> x;; 
+- : int = 2 
+9/26/13 23 
+Records 
+n  Records serve the same programming 
+purpose as tuples 
+n  Provide better documentation, more 
+readable code 
+n  Allow components to be accessed by label 
+instead of position 
+n  Labels (aka field names must be unique) 
+n  Fields accessed by suffix dot notation 
+9/26/13 24 
+Record Types 
+n  Record types must be declared before they 
+can be used in OCaml 
+# type person = {name : string; ss : (int * int 
+* int); age : int};; 
+type person = { name : string; ss : int * int * 
+int; age : int; } 
+n  person is the type being introduced 
+n  name, ss and age are the labels, or fields 
+9/26/13 25 
+Record Values 
+n  Records built with labels; order does not 
+matter 
+# let teacher = {name = "Elsa L. Gunter"; 
+age = 102; ss = (119,73,6244)};; 
+val teacher : person = 
+  {name = "Elsa L. Gunter"; ss = (119, 73, 
+6244); age = 102} 
+9/26/13 26 
+Record Pattern Matching 
+# let {name = elsa; age = age; ss = 
+(_,_,s3)} = teacher;; 
+val elsa : string = "Elsa L. Gunter" 
+val age : int = 102 
+val s3 : int = 6244 
+9/26/13 27 
+Record Field Access 
+# let soc_sec = teacher.ss;;  
+val soc_sec : int * int * int = (119, 
+73, 6244) 
+9/26/13 28 
+Record Values 
+# let student = {ss=(325,40,1276); 
+name="Joseph Martins"; age=22};; 
+val student : person = 
+  {name = "Joseph Martins"; ss = (325, 40, 
+1276); age = 22} 
+# student = teacher;; 
+- : bool = false 
+9/26/13 29 
+New Records from Old 
+# let birthday person = {person with age = 
+person.age + 1};; 
+val birthday : person -> person = <fun> 
+# birthday teacher;; 
+- : person = {name = "Elsa L. Gunter"; ss = 
+(119, 73, 6244); age = 103} 
+9/26/13 30 
+New Records from Old 
+# let new_id name soc_sec person = 
+ {person with name = name; ss = soc_sec};; 
+val new_id : string -> int * int * int -> person 
+-> person = <fun> 
+# new_id "Guieseppe Martin" (523,04,6712) 
+student;; 
+- : person = {name = "Guieseppe Martin"; ss 
+= (523, 4, 6712); age = 22} 
+9/26/13 31 
+Why Data Types? 
+n  Data types play a key role in: 
+n  Data abstraction in the design of programs 
+n  Type checking in the analysis of programs 
+n  Compile-time code generation in the 
+translation and execution  of programs 
+9/26/13 32 
+Terminology 
+n  Type: A type t defines a set of possible 
+data values 
+n  E.g. short  in C is {x| 215 - 1 ≥ x ≥ -215} 
+n   A value in this set is said to have type t 
+ 
+n  Type system: rules of a language 
+assigning types to expressions 
+9/26/13 33 
+Types as Specifications 
+n  Types describe properties 
+n  Different type systems describe different 
+properties, eg 
+n  Data is read-write versus read-only 
+n  Operation has authority to access data 
+n  Data came from “right” source 
+n  Operation might or could not raise an exception 
+n  Common type systems focus on types describing 
+same data layout and access methods 
+9/26/13 34 
+Sound Type System 
+n  If an expression is assigned type t, and it 
+evaluates to a value v, then v is in the set of 
+values defined by t 
+n  SML, OCAML, Scheme and Ada have sound 
+type systems 
+n  Most implementations of C and C++ do not  
+9/26/13 35 
+Strongly Typed Language 
+n  When no application of an operator to 
+arguments can lead to a run-time type 
+error, language is strongly typed 
+n  Eg: 1 + 2.3;; 
+n  Depends on definition of “type error” 
+9/26/13 36 
+Strongly Typed Language 
+n  C++ claimed to be “strongly typed”, but  
+n  Union types allow creating a value at one 
+type and using it at another 
+n  Type coercions  may cause unexpected 
+(undesirable) effects 
+n  No array bounds check (in fact, no runtime 
+checks at all) 
+n  SML, OCAML “strongly typed” but still must 
+do dynamic array bounds checks, runtime 
+type case analysis, and other checks 
+9/26/13 37 
+Static vs Dynamic Types 
+•  Static type: type assigned to an expression 
+at compile time 
+•  Dynamic type: type assigned to a storage 
+location at run time 
+•  Statically typed language: static type 
+assigned to every expression at compile time 
+•  Dynamically typed language: type of an 
+expression determined at run time 
+9/26/13 38 
+Type Checking 
+n  When is op(arg1,…,argn) allowed? 
+n  Type checking assures that operations are 
+applied to the right number of arguments of 
+the right types 
+n  Right type may mean same type as was 
+specified, or may mean that there is a 
+predefined implicit coercion that will be 
+applied 
+n  Used to resolve overloaded operations 
+9/26/13 39 
+Type Checking 
+n  Type checking may be done statically at 
+compile time or dynamically at run time 
+n  Dynamically typed (aka untyped) 
+languages (eg LISP, Prolog) do only 
+dynamic type checking 
+n  Statically typed languages can do most 
+type checking statically 
+9/26/13 40 
+Dynamic Type Checking 
+n  Performed at run-time before each 
+operation is applied 
+n  Types of variables and operations left 
+unspecified until run-time 
+n   Same variable may be used at different 
+types 
+9/26/13 41 
+Dynamic Type Checking 
+n  Data object must contain type 
+information 
+n  Errors aren’t detected until violating 
+application is executed (maybe years 
+after the code was written) 
+9/26/13 42 
+Static Type Checking 
+n  Performed after parsing, before code 
+generation 
+n  Type of every variable and signature of 
+every operator must be known at 
+compile time 
+9/26/13 43 
+Static Type Checking 
+n  Can eliminate need to store type 
+information in data object if no dynamic 
+type checking is needed 
+n  Catches many programming errors at 
+earliest point 
+n  Can’t check types that depend on 
+dynamically computed values 
+n  Eg: array bounds 
+9/26/13 44 
+Static Type Checking 
+n  Typically places restrictions on 
+languages 
+n  Garbage collection 
+n  References instead of pointers 
+n  All variables initialized when created 
+n  Variable only used at one type 
+n  Union types allow for work-arounds, but 
+effectively introduce dynamic type checks 
+9/26/13 45 
+Type Declarations 
+n  Type declarations: explicit assignment 
+of types to variables (signatures to 
+functions) in the code of a program 
+n  Must be checked in a strongly typed 
+language 
+n  Often not necessary for  strong typing or 
+even static typing (depends on the type 
+system) 
+9/26/13 46 
+Type Inference 
+n  Type inference: A program analysis to 
+assign a type to an expression from the 
+program context of the expression 
+n  Fully static type inference first introduced 
+by Robin Miller in ML 
+n  Haskle, OCAML, SML all use type inference 
+n  Records are a problem for type 
+inference 
+9/26/13 47 
+Format of Type Judgments 
+n  A type judgement  has the form 
+Γ |- exp : τ 
+n   Γ is a typing environment 
+n  Supplies the types of variables and functions 
+n   Γ is a list of the form [ x : σ , . . . ] 
+n   exp  is a program expression 
+n   τ is a type to be assigned to exp 
+n  |- pronounced “turnstyle”, or “entails” (or 
+“satisfies”) 
+9/26/13 48 
+Format of Type Judgments 
+n  A type judgement  has the form 
+Γ |- exp : τ 
+n   Γ is a typing environment 
+n  Supplies the types of variables and functions 
+n   Γ is a list of the form [ x : σ , . . . ] 
+n   exp  is a program expression 
+n   τ is a type to be assigned to exp 
+n  |- pronounced “turnstyle”, or “entails” (or 
+“satisfies”) 
+9/26/13 49 
+Axioms - Constants 
+|- n : int   (assuming n is an integer constant) 
+ 
+ 
+|- true : bool            |- false : bool 
+ 
+n   These rules are true with any typing 
+environment 
+n   n is a meta-variable 
+9/26/13 50 
+Axioms – Variables (Monomorphic Rule) 
+Notation: Let Γ(x) = σ  if x : σ ∈ Γ and 
+there is no x : τ to the left of x : σ in Γ 
+ 
+Variable axiom: 
+ 
+ Γ |- x : σ     if Γ(x) = σ 
+9/26/13 51 
+Simple Rules - Arithmetic 
+Primitive operators ( ⊕ ∈ { +, -, *, …}): 
+ Γ |- e1:τ     Γ |- e2:τ   (⊕):τ → τ → τ 
+ Γ |- e1 ⊕ e2 : τ 
+Relations ( ˜ ∈ { < , > , =, <=, >= }): 
+Γ |- e1 : τ     Γ |- e2 : τ 
+ Γ |- e1 ˜ e2 :bool  
+For the moment, think τ is int 
+9/26/13 52 
+Simple Rules - Booleans 
+Connectives  
+ Γ |- e1 : bool     Γ |- e2 : bool 
+ Γ |- e1 && e2 : bool 
+ 
+ Γ |- e1 : bool     Γ |- e2 : bool 
+ Γ |- e1 || e2 : bool 
+9/26/13 53 
+Type Variables in Rules 
+n  If_then_else rule: 
+ Γ |- e1 : bool   Γ |- e2  : τ   Γ |- e3  : τ 
+ Γ |- (if e1 then e2  else e3) : τ 
+n   τ is a type variable (meta-variable) 
+n   Can take any type at all 
+n   All instances in a rule application must get 
+same type 
+n   Then branch, else branch and if_then_else 
+must all have same type 
+9/26/13 54 
+Function Application 
+n  Application rule: 
+ Γ |- e1 : τ1 → τ2   Γ |- e2  : τ1 
+ Γ |- (e1 e2) : τ2 
+n   If you have a function expression e1 of 
+type  τ1 → τ2 applied to an argument of 
+type τ1, the resulting expression has 
+type τ2  
+9/26/13 55 
+Fun Rule 
+n  Rules describe types, but also how the 
+environment Γ may change 
+n   Can only do what rule allows! 
+n   fun rule: 
+ [x : τ1 ] + Γ |- e  : τ2 
+ Γ |- fun x -> e  : τ1 → τ2 
+9/26/13 56 
+Fun Examples 
+[y : int ] + Γ |- y + 3  : int 
+Γ |- fun y -> y + 3  : int → int  
+[f : int → bool] + Γ |- f 2 :: [true]  : bool list 
+Γ |- (fun f -> f 2 :: [true])  
+                       : (int → bool) → bool list  
+ 
+9/26/13 57 
+(Monomorphic) Let and Let Rec 
+n  let rule: 
+ Γ |- e1  : τ1       [x : τ1 ] + Γ |- e2  : τ2 
+Γ |- (let x = e1 in e2 ) : τ2 
+n  let rec rule: 
+ [x: τ1 ] + Γ |- e1:τ1  [x: τ1 ] + Γ |- e2:τ2 
+Γ |- (let rec x = e1 in e2 ) : τ2 
+9/26/13 58 
+Example 
+n  Which rule do we apply? 
+                                   
+ 
+ ? 
+  |- (let rec one = 1 :: one in  
+      let x = 2 in 
+        fun y -> (x :: y :: one) ) : int → int list 
+9/26/13 59 
+Example 
+n  Let rec rule:      2   [one : int list] |- 
+  1                                (let x = 2 in 
+[one : int list] |-        fun y -> (x :: y :: one)) 
+ (1 :: one) : int list          : int → int list 
+  |- (let rec one = 1 :: one in  
+      let x = 2 in 
+        fun y -> (x :: y :: one) ) : int → int list 
+9/26/13 60 
+Proof of 1 
+n  Which rule? 
+ 
+                                    
+[one : int list] |- (1 :: one) : int list 
+9/26/13 61 
+Proof of 1 
+n  Application 
+3                                           4 
+  [one : int list] |-               [one : int list] |- 
+   ((::) 1): int list→ int list        one : int list 
+[one : int list] |- (1 :: one) : int list 
+9/26/13 62 
+Proof of 3 
+Constants Rule               Constants Rule 
+ 
+[one : int list] |-                    [one : int list] |-  
+ (::) : int → int list→ int list    1 : int 
+[one : int list] |- ((::) 1) : int list → int list 
+9/26/13 63 
+Proof of 4 
+n  Rule for variables 
+[one : int list] |- one:int list 
+9/26/13 64 
+Proof of 2 
+                             5    [x:int; one : int list] |- 
+n  Constant                    fun y -> 
+                                      (x :: y :: one)) 
+[one : int list] |- 2:int       : int → int list 
+    [one : int list] |-  (let x = 2 in 
+     fun y -> (x :: y :: one)) : int → int list 
+9/26/13 65 
+Proof of 5 
+ 
+ 
+ 
+  
+? 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+9/26/13 66 
+Proof of 5 
+ 
+                    
+ 
+ ? 
+[y:int; x:int; one : int list] |- (x :: y :: one) : int list 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+9/26/13 67 
+Proof of 5 
+ 
+ 6                                        7                     
+[y:int; x:int; one : int list] |-   [y:int; x:int; one : int 
+list] |- 
+ ((::) x):int list→ int list          (y :: one) : int list 
+[y:int; x:int; one : int list] |- (x :: y :: one) : int list 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+9/26/13 68 
+Proof of 6 
+Constant                            Variable 
+ 
+[…] |- (::) 
+: int→ int list→ int list    […; x:int;…] |- x:int 
+[y:int; x:int; one : int list] |- ((::) x) 
+                                  :int list→ int list 
+9/26/13 69 
+Proof of 7 
+Pf of 6 [y/x]                         Variable 
+ 
+    
+[y:int; …] |- ((::) y)     […; one: int list] |-  
+   :int list→ int list               one: int list 
+[y:int; x:int; one : int list] |- (y :: one) : int 
+list 
+9/26/13 70 
+Curry - Howard Isomorphism 
+n  Type Systems are logics; logics are type 
+systems 
+n  Types are propositions; propositions are 
+types 
+n  Terms are proofs; proofs are terms 
+n  Functions space arrow corresponds to 
+implication; application corresponds to 
+modus ponens  
+9/26/13 71 
+Curry - Howard Isomorphism 
+n  Modus Ponens 
+A ⇒ B   A 
+B 
+•  Application 
+ Γ |- e1 : α → β   Γ |- e2  : α 
+ Γ |- (e1 e2) : β 
+9/26/13 72 
+Mia Copa 
+n  The above system can’t handle polymorphism as 
+in OCAML 
+n  No type variables in type language (only meta-
+variable in the logic) 
+n  Would need:  
+n  Object level type variables and some kind of 
+type quantification 
+n  let and let rec rules to introduce polymorphism 
+n  Explicit rule to eliminate (instantiate) 
+polymorphism 

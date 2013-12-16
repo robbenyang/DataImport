@@ -1,0 +1,201 @@
+Student Project Expo - Siebel 0216, 12/11, 7p.
+Code Challenge #4 - Siebel 0224, 12/11, 9p.
+Final exam - 12/16, 7-10p, Locations TBA
+ 
+Today’s announcements:
+5
+34
+5
+4
+4
+4
+4
+4
+4
+3 3
+3
+3
+3
+3
+2
+2
+2
+2
+A
+B
+C
+D
+E
+F
+G
+H I
+J
+Prim’s Algorithm (undirected graph with unconstrained edge weights):
+Initialize structure:
+1. For all v, d[v] = “infinity”, p[v] = null
+2. Initialize source: d[s] = 0
+3. Initialize priority (min) queue
+4. Initialize set of labeled vertices to ∅.
+Repeat these steps n times:
+• Remove minimum d[] unlabeled 
+vertex: v
+• Label vertex v (set a flag)
+• For all unlabeled neighbors w of v, 
+If cost(v,w) < d[w]
+d[w] = cost(v,w) 
+p[w] = v
+Which is best?
+Depends on density of the graph:
+Sparse
+Dense
+adj mtx adj list
+heap O(n2 + m log n) O(n log n + m log n)
+Unsorted 
+array O(n
+2) O(n2)
+ad
+c
+b
+e
+f
+g
+10
+7
+3
+5
+7
+3
+3
+2
+2
+6
+Directed Graphs:
+a
+b
+c
+d
+e
+f
+g
+a b c d e f g
+a
+b
+c
+d
+e
+f
+g
+Single source shortest path
+Given a start vertex (source) s, find the path of 
+least total cost from s to every vertex in the 
+graph.
+Single source shortest path:
+Input:  directed graph G with non-negative edge weights, and a start 
+vertex s.
+Output: A subgraph G’ consisting of the shortest (minimum total cost) 
+paths from s to every other vertex in the graph.
+s
+d
+c
+b
+e
+f
+g
+10
+7
+3
+5
+7
+3
+3
+2
+2
+6
+Dijkstra’s Algorithm (1959)
+Single source shortest path (directed graph w non-negative edge weights):
+Given a source vertex s, we 
+wish to find the shortest path 
+from s to every other vertex 
+in the graph.
+s
+d
+c
+b
+e
+f
+g
+10
+7
+3
+5
+7
+3
+3
+2
+2
+6
+Initialize structure:
+Repeat these steps:
+1. Label a new (unlabelled) vertex v, 
+whose shortest distance has been 
+found
+2. Update v’s neighbors with an 
+improved distance
+Dijkstra’s Algorithm (1959)
+Single source shortest path (directed graph w non-negative edge weights):
+Why non-negative edge weights??
+a
+d
+c
+b
+e
+s
+g
+10
+7
+3
+5
+7
+2
+3
+-2
+2
+6
+Initialize structure:
+Repeat these steps:
+1. Label a new (unlabelled) vertex v, 
+whose shortest distance has been 
+found
+2. Update v’s neighbors with an 
+improved distance
+Dijkstra’s Algorithm (1959)
+Single source shortest path (directed graph w non-negative edge weights):
+s
+d
+c
+b
+e
+f
+g
+10
+7
+3
+5
+7
+3
+3
+2
+2
+6
+Initialize structure:
+1. For all v, d[v] = “infinity”, p[v] = null
+2. Initialize source: d[s] = 0
+3. Initialize priority (min) queue
+Repeat these steps n times:
+• Find minimum d[] unlabelled vertex: v
+• Label vertex v
+• For all unlabelled neighbors w of v, 
+If (____________ < d[w])
+d[w] = ______________ 
+p[w] = v
+Running time?

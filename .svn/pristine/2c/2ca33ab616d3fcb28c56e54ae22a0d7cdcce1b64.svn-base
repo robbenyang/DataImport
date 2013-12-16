@@ -1,0 +1,138 @@
+1 
+MP4 available, due 10/18, 11:59p.  
+ 
+ 
+Announcements 
+Traversals: another broader view… 
+template<class T> 
+void binaryTree<T>::clear(treeNode * croot){ 
+ if (root != null) { 
+     clear(croot->left); 
+ 
+     clear(croot->right); 
+ 
+     delete croot; 
+     croot = NULL; 
+ } 
+} 
+Traversals: something totally different… 
+template<class T> 
+void binaryTree<T>::levelOrder(treeNode * croot){ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+} 
+Running time: 
+Dictionary ADT:  (BST implementation) 
+insert 
+remove 
+find 
+traverse 
+template <class K, class D> 
+class Dictionary{ 
+public: 
+// constructor for empty tree. 
+private: 
+   struct treeNode{ 
+      D data; 
+      K key; 
+      treeNode * left; 
+      treeNode * right; 
+   }; 
+   treeNode * root 
+}; 
+ADT Dictionary: 
+ 
+Suppose we have the following data… 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+…and we want to be able to retrieve a 
+name, given a locker number.  
+Locker 
+Number 
+Name 
+103 Jay Hathaway 
+92 Linda Stencel 
+330 Bonnie Cook 
+46 Rick Brown 
+124 Kim Petersen 
+… … 
+More examples of key/value pairs: 
+ 
+UIN -> Advising Record 
+Course Number -> Schedule info 
+Color -> BMP 
+Vertex -> Set of incident edges 
+Flight number -> arrival information 
+URL -> html page 
+A dictionary is a structure supporting the following: 
+ void insert(kType & k, dType & d) 
+ void remove(kType & k) 
+ dType find(kType & k) 
+Binary Trees as a search structure (Dictionary) 
+Find me ... 
+5 
+10 
+8 
+7 
+2 
+3 
+12 
+6 
+1 
+4 9 
+11 
+Binary ________ Tree 
+A Binary Search Tree (BST) is a binary 
+tree, T,  such that: 
+•    __________, OR 
+•   T = {r, TL , TR } and  
+  TL -> _______________ 
+  TR -> _______________ 
+and 
+Dictionary ADT:  (BST implementation) 
+insert 
+remove 
+find 
+traverse 
+template <class K, class D> 
+class Dictionary{ 
+public: 
+// constructor for empty tree. 
+private: 
+   struct treeNode{ 
+      D data; 
+      K key; 
+      treeNode * left; 
+      treeNode * right; 
+   }; 
+   treeNode * root 
+}; 
+Binary Search Tree - Find 
+ 
+________________________(treeNode * cRoot, const K & key) 
+{ 
+   if (cRoot == NULL) 
+ 
+ 
+   else if (cRoot->key == key) 
+ 
+ 
+   else if 
+ 
+ 
+   else 
+ 
+ 
+} 

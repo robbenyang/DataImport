@@ -1,0 +1,30 @@
+Week #15: File systems and Security 
+Exam Review Question  
+CS 241: Fall 2013 
+These questions are provided to you to help you study material covered in CS 241 that may appear on the 
+final exam.  These exact questions may or may not appear on the final exam, but the topics they cover will 
+almost certainly be on the final exam. 
+1. What is the maximum size of a file that can be stored in an i-node based file system where the 
+size of each disk block is 8 KB, the size of a disk pointer is 4 B, and each i-node contains 5 direct 
+entries, 3 single-indirect entries, 2 double-indirect entries, and 1 triple-indirect entry? 
+ 
+2. If the size of a disk pointer doubles, how does this affect the maximum size of the file on a 
+system where each i-node contains 10 direct entires, 1 single-, 1 double-, and 1 triple-indirect 
+entry? 
+a. Does the maximum size grow by a factor of 2x (eg: doubles)?  
+b. Does the maximum file size shrink by a factor of 0.5x (eg: the new maximum file size is 
+half of the old size)? 
+c. What is the new maximum file size as a factor to the old maximum file size? 
+ 
+3. Name three things that are included in an i-node entry and one thing that is not contained in an i-
+node entry. 
+ 
+4. A file has the permissions “755”.  Explain in English terms what “755” signifies. 
+ 
+5.  You have built a brand-new fancy hash table to store all the knowledge you have learned from 
+CS 241.  However, you still need to find a hash function to use to hash data into your hash table. 
+Explain why a SHA-256 hash function may not an ideal hash function for this purpose. 
+ 
+6. You built a database that stored user passwords using a hash.  However, you found that some 
+users have the same hashed password.  What does this mean?  How can you prevent this from 
+happening? 

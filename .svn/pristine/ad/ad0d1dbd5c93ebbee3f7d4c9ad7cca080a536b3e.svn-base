@@ -1,0 +1,263 @@
+1 
+MP3, EC grading runs 9/27-10/1 with EC due 10/1, due 10/08 
+MP 3.1 will be on Exam 1. 
+Exam 1: 10/1, 7-10p, in rooms tba. 75min exam, given 3hr. 
+Class cancelled 9/30. 
+Review session – 9/30, 12-2p, Siebel 1404. 
+Review session – 9/30, 2-3p, Siebel 0216. 
+ 
+MP2 solution party: Sun, 9/29, 4-6pm, Room 0216. 
+Code Challenge 10/2 9pm 
+ 
+ 
+ 
+ 
+Announcements 
+Parameter passing:  
+void kiwi(int input) { 
+  int y=2; 
+  input *= y; 
+} 
+void apple(int* input) { 
+  int y=3; 
+  *input *= y; 
+} 
+void banana(int & input) { 
+  int y=4; 
+  input *= y; 
+} 
+ 
+int main() { 
+  int x = 1; 
+ 
+  kiwi(x); 
+  cout << x << endl; 
+ 
+  apple(&x); 
+  cout << x << endl; 
+ 
+  banana(x); 
+  cout << x << endl; 
+ 
+  return 0; 
+} 
+Example of use 
+Function defn 
+3 
+(a) stringGetter * a = new stringGetter; 
+(b) stringGetter * a = new getPageString; 
+(c) stringGetter * a; 
+  getPageString * b = new getPageString; 
+  a=b; 
+(d) Exactly two of these will result in a compiler error. 
+(e) It is possible that none of these will result in a compiler error. 
+Suppose class stringGetter contains exactly one pure 
+virtual function: the overloaded parentheses operator, 
+string operator()(int x). Also suppose that class 
+getPageString is a public stringGetter that 
+implements operator(). 
+Which of the following C++ statements will certainly result in 
+a compiler error? 
+What happens? 
+Generic Programming: lots of magic: 
+#include <list> 
+#include <iostream> 
+#include <string> 
+using namespace std; 
+ 
+struct animal { 
+   string name; 
+   string food; 
+   bool big; 
+   animal(string n="blob", string f="you”, bool b=true):name(n),food(f),big(b) {} 
+}; 
+ 
+int main() { 
+ 
+   animal g("giraffe","leaves"), p("penguin","fish”,false), b("bear");  
+   list<animal> zoo; 
+ 
+   zoo.push_back(g); zoo.push_back(p); zoo.push_back(b); //STL list insertAtEnd 
+ 
+   for(list<animal>::iterator it = zoo.begin(); it != zoo.end(); it++) 
+      cout << (*it).name << " eats " << (*it).food << endl; 
+ 
+return 0; 
+} 
+Generic programming: (more magic) 
+#include <list> 
+#include <iostream> 
+#include <string> 
+using namespace std; 
+ 
+struct animal { 
+   string name; 
+   string food; 
+   bool big; 
+   animal(string n="blob", string f="you”, bool b=true):name(n),food(f),big(b) {} 
+}; 
+ 
+int main() { 
+ 
+   animal g("giraffe","leaves"), p("penguin","fish”,false), b("bear");  
+   list<animal> zoo; 
+ 
+   zoo.push_back(g); zoo.push_back(p); zoo.push_back(b); //STL list insertAtEnd 
+ 
+   for(list<animal>::iterator it = zoo.begin(); it != zoo.end(); it++) 
+      cout << (*it).name << "  " << (*it).food << endl; 
+ 
+return 0; 
+} 
+emplate<class Iter, class Formatter> 
+void print(Iter first, Iter second, Formatter printer) { 
+   while (!(first==second)) { 
+      printer(*first); 
+     first++; 
+   } 
+} 
+Generic programming: (more magic) 
+#include <list> 
+#include <iostream> 
+#include <string> 
+using namespace std; 
+ 
+struct animal { 
+   string name; 
+   string food; 
+   bool big; 
+   animal(string n="blob", string f="you”, bool b=true):name(n),food(f),big(b) {} 
+}; 
+ 
+int main() { 
+ 
+   animal g("giraffe","leaves"), p("penguin","fish”,false), b("bear");  
+   list<animal> zoo; 
+ 
+   zoo.push_back(g); zoo.push_back(p); zoo.push_back(b); //STL list insertAtEnd 
+ 
+   for(list<animal>::iterator it = zoo.begin(); it != zoo.end(); it++) 
+      cout << (*it).name << "  " << (*it).food << endl; 
+ 
+return 0; 
+} 
+emplate<class Iter, class Formatter> 
+void print(Iter first, Iter second, Formatter printer) { 
+   while (!(first==second)) { 
+      printer(*first); 
+     first++; 
+   } 
+} 
+class printIfBig { 
+public: 
+   void operator()(animal a) { 
+      if (a.big) cout << a.name << endl; 
+   } 
+}; 
+Generic programming: (more magic) 
+#include <list> 
+#include <iostream> 
+#include <string> 
+using namespace std; 
+ 
+struct animal { 
+   string name; 
+   string food; 
+   bool big; 
+   animal(string n="blob", string f="you”, bool b=true):name(n),food(f),big(b) {} 
+}; 
+ 
+int main() { 
+ 
+   animal g("giraffe","leaves"), p("penguin","fish”,false), b("bear");  
+   list<animal> zoo; 
+ 
+   zoo.push_back(g); zoo.push_back(p); zoo.push_back(b); //STL list insertAtEnd 
+ 
+   for(list<animal>::iterator it = zoo.begin(); it != zoo.end(); it++) 
+      cout << (*it).name << "  " << (*it).food << endl; 
+ 
+return 0; 
+} 
+emplate<class Iter, class Formatter> 
+void print(Iter first, Iter second, Formatter printer) { 
+   while (!(first==second)) { 
+      printer(*first); 
+     first++; 
+   } 
+} 
+class printIfBig { 
+public: 
+   void operator()(animal a) { 
+      if (a.big) out << a.name << endl; 
+   } 
+}; 
+printIfBig myFun; 
+myFun(b); 
+Generic programming: (more magic) 
+#include <list> 
+#include <iostream> 
+#include <string> 
+using namespace std; 
+ 
+struct animal { 
+   string name; 
+   string food; 
+   bool big; 
+   animal(string n="blob", string f="you”, bool b=true):name(n),food(f),big(b) {} 
+}; 
+ 
+int main() { 
+ 
+   animal g("giraffe","leaves"), p("penguin","fish”,false), b("bear");  
+   list<animal> zoo; 
+ 
+   zoo.push_back(g); zoo.push_back(p); zoo.push_back(b); //STL list insertAtEnd 
+ 
+   for(list<animal>::iterator it = zoo.begin(); it != zoo.end(); it++) 
+      cout << (*it).name << "  " << (*it).food << endl; 
+ 
+return 0; 
+} 
+emplate<class Iter, class Formatter> 
+void print(Iter first, Iter second, Formatter printer) { 
+   while (!(first==second)) { 
+      printer(*first); 
+     first++; 
+   } 
+} 
+class printIfBig { 
+public: 
+   void operator()(animal a) { 
+      if (a.big) out << a.name << endl; 
+   } 
+}; 
+printIfBig myFun; 
+print<list<animal>::iterator,printIfBig>(zoo.begin(),zoo.end(),myFun); 
+Suppose these familiar structures were encapsulated. 
+Iterators give us the access we need to traverse them anyway! 
+And function objects give us the ability to change their data systematically. 
+What happens? 
+10 
+ sphere * a, * b; 
+ a = new sphere(1.0); 
+ b = a; 
+ b->setRadius(2.0); 
+ delete b; 
+ a->setRadius(4.0); 
+ sphere * c = new sphere(5.0); 
+ b = new sphere(3.0); 
+ cout << a->getRadius() << endl; 
+(a) 4.0 
+(b) 3.0 
+(c) A segmentation fault. 
+(d) Compiler error. 
+(e) The behavior cannot be 
+predicted. 
+What are 3 items in the 
+Rule of the Big Three: 
+  __________________ 
+  __________________ 
+  __________________ 
+ 
+ 

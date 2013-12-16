@@ -1,0 +1,857 @@
+11/13/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+11/13/13 2 
+LR Parsing Tables 
+n  Build a pair of tables, Action and Goto, from 
+the grammar 
+n  This is the hardest part, we omit here 
+n  Rows labeled by states 
+n  For Action, columns labeled by terminals 
+and “end-of-tokens” marker 
+n  (more generally strings of terminals of fixed 
+length) 
+n  For Goto, columns labeled by non-
+terminals 
+11/13/13 3 
+Action and Goto Tables 
+n  Given a state and the next input, Action 
+table says either 
+n  shift and go to state n, or 
+n  reduce by production k (explained in a 
+bit) 
+n  accept or error 
+n  Given a state and a non-terminal, Goto table 
+says  
+n  go to state m 
+11/13/13 4 
+LR(i) Parsing Algorithm 
+n  Based on push-down automata 
+n  Uses states and transitions (as recorded 
+in Action and Goto tables) 
+n  Uses a stack containing states, 
+terminals and non-terminals 
+11/13/13 5 
+LR(i) Parsing Algorithm 
+0.  Insure token stream ends in special “end-
+of-tokens” symbol 
+1.  Start in state 1 with an empty stack 
+2.  Push state(1) onto stack 
+3.  Look at next i tokens from token stream 
+(toks) (don’t remove yet) 
+4.  If top symbol on stack is state(n), look 
+up action in  Action table at (n, toks) 
+11/13/13 6 
+LR(i) Parsing Algorithm 
+5. If action = shift m, 
+a)  Remove the top token from token 
+stream and push it onto the stack 
+b)  Push state(m) onto stack 
+c)  Go to step 3 
+11/13/13 7 
+LR(i) Parsing Algorithm 
+6. If action = reduce k where production k is 
+E ::= u 
+a)  Remove 2 * length(u) symbols from 
+stack (u and all the interleaved states) 
+b)  If new top symbol on stack is state(m), 
+look up new state p in Goto(m,E) 
+c)  Push E onto the stack, then push 
+state(p) onto the stack 
+d)  Go to step 3 
+11/13/13 8 
+LR(i) Parsing Algorithm 
+7. If action = accept 
+n  Stop parsing, return success 
+8. If action = error, 
+n  Stop parsing, return failure 
+11/13/13 9 
+Adding Synthesized Attributes 
+n  Add to each reduce a rule for calculating 
+the new synthesized attribute from the 
+component attributes 
+n  Add to each non-terminal pushed onto the 
+stack, the attribute calculated for it 
+n  When performing a reduce, 
+n  gather the recorded attributes from each non-
+terminal popped from stack 
+n  Compute new attribute for non-terminal pushed 
+onto stack 
+11/13/13 10 
+Shift-Reduce Conflicts 
+n  Problem: can’t decide whether the 
+action for a state and input character 
+should be shift or reduce 
+n  Caused by ambiguity in grammar 
+n  Usually caused by lack of associativity 
+or precedence information in grammar 
+11/13/13 11 
+Example: <Sum> = 0 | 1 | (<Sum>)  
+            | <Sum> + <Sum> 
+        0 + 1 + 0      shift 
+ ->  0  + 1 + 0       reduce  
+ -> <Sum>  + 1 + 0      shift 
+ -> <Sum> +  1 + 0      shift 
+ -> <Sum> + 1  + 0      reduce 
+ -> <Sum> + <Sum>  + 0 
+11/13/13 12 
+Example - cont 
+n  Problem: shift or reduce? 
+n  You can shift-shift-reduce-reduce or   
+reduce-shift-shift-reduce 
+n  Shift first - right associative 
+n  Reduce first- left associative 
+11/13/13 13 
+Reduce - Reduce Conflicts 
+n  Problem: can’t decide between two 
+different rules to reduce by 
+n  Again caused by ambiguity in grammar 
+n  Symptom: RHS of one production 
+suffix of another 
+n  Requires examining grammar and 
+rewriting it 
+n  Harder to solve than shift-reduce errors 
+11/13/13 14 
+Example 
+n  S ::= A | aB     A ::= abc       B ::= bc 
+ 
+   abc       shift 
+  a  bc      shift 
+  ab  c       shift 
+  abc         
+n  Problem: reduce by B ::= bc then by     
+S ::= aB, or by A::= abc then S::A? 
+11/13/13 15 
+Recursive Descent Parsing 
+n  Recursive descent parsers are a class of 
+parsers derived fairly directly from BNF 
+grammars 
+ 
+n  A recursive descent parser traces out a 
+parse tree in top-down order, 
+corresponding to a left-most derivation 
+(LL - left-to-right scanning, leftmost 
+derivation) 
+11/13/13 16 
+Recursive Descent Parsing 
+n  Each nonterminal in the grammar has a 
+subprogram associated with it; the 
+subprogram parses all phrases that the 
+nonterminal can generate 
+n  Each nonterminal in right-hand side of a rule 
+corresponds  to a recursive call to the 
+associated subprogram 
+11/13/13 17 
+Recursive Descent Parsing 
+n  Each subprogram must be able to decide 
+how to begin parsing by looking at the left-
+most character in the string to be parsed 
+n  May do so directly, or indirectly by calling 
+another parsing subprogram  
+ 
+n  Recursive descent parsers, like other top-
+down parsers, cannot be built from left-
+recursive grammars 
+n  Sometimes can modify grammar to suit 
+11/13/13 18 
+Sample Grammar 
+<expr> ::= <term> | <term> + <expr> 
+             | <term> - <expr> 
+ 
+<term> ::= <factor> | <factor> * <term> 
+             | <factor> / <term> 
+ 
+<factor> ::= <id> | ( <expr> ) 
+11/13/13 19 
+Tokens as OCaml Types 
+n  +  -  *  /  (  )  <id> 
+n  Becomes an OCaml datatype 
+type token = 
+     Id_token of string 
+   | Left_parenthesis | Right_parenthesis 
+   | Times_token | Divide_token 
+   | Plus_token | Minus_token 
+11/13/13 20 
+Parse Trees as Datatypes 
+<expr> ::= <term> | <term> + <expr> 
+             | <term> - <expr> 
+ 
+type expr = 
+    Term_as_Expr of term 
+  | Plus_Expr of (term * expr) 
+  | Minus_Expr of (term * expr) 
+11/13/13 21 
+Parse Trees as Datatypes 
+<term> ::= <factor> | <factor> * 
+<term> 
+                | <factor> / <term> 
+ 
+and term = 
+    Factor_as_Term of factor  
+  | Mult_Term of (factor * term) 
+  | Div_Term of (factor * term) 
+11/13/13 22 
+Parse Trees as Datatypes 
+<factor> ::= <id> | ( <expr> ) 
+ 
+and factor = 
+    Id_as_Factor of string 
+  | Parenthesized_Expr_as_Factor of expr 
+11/13/13 23 
+Parsing Lists of Tokens 
+n  Will create three mutually recursive 
+functions: 
+n  expr : token list -> (expr * token list) 
+n  term : token list -> (term * token list) 
+n  factor : token list -> (factor * token list) 
+n  Each parses what it can and gives back 
+parse and remaining tokens 
+11/13/13 24 
+<expr> ::= <term> [( + | - ) <expr> ] 
+ let rec expr tokens = 
+    (match term tokens 
+      with ( term_parse , tokens_after_term) -> 
+        (match tokens_after_term 
+          with( Plus_token  :: tokens_after_plus) -> 
+Parsing an Expression 
+11/13/13 25 
+<expr> ::= <term> [( + | - ) <expr> ] 
+ let rec expr tokens = 
+    (match term tokens 
+      with ( term_parse , tokens_after_term) -> 
+        (match tokens_after_term 
+         with ( Plus_token  :: tokens_after_plus) -> 
+Parsing an Expression 
+11/13/13 26 
+<expr> ::= <term> [( + | - ) <expr> ] 
+ let rec expr tokens = 
+    (match term tokens 
+      with ( term_parse , tokens_after_term) -> 
+        (match tokens_after_term 
+         with ( Plus_token  :: tokens_after_plus) -> 
+Parsing a Plus Expression 
+11/13/13 27 
+<expr> ::= <term> [( + | - ) <expr> ] 
+ let rec expr tokens = 
+    (match term tokens 
+      with ( term_parse , tokens_after_term) -> 
+        (match tokens_after_term 
+         with ( Plus_token  :: tokens_after_plus) -> 
+Parsing a Plus Expression 
+11/13/13 28 
+<expr> ::= <term> [( + | - ) <expr> ] 
+ let rec expr tokens = 
+    (match term tokens 
+      with ( term_parse , tokens_after_term) -> 
+        (match tokens_after_term 
+         with ( Plus_token  :: tokens_after_plus) -> 
+Parsing a Plus Expression 
+11/13/13 29 
+Parsing a Plus Expression 
+<expr> ::= <term> + <expr>   
+ 
+       (match expr tokens_after_plus 
+      with ( expr_parse  , tokens_after_expr) -> 
+  ( Plus_Expr  ( term_parse  ,  expr_parse ), 
+    tokens_after_expr)) 
+11/13/13 30 
+<expr> ::= <term> + <expr>   
+ 
+ (match expr tokens_after_plus 
+      with ( expr_parse  , tokens_after_expr) -> 
+  ( Plus_Expr  ( term_parse  ,  expr_parse ), 
+    tokens_after_expr)) 
+Parsing a Plus Expression 
+11/13/13 31 
+Building Plus Expression Parse Tree 
+<expr> ::= <term> + <expr>   
+ 
+ (match expr tokens_after_plus 
+      with ( expr_parse  , tokens_after_expr) -> 
+  ( Plus_Expr  ( term_parse  ,  expr_parse ), 
+    tokens_after_expr)) 
+11/13/13 32 
+<expr> ::=  <term> - <expr>   
+ 
+      | ( Minus_token  :: tokens_after_minus) -> 
+         (match expr tokens_after_minus 
+       with ( expr_parse  , tokens_after_expr) -> 
+  ( Minus_Expr  ( term_parse  ,  expr_parse  ), 
+    tokens_after_expr)) 
+Parsing a Minus Expression 
+11/13/13 33 
+Parsing a Minus Expression 
+<expr> ::=  <term> - <expr>   
+ 
+      | ( Minus_token  :: tokens_after_minus) -> 
+         (match expr tokens_after_minus 
+       with ( expr_parse  , tokens_after_expr) -> 
+  ( Minus_Expr  ( term_parse  ,  expr_parse  ), 
+    tokens_after_expr)) 
+11/13/13 34 
+<expr> ::=  <term> 
+ 
+ | _ -> (Term_as_Expr  term_parse  , 
+tokens_after_term))) 
+n  Code for  term  is same except for 
+replacing addition with multiplication 
+and subtraction with division 
+Parsing an Expression as a Term 
+11/13/13 35 
+Parsing Factor as Id 
+<factor> ::= <id>  
+ 
+and factor  tokens = 
+ (match tokens 
+  with (Id_token id_name :: tokens_after_id) =  
+   ( Id_as_Factor  id_name, tokens_after_id) 
+11/13/13 36 
+  <factor> ::= ( <expr> ) 
+ 
+ | ( Left_parenthesis  :: tokens) = 
+     (match expr tokens 
+      with ( expr_parse , tokens_after_expr) -> 
+Parsing Factor as Parenthesized Expression 
+11/13/13 
+ 
+<factor> ::=  ( <expr> ) 
+ 
+(match tokens_after_expr 
+with Right_parenthesis :: tokens_after_rparen -> 
+ ( Parenthesized_Expr_as_Factor   expr_parse  ,  
+tokens_after_rparen) 
+Parsing Factor as Parenthesized Expression 
+11/13/13 38 
+Error Cases 
+n  What if no matching right parenthesis? 
+ 
+    | _ -> raise (Failure "No matching 
+rparen") )) 
+ 
+n  What if no leading id or left parenthesis? 
+ | _ -> raise (Failure "No id or lparen" ));; 
+ 
+11/13/13 39 
+( a + b ) * c - d 
+expr [Left_parenthesis; Id_token "a”; 
+Plus_token; Id_token "b”; 
+Right_parenthesis; Times_token; 
+Id_token "c”; Minus_token;       
+Id_token "d"];; 
+ 
+ 
+11/13/13 40 
+( a + b ) * c - d 
+- : expr * token list = 
+(Minus_Expr 
+  (Mult_Term 
+    (Parenthesized_Expr_as_Factor 
+      (Plus_Expr 
+        (Factor_as_Term (Id_as_Factor "a"), 
+         Term_as_Expr (Factor_as_Term 
+(Id_as_Factor "b")))), 
+     Factor_as_Term (Id_as_Factor "c")), 
+   Term_as_Expr (Factor_as_Term (Id_as_Factor 
+"d"))), 
+ []) 
+11/13/13 41 
+( a + b ) * c – d 
+ 
+                   <expr> 
+              <term>       -      <expr> 
+             <factor>   *    <term>      <term> 
+       (     <expr>     )      <factor>   <factor> 
+     <term>  +  <expr>    <id>          <id> 
+    <factor>     <term>       c               d 
+        <id>       <factor> 
+          a            <id> 
+                           b 
+11/13/13 42 
+a + b * c – d 
+# expr [Id_token "a”; Plus_token; Id_token "b”;      
+Times_token; Id_token "c”; Minus_token; 
+      Id_token "d"];; 
+- : expr * token list = 
+(Plus_Expr 
+  (Factor_as_Term (Id_as_Factor "a"), 
+   Minus_Expr 
+    (Mult_Term (Id_as_Factor "b", Factor_as_Term 
+(Id_as_Factor "c")), 
+     Term_as_Expr (Factor_as_Term (Id_as_Factor 
+"d")))), 
+ []) 
+11/13/13 43 
+a + b * c – d 
+                   <expr> 
+ <term>           +                <expr> 
+<factor>                < term>     -    <expr> 
+   <id>          <factor>  *  <term>  <term> 
+      a               <id>       <factor>  <factor> 
+                         b             <id>       <id> 
+                                           c            d 
+11/13/13 44 
+( a + b * c - d 
+# expr [Left_parenthesis; Id_token "a”; 
+Plus_token; Id_token "b”; Times_token; 
+Id_token "c”; Minus_token; Id_token "d"];; 
+ Exception: Failure "No matching rparen".  
+Can’t parse because it was expecting a  
+right parenthesis but it got to the end 
+without finding one 
+11/13/13 45 
+a + b ) * c - d *) 
+expr [Id_token "a”; Plus_token; Id_token "b”; 
+Right_parenthesis; Times_token; Id_token "c”; 
+Minus_token; Id_token "d"];; 
+- : expr * token list = 
+(Plus_Expr 
+  (Factor_as_Term (Id_as_Factor "a"), 
+   Term_as_Expr (Factor_as_Term (Id_as_Factor 
+"b"))), 
+ [Right_parenthesis; Times_token; Id_token "c"; 
+Minus_token; Id_token "d"]) 
+Parsing Whole String 
+n  Q: How to guarantee whole string parses? 
+n  A: Check returned tokens empty 
+let parse tokens  = 
+    match expr tokens  
+     with (expr_parse, []) -> expr_parse 
+     | _ -> raise (Failure “No parse");; 
+n  Fixes <expr> as start symbol 
+11/13/13 46 
+11/13/13 47 
+Streams in Place of Lists 
+n  More realistically, we don't want to create 
+the entire list of tokens before we can start 
+parsing 
+n  We want to generate one token at a time 
+and use it to make one step in parsing 
+n  Will use (token * (unit -> token)) or (token * 
+(unit -> token option))  
+    in place of  token list 
+11/13/13 48 
+Problems for Recursive-Descent Parsing 
+n  Left Recursion: 
+  A ::= Aw 
+   translates to a subroutine that loops forever 
+n  Indirect Left Recursion: 
+  A ::= Bw 
+  B ::= Av 
+ causes the same problem 
+11/13/13 49 
+Problems for Recursive-Descent Parsing 
+n  Parser must always be able to choose 
+the next action based only only the 
+very next token 
+n  Pairwise Disjointedness Test: Can we 
+always determine which rule (in the 
+non-extended BNF) to choose based 
+on just the first token 
+11/13/13 50 
+Pairwise Disjointedness Test 
+n  For each rule 
+A ::= y 
+Calculate 
+FIRST (y) = 
+     {a | y =>* aw} ∪ {ε | if y =>* ε} 
+n  For each pair of rules  A ::= y  and A ::= 
+z,  require FIRST(y) ∩ FIRST(z) = { } 
+11/13/13 51 
+Example 
+Grammar:  
+<S> ::= <A> a <B>  b 
+<A> ::= <A> b | b 
+<B> ::= a <B> | a 
+ 
+FIRST (<A> b) = {b} 
+FIRST (b) = {b} 
+Rules for <A> not pairwise disjoint 
+11/13/13 52 
+Eliminating Left Recursion 
+n  Rewrite grammar to shift left recursion to 
+right recursion  
+n  Changes associativity 
+n  Given  
+<expr> ::= <expr> + <term> and  
+<expr> ::= <term> 
+n  Add new non-terminal <e> and replace 
+above rules with 
+<expr> ::= <term><e> 
+<e> ::= + <term><e> | ε  
+11/13/13 53 
+Factoring Grammar 
+n  Test too strong: Can’t handle 
+ <expr> ::= <term> [ ( + | - ) <expr> ] 
+n  Answer: Add new non-terminal and replace 
+above rules by 
+<expr> ::= <term><e> 
+<e> ::= + <term><e> 
+<e> ::= - <term><e> 
+<e> ::= ε  
+n  You are delaying the decision point 
+11/13/13 54 
+Example 
+Both <A> and <B> 
+have problems: 
+ 
+<S> ::= <A> a <B> b 
+<A> ::= <A> b | b 
+<B> ::= a <B> | a 
+ 
+ 
+Transform grammar 
+to: 
+ 
+<S> ::= <A> a <B> b  
+<A> ::-= b<A1> 
+<A1> :: b<A1> |  ε 
+<B> ::= a<B1> 
+<B1> ::= a<B1> | ε 
+11/13/13 55 
+Semantics 
+n  Expresses the meaning of syntax 
+n  Static semantics 
+n  Meaning based only on the form of the 
+expression without executing it 
+n  Usually restricted to type checking / type 
+inference 
+11/13/13 56 
+Dynamic semantics 
+n  Method of describing meaning of 
+executing a program 
+n  Several different types: 
+n  Operational Semantics 
+n  Axiomatic Semantics 
+n  Denotational Semantics 
+11/13/13 57 
+Dynamic Semantics 
+n Different languages better suited 
+to different types of semantics 
+n Different types of semantics 
+serve different purposes 
+11/13/13 58 
+Operational Semantics 
+n  Start with a simple notion of machine 
+n  Describe how to execute (implement) 
+programs of language on virtual machine, by 
+describing how to execute each program 
+statement (ie, following the structure of the 
+program) 
+ 
+n  Meaning of program is how its execution 
+changes the state of the machine 
+n  Useful as basis for implementations 
+11/13/13 59 
+Axiomatic Semantics 
+n  Also called Floyd-Hoare Logic 
+n  Based on formal logic (first order 
+predicate calculus) 
+n  Axiomatic Semantics is a logical system 
+built from axioms and inference rules 
+n  Mainly suited to simple imperative 
+programming languages 
+11/13/13 60 
+Axiomatic Semantics 
+n  Used to formally prove a property 
+(post-condition) of the state (the 
+values of the program variables) after 
+the execution of program, assuming 
+another property (pre-condition) of the 
+state before execution 
+n  Written : 
+{Precondition} Program {Postcondition} 
+n  Source of idea of loop invariant  
+11/13/13 61 
+Denotational Semantics 
+n  Construct a function M assigning a 
+mathematical meaning to each program 
+construct 
+n  Lambda calculus often used as the range 
+of the meaning function 
+n  Meaning function is compositional: 
+meaning of construct built from meaning 
+of parts 
+n  Useful for proving properties of programs 
+11/13/13 62 
+Natural Semantics 
+n  Aka Structural Operational Semantics, aka 
+“Big Step Semantics” 
+n  Provide value for a program by rules and 
+derivations, similar to type derivations 
+n  Rule conclusions look like  
+(C, m) ⇓ m’ 
+or 
+(E, m) ⇓ v 
+11/13/13 63 
+Simple Imperative Programming Language 
+n  I ∈ Identifiers 
+n  N ∈ Numerals 
+n  B ::= true | false | B & B | B or B | not B      
+| E < E | E = E 
+n  E::= N | I | E + E | E * E | E - E | - E 
+n  C::= skip | C;C | I ::= E  
+| if B then C else C fi | while B do C od 
+11/13/13 64 
+Natural Semantics of Atomic Expressions 
+ 
+n  Identifiers: (I,m) ⇓ m(I) 
+n  Numerals are values: (N,m) ⇓ N 
+n  Booleans:   (true,m) ⇓ true 
+                   (false ,m) ⇓ false 
+11/13/13 65 
+Booleans:  
+(B, m) ⇓ false       (B, m) ⇓ true  (B’, m) ⇓ b 
+(B & B’, m) ⇓ false          (B & B’, m) ⇓ b 
+ 
+  (B, m) ⇓ true         (B, m) ⇓ false  (B’, m) ⇓ b 
+(B or B’, m) ⇓ true           (B or B’, m) ⇓ b 
+ 
+(B, m) ⇓ true                 (B, m) ⇓ false 
+(not B, m) ⇓ false        (not B, m) ⇓ true 
+11/13/13 66 
+Relations 
+(E, m) ⇓ U     (E’, m) ⇓ V   U ~ V = b 
+(E ~ E’, m) ⇓ b 
+ 
+n  By U ~ V = b, we mean does (the meaning 
+of) the relation ~ hold on the meaning of U 
+and V 
+n  May be specified by a mathematical 
+expression/equation or rules matching U and 
+V 
+11/13/13 67 
+Arithmetic Expressions 
+ 
+(E, m) ⇓ U     (E’, m) ⇓ V   U op V = N 
+(E op E’, m) ⇓ N 
+where N is the specified value for U op V 
+11/13/13 68 
+Commands 
+Skip:                 (skip, m) ⇓ m 
+ 
+ 
+Assignment:             (E,m) ⇓ V 
+          (I::=E,m) ⇓ m[I <-- V ] 
+ 
+ 
+Sequencing:     (C,m) ⇓ m’    (C’,m’) ⇓ m’’ 
+             (C;C’, m) ⇓ m’’ 
+11/13/13 69 
+If Then Else Command 
+ 
+(B,m) ⇓ true   (C,m) ⇓ m’ 
+(if B then C else C’ fi, m) ⇓ m’ 
+ 
+(B,m) ⇓ false   (C’,m) ⇓ m’ 
+(if B then C else C’ fi, m) ⇓ m’ 
+11/13/13 70 
+While Command 
+(B,m) ⇓ false 
+(while B do C od, m) ⇓ m 
+ 
+(B,m)⇓true (C,m)⇓m’  (while B do C od, 
+m’ )⇓m’’ 
+(while B do C od, m) ⇓ m’’ 
+11/13/13 71 
+Example: If Then Else Rule 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+                                             (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+ {x -> 7}) ⇓ ? 
+11/13/13 72 
+Example: If Then Else Rule 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+                                             (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓?                  ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓  ? {x->7, y->5}  
+11/13/13 73 
+Example: Arith Relation 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    ? > ? = ?                           (2+3, {x->7})⇓5 
+(x,{x->7})⇓?   (5,{x->7})⇓?        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓?                 ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓ ? {x->7, y->5}  
+11/13/13 74 
+Example: Identifier(s) 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+     7 > 5 = true                           (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓?                 ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓ ? {x->7, y->5}  
+11/13/13 75 
+Example: Arith Relation 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓{x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                      {x -> 7}) ⇓ ? {x->7, y->5}  
+11/13/13 76 
+Example: If Then Else Rule 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+     7 > 5 = true                     (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓ ?                    . 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                      {x -> 7}) ⇓ ? {x->7, y->5}  
+11/13/13 77 
+Example: Assignment 
+ 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓? 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓ ? {x-   >7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                      {x -> 7}) ⇓ ?  {x->7, y->5}  
+11/13/13 78 
+Example: Arith Op 
+                                                ? + ? = ? 
+                                  (2,{x->7})⇓?    (3,{x->7}) ⇓? 
+     7 > 5 = true                      (2+3, {x->7})⇓? 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓?                     . 
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓ ? {x->7, y->5}  
+11/13/13 79 
+Example: Numerals 
+                                                2 + 3 = 5 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓? 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓ ?{x->7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                      {x -> 7}) ⇓ ? {x->7, y->5}  
+11/13/13 80 
+Example: Arith Op 
+                                                2 + 3 = 5 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓? {x->7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                       {x -> 7}) ⇓  ? {x->7, y->5}  
+11/13/13 81 
+Example: Assignment 
+                                                2 + 3 = 5 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+(x > 5, {x -> 7})⇓true            ⇓ {x->7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+                     {x -> 7}) ⇓?  {x->7, y->5}  
+11/13/13 82 
+Example: If Then Else Rule 
+                                                2 + 3 = 5 
+                                  (2,{x->7})⇓2    (3,{x->7}) ⇓3 
+    7 > 5 = true                       (2+3, {x->7})⇓5 
+(x,{x->7})⇓7   (5,{x->7})⇓5        (y:= 2 + 3, {x-> 7} 
+ (x > 5, {x -> 7})⇓true              ⇓ {x->7, y->5}  
+(if x > 5 then y:= 2 + 3 else y:=3 + 4 fi, 
+     {x -> 7}) ⇓  {x->7, y->5}  
+11/13/13 83 
+Let in Command 
+ 
+(E,m) ⇓v  (C,m[I<-v]) ⇓ m’ 
+(let I = E in C, m) ⇓ m’ ’ 
+ 
+ 
+Where m’’ (y) = m’ (y) for y≠ I and  
+m’’ (I) = m (I) if m(I) is defined, 
+and m’’ (I) is undefined otherwise 
+11/13/13 84 
+Example 
+ 
+ 
+                      (x,{x->5}) ⇓ 5   (3,{x->5}) ⇓ 3 
+                           (x+3,{x->5}) ⇓ 8 
+(5,{x->17}) ⇓ 5     (x:=x+3,{x->5}) ⇓ {x->8} 
+  (let x = 5 in (x:=x+3), {x -> 17}) ⇓ ? 
+11/13/13 85 
+Example 
+ 
+ 
+                      (x,{x->5}) ⇓ 5   (3,{x->5}) ⇓ 3 
+                           (x+3,{x->5}) ⇓ 8 
+(5,{x->17}) ⇓ 5     (x:=x+3,{x->5}) ⇓ {x->8} 
+  (let x = 5 in (x:=x+3), {x -> 17}) ⇓ {x->17} 
+11/13/13 86 
+Comment 
+n  Simple Imperative Programming Language 
+introduces variables implicitly through 
+assignment 
+n  The let-in command introduces scoped 
+variables explictly 
+n  Clash of constructs apparent in awkward 
+semantics 
+11/13/13 87 
+Interpretation Versus Compilation 
+n  A compiler from language L1 to language 
+L2 is a program that takes an L1 program 
+and for each piece of code in L1 generates a 
+piece of code in L2 of same meaning 
+n  An interpreter of L1 in L2 is an L2 program 
+that executes the meaning of a given L1 
+program 
+n  Compiler would examine the body of a loop 
+once; an interpreter would examine it every 
+time the loop was executed 
+11/13/13 88 
+Interpreter  
+n  An Interpreter represents the operational 
+semantics of a language L1 (source 
+language) in the language of implementation 
+L2 (target language) 
+n  Built incrementally 
+n  Start with literals 
+n  Variables 
+n  Primitive operations 
+n  Evaluation of expressions 
+n  Evaluation of commands/declarations 
+11/13/13 89 
+Interpreter 
+n  Takes abstract syntax trees as input  
+n  In simple cases could be just strings 
+n  One procedure for each syntactic category 
+(nonterminal) 
+n  eg one for expressions, another for commands 
+n  If Natural semantics used, tells how to 
+compute final value from code 
+n  If Transition semantics used, tells how to 
+compute next “state” 
+n  To get final value, put in a loop 
+11/13/13 90 
+Natural Semantics Example 
+n  compute_exp (Var(v), m) = look_up v m 
+n  compute_exp (Int(n), _) = Num (n) 
+n  … 
+n  compute_com(IfExp(b,c1,c2),m) = 
+       if compute_exp (b,m) = Bool(true) 
+       then compute_com (c1,m) 
+       else compute_com (c2,m) 
+11/13/13 91 
+Natural Semantics Example 
+n  compute_com(While(b,c), m) = 
+      if compute_exp (b,m) = Bool(false) 
+      then m 
+      else compute_com 
+              (While(b,c), compute_com(c,m)) 
+ 
+n  May fail to terminate - exceed stack limits 
+n  Returns no useful information then 

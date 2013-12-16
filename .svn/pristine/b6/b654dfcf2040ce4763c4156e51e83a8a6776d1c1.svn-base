@@ -1,0 +1,242 @@
+MP1 grading run for late adders 9/11, 11:59p.
+MP2 available, due 9/17, 11:59p.  EC: 9/10, 11:59p.
+Announcements
+struct stu {
+string n;
+PNG mug;
+bool pt; // print flag };
+bool ps1(stu s){
+if (!s.pt)
+cout << s.n;
+return true;
+}
+stu a;
+… // init a
+a.pt = ps1(a);
+cout << a.pt;
+E
+xa
+m
+pl
+e 
+of
+ u
+se
+Fu
+nc
+tio
+n 
+de
+fn void ps3(stu & s){
+if (!s.pt)
+cout << s.n;
+s.pt = true;
+}
+stu c;
+… // init c
+ps3(c);
+cout << c.pt;
+void ps2(stu * s){
+if (!s->pt)
+cout << s->n;
+s->pt = true;
+}
+stu * b;
+… // init *b
+ps2(b);
+cout << b->pt;
+Return values: 
+struct student {
+string name;
+PNG mug;
+bool printed; // print flag
+};
+bool print_student1(student s){
+if (!s.printed)
+cout << s.name << endl;
+return true;
+}
+int main() {
+    student a;
+    bool b = print_student1(a);
+}
+What happens when we 
+run code like this: ?
+Return by ___________ or ____________ or _____________ .
+Returns: 
+student c;
+student * d;
+… // initialize c
+d = print_student5(c);
+E
+xa
+m
+pl
+e 
+of
+ u
+se
+Fu
+nc
+tio
+n 
+de
+fn student * print_student5(student s){
+student w = s;
+if (!w.printed){
+   cout << w.name << endl;
+   w.printed = true;
+}
+return &w;
+}
+struct student {
+string name;
+PNG mug;
+bool printed; // print flag
+};
+Returns: 
+student c,d;
+… // initialize c
+d = print_student5(c);
+E
+xa
+m
+pl
+e 
+of
+ u
+se
+Fu
+nc
+tio
+n 
+de
+fn student & print_student5(student s){
+student w = s;
+if (!w.printed){
+   cout << w.name << endl;
+   w.printed = true;
+}
+return w;
+}
+struct student {
+string name;
+PNG mug;
+bool printed; // print flag
+};
+Lesson: don’t return 1) a pointer to a local variable, nor 2) a local variable by reference.
+Constructors reprise:
+class sphere{
+public:
+sphere();
+sphere(double r);
+sphere(const sphere & orig);
+void setRadius(double newRad);
+double getDiameter() const;
+…
+private:
+double theRadius;
+int numAtts;
+string * atts;
+};
+…
+//default constructor, alt syntax 
+sphere::sphere()
+{
+}
+…
+What do you want 
+the object to look 
+like when you 
+declare it?
+sphere a;
+Copy constructor - utility:
+int main(){
+};
+class sphere{
+public:
+sphere();
+sphere(double r);
+sphere(const sphere & orig);
+void setRadius(double newRad);
+double getDiameter() const;
+…
+private:
+double theRadius;
+int numAtts;
+string * atts;
+};
+U
+se
+ 2
+:
+sphere myFun(sphere s){
+   //play with s
+   return s;
+}
+int main(){
+  sphere a, b;
+   // initialize a
+   b = myFun(a);
+   return 0;
+}
+U
+se
+ 1
+:
+Copy constructor:
+class sphere{
+public:
+sphere();
+sphere(double r);
+sphere(const sphere & orig);
+void setRadius(double newRad);
+double getDiameter() const;
+…
+private:
+double theRadius;
+int numAtts;
+string * atts;
+};
+…
+//copy constructor
+sphere::sphere(const sphere & orig)
+{
+}
+…
+class sphere{
+public:
+sphere();
+sphere(double r);
+sphere(const sphere & orig);
+void setRadius(double newRad);
+double getDiameter() const;
+…
+private:
+double theRadius;
+int numAtts;
+string * atts;
+};
+int main(){
+  sphere s;
+   …// initialize s
+   sphere t(s); //invokes CC
+   return 0;
+}
+Poser: cctor - why pbr?
+…
+//copy constructor
+sphere::sphere(const sphere & orig):
+theRadius(orig.theRadius),numatts(orig.numAtts)
+{
+  atts = new string[numAtts];
+  for(int i=0; i<numAtts;i++)
+    atts[i]= orig.atts[i];
+}
+…
+red
+shiny
+juicy
+s
+1.0
+3

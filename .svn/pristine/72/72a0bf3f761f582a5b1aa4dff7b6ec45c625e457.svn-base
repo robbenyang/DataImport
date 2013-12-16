@@ -1,0 +1,175 @@
+Kevin C. Chang
+SQL 5: Triggers
+Database Systems
+• Triggers
+• Event‐condition‐action rules
+• Event
+• Condition
+• Action
+• Reference variables in trigger
+• Using triggers for view updates
+Concepts You Will Learn
+SQL 5: Triggers (1 of 22)Default Section (1 of 1)
+Why Do We Learn This?
+SQL 5: Triggers (2 of 22)Why Do We Learn This? (0 of 1)
+• Triggers  are only executed when a specified condition occurs, e.g., 
+insertion of a tuple.
+• Easier to implement than many constraints.
+• Attribute‐ and tuple‐based checks have limited capabilities.
+• Assertions are sufficiently general for most constraint applications, 
+but they are hard to implement efficiently.
+• The DBMS must have real intelligence to avoid checking assertions that 
+couldn’t possibly have been violated.
+Triggers: Motivation
+SQL 5: Triggers (3 of 22)Why Do We Learn This? (1 of 1)
+Triggers
+SQL 5: Triggers (4 of 22)Triggers (0 of 13)
+• A trigger allows the user to specify when the check occurs.
+• Like an assertion, a trigger has a general‐purpose condition and also 
+can perform any sequence of SQL database modifications.
+Triggers
+SQL 5: Triggers (5 of 22)Triggers (1 of 13)
+• Another name for “trigger” is ECA rule, or event‐condition‐action 
+rule.
+• Event :  typically a type of database modification, e.g., “insert on 
+Sells.”
+• Condition : Any SQL boolean‐valued expression.
+• Action : Any SQL statements.
+Event‐Condition‐Action Rules
+SQL 5: Triggers (6 of 22)Triggers (2 of 13)
+• There are many details to learn about triggers.
+• Here is an example to set the stage.
+• Instead of using a foreign‐key constraint and rejecting insertions into 
+Sells(bar, beer, price) with unknown beers, a trigger can add that 
+beer to Beers, with a NULL manufacturer.
+Example: A Trigger
+SQL 5: Triggers (7 of 22)Triggers (3 of 13)
+CREATE TRIGGER BeerTrig
+AFTER INSERT ON Sells
+REFERENCING NEW ROW AS NewTuple
+FOR EACH ROW
+WHEN (NewTuple.beer NOT IN
+(SELECT name FROM Beers))
+INSERT INTO Beers(name)
+VALUES(NewTuple.beer);
+Example: Trigger Definition
+SQL 5: Triggers (8 of 22)
+Event
+Condition
+Action
+Triggers (4 of 13)
+• AFTER can be BEFORE.
+• Also, INSTEAD OF, if the relation is a view.
+• A great way to execute view modifications: have triggers translate them to appropriate 
+modifications on the base tables.
+• INSERT can be DELETE or UPDATE.
+• And UPDATE can be UPDATE . . . ON a particular attribute.
+Options: The Event
+SQL 5: Triggers (9 of 22)Triggers (5 of 13)
+• Triggers are either row‐level or statement‐level.
+• FOR EACH ROW indicates row‐level; its absence indicates statement‐
+level.
+• Row level triggers are executed once for each modified tuple.
+• Statement‐level triggers execute once for an SQL statement, 
+regardless of how many tuples are modified.
+Options: FOR EACH ROW
+SQL 5: Triggers (10 of 22)Triggers (6 of 13)
+• Tuple‐Level
+• INSERT implies a new row.
+• DELETE implies an old row.
+• UPDATE implies both.
+• Statement‐level
+• Always have OLD/NEW table for statement level.
+• Refer to these by
+[NEW OLD][ROW TABLE] AS <name>
+Options: REFERENCING
+SQL 5: Triggers (11 of 22)Triggers (7 of 13)
+• Any boolean‐valued condition is appropriate.
+• It is evaluated before or after the triggering event, depending on 
+whether BEFORE or AFTER is used in the event.
+• Access the new/old tuple or set of tuples through the names 
+declared in the REFERENCING clause. (or fixed by “OLD”, “NEW” in 
+MySQL.)
+Options: The Condition
+SQL 5: Triggers (12 of 22)Triggers (8 of 13)
+• There can be more than one SQL statement in the action.
+• Surround by BEGIN . . . END if there is more than one.
+• But queries make no sense in an action, so we are really limited to 
+modifications.
+Options: The Action
+SQL 5: Triggers (13 of 22)Triggers (9 of 13)
+• Using Sells(bar, beer, price) and a unary relation RipoffBars(bar) 
+created for the purpose, maintain a list of bars that raise the price of 
+any beer by more than $1.
+Another Example
+SQL 5: Triggers (14 of 22)Triggers (10 of 13)
+CREATE TRIGGER PriceTrig
+AFTER UPDATE OF price ON Sells
+REFERENCING
+OLD ROW as old
+NEW ROW as new
+FOR EACH ROW
+WHEN(new.price > old.price + 1.00)
+INSERT INTO RipoffBars
+VALUES(new.bar);
+The Trigger
+SQL 5: Triggers (15 of 22)
+Event:
+only changes
+to prices
+Set variables to refer to 
+“before” and “after”
+We need to consider
+each price change
+Condition:
+a raise in
+price > $1
+Action: When the price change
+is great enough, add
+the bar to RipoffBars
+Triggers (11 of 13)
+Aspects of a trigger subsystem in an integrated database system. 
+Proceedings of the 2nd international conference on Software 
+engineering. 1976.
+1. Extended  assertions. (why?)
+2. ??
+Behind the Scene: Why Trigger was invented?
+SQL 5: Triggers (16 of 22)Triggers (12 of 13)
+Behind the Scene: This is why…
+SQL 5: Triggers (17 of 22)Triggers (13 of 13)
+Trigger on Views
+SQL 5: Triggers (18 of 22)Trigger on Views (0 of 4)
+• Generally, it is impossible to modify a view, because it doesn’t exist.
+• But an INSTEAD OF trigger lets us interpret view modifications in a 
+way that makes sense.
+• Example: We’ll design a view Synergy that has (drinker, beer, bar) 
+triples such that the bar serves the beer, the drinker frequents the 
+bar and likes the beer.
+Triggers on Views
+SQL 5: Triggers (19 of 22)Trigger on Views (1 of 4)
+CREATE VIEW Synergy AS
+SELECT Likes.drinker, Likes.beer, Sells.bar
+FROM Likes, Sells, Frequents
+WHERE Likes.drinker = Frequents.drinker
+AND Likes.beer = Sells.beer
+AND Sells.bar = Frequents.bar;
+Example: The View
+SQL 5: Triggers (20 of 22)Trigger on Views (2 of 4)
+• We cannot insert into Synergy ‐‐‐ it is a view.
+• But we can use an INSTEAD OF trigger to turn a (drinker, beer, bar) 
+triple into three insertions of projected pairs, one for each of Likes, 
+Sells, and Frequents.
+• The Sells.price will have to be NULL.
+Interpreting a View Insertion
+SQL 5: Triggers (21 of 22)Trigger on Views (3 of 4)
+CREATE TRIGGER ViewTrig
+INSTEAD OF INSERT ON Synergy
+REFERENCING NEW ROW AS n
+FOR EACH ROW
+BEGIN
+INSERT INTO LIKES VALUES(n.drinker, n.beer);
+INSERT INTO SELLS(bar, beer) VALUES(n.bar, n.beer);
+INSERT INTO FREQUENTS VALUES(n.drinker, n.bar);
+END;
+The Trigger
+SQL 5: Triggers (22 of 22)Trigger on Views (4 of 4)

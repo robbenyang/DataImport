@@ -1,0 +1,414 @@
+Information Extraction
+Vincent Zheng
+The Big Picture: Where We Are
+Data Access
+Data Modeling
+Data/Query Processing
+Data Acquisition
+Relational NonRelational
+St
+ru
+ct
+u
+re
+d
+Se
+m
+iS
+tr
+u
+ct
+u
+re
+d
+Transaction Management
+N
+o
+SQ
+L 
+D
+at
+ab
+as
+e
+s
+X
+M
+L 
+D
+at
+ab
+as
+es
+U
+n
+tr
+u
+ct
+u
+re
+d
+Relational Databases
+• SQL
+• Relational Algebra
+• Query Optimization
+• Query Execution
+• Indexing
+• Concurrency Control
+• Logging Recovery
+Database Systems Toolkits
+M
+ap
+ R
+ed
+u
+ce
+(P
+ar
+al
+le
+l)
+St
+o
+rm
+ 
+(S
+tr
+ea
+m
+)
+Information Extraction
+ER  Relational Model
+Query Language
+Default Section (1 of 3) 2
+Information Extraction As Data Acquisition
+Joel is now 23 years old, 
+male, …
+Micah is 39, male ..
+Joel is now 23 years old, 
+male, …
+Micah is 39, male ..
+Joel is now 23 years old, 
+male, …
+Micah is 39, male ..
+Joel is now 23 years old, 
+male, …
+Micah is 39, male ..
+Image from www.homozygositymapper.org
+Unstructured source: 
+e.g., free text
+Structured/Semi-structured source: 
+e.g., Web pages from a single site
+Default Section (2 of 3) 3
+Concepts You Will Learn
+• Information extraction from structured Web data
+– Parsing Web pages from one source with template
+• Different methods for IE with structured Web data
+– Manual solution
+– Learning-based solution
+– Automatic solution
+Slide reference: Principles of Data Integration, by Anhai Doan, Alon Halevy and Zachary Ives.
+Default Section (3 of 3) 4
+WHY DO WE LEARN THIS?
+Why Do We Learn This? (0 of 4) 5
+Many Web Data Are Generated from 
+the Hidden Databases
+• Web pages from same data 
+source S
+– Powered by a database 
+– E.g., S = Amazon book database
+• An HTML page rendered by a 
+schema and a format
+– Schema = <#title, #author, 
+#price, ..>
+– Format = #title followed by 
+#author
+6Why Do We Learn This? (1 of 4)
+If we need data from such a source …
+• A wrapper to extract attributes from pages of S 
+– Formally, a wrapper is a tuple of <target schema, 
+extraction program>
+• A target schema
+– This needs not be the same as the source schema, because we 
+may only want some of the attributes
+• Plus an extraction program that uses the format
+– It parses a page of S and extracts the target schema attributes
+– Typically written as some script 
+Why Do We Learn This? (2 of 4) 7
+Example Wrapper
+• Consider a wrapper that extracts
+all the attributes from pages of 
+countries.com
+– Target schema equals to the source 
+schema as (#country, #capital, 
+#population, #continent)
+– Extraction program may be a 
+Perl script specifying that given a page from source S
+• Return the first fully capitalized string as #country
+• Return the string immediately following “Capital:” as #capital
+• Etc.
+Why Do We Learn This? (3 of 4) 8
+Different Settings
+• Manual wrapper construction
+– Given a target schema, manually construct extraction 
+program
+• Learning-based wrapper construction
+– Given a target schema, automatically learn the extraction 
+program from examples 
+• Automatic wrapper construction
+– Automatically induce both target schema and extraction 
+program
+Why Do We Learn This? (4 of 4) 9
+MANUAL WRAPPER 
+CONSTRUCTION
+Manual Wrapper Construction (0 of 
+4)
+10
+Manual Wrapper Construction
+• Developer examines a set of Web pages
+– Manually creates the target schema and the extraction 
+program
+– Often writes extraction program using a script (e.g., perl)
+Manual Wrapper Construction (1 of 
+4)
+11
+Example <HTML><TITLE>Countries in Australia (Continent)</TITLE>
+<BODY>
+<B>Countries in Australia (Continent)</B><P>
+<B>Australia</B> <I>61</I><BR>
+<B>East Timor</B> <I>670</I><BR>
+<B>Papua New Guinea</B> <I>675</I><BR>
+<HR>
+<B>Copyright easycalls.com</B>
+</BODY>
+</HTML>
+#!/usr/bin/perl
+open(INFILE, $ARGV[0]) or die "cannot open file\n";
+while ($line = <INFILE>) {
+if ($line =~ m/<B>(.+?)<\/B>\s+?<I>(\d+?)<\/I><BR>/) {
+print "\#country = $1, \#code = $2\n";
+}
+}
+close(INFILE);
+Manual Wrapper Construction (2 of 
+4)
+12
+Different Ways to View A Page
+• For example:
+– As a string  can write wrapper as Perl program  
+– As a DOM tree  can write wrapper using Xpath
+– As a visual page, consisting of blocks
+Manual Wrapper Construction (3 of 
+4)
+13
+Summary for Manual Wrapper 
+Construction
+• Regardless of page model (string, DOM tree, visual, 
+etc.), manually writing up a wrapper extraction 
+program can be very laborious
+• Suppose we are given a set of labeled pages (i.e., we 
+know which part is #country, which part is #code, 
+etc.), can we automate the process of getting the 
+extraction program?
+Manual Wrapper Construction (4 of 
+4)
+14
+LEARNING-BASED WRAPPER 
+CONSTRUCTION
+Learning-based Wrapper 
+Construction (0 of 4)
+15
+Looking for Patterns
+• Use delimiters to extract tuples from one page
+– E.g., extract (#country, #code)
+<HTML>
+<TITLE>Countries in Australia (Continent)</TITLE>
+<BODY>
+<B>Countries in Australia (Continent)</B><P>
+<B>Australia</B> <I>61</I><BR>
+<B>East Timor</B> <I>670</I><BR>
+<B>Papua New Guinea</B> <I>675</I><BR>
+<HR>
+<B>Copyright easycalls.com</B>
+</BODY>
+</HTML>
+Learning-based Wrapper 
+Construction (1 of 4)
+16
+HLRT Wrapper
+• Head-Left-Right-Tail wrapper
+Learning-based Wrapper 
+Construction (2 of 4)
+17
+HLRT Wrapper Construction
+• Goal: for n fields, want to construct an HLRT wrapper 
+as a tuple of (2n+2) strings (h, t, l1, r1, …, ln, rn)
+• Approach: a learning module to construct a wrapper 
+for multiple pages
+– E.g., consider finding all possible values for h from k pages
+ExampleLearningModule(p1, …, pk, a1, …, an)
+• Let xi be the string from the beginning of page pi to the 
+first occurrence of the very first attribute a’1  
+• Return the common substring of {x1, x2, …, xk} as h
+Learning-based Wrapper 
+Construction (3 of 4)
+18
+Summary for HLRT Wrapper
+• Easy to understand and implement
+• Have limited applicability
+– Assume a flat tuple schema (a parallel list of <li, ri>’s)
+– Assume all attributes can be extracted with delimiters
+• In practice, things are more complicated
+– May have nested schema
+• #Book = (#title, #authors, #price), where #authors = a list of 
+(#first_name, #last_name) tuples
+– May not be able to extract with delimiters
+• Extract zip code from “40 Colfax, Phoenix, AZ 85258”
+Learning-based Wrapper 
+Construction (4 of 4)
+19
+AUTOMATIC WRAPPER 
+CONSTRUCTION
+Automatic Wrapper Construction (0 
+of 12)
+20
+Wrapper Learning without Schema
+• Also called automatic approach for wrapper learning
+– Input a set of Web pages of source S
+– Examine similarities/dissimilarities 
+across pages
+– Automatically infer 
+• Schema of pages: 
+which fields are aligned (as attributes)
+• Extraction program: 
+how to extract the fields (as attributes)
+Automatic Wrapper Construction (1 
+of 12)
+21
+Example
+<HTML>
+<B>The Elements of Style</B><P>
+<U>William Strunk Jr.</U><BR>
+<U>E. B. White</U><BR>
+<I>Price:</I>$9.95<BR>
+<I>Publisher:</I>Longman<BR>
+</HTML>
+Automatic Wrapper Construction (2 
+of 12)
+22
+<HTML><B>#PCDATA</B><P>(<U>#PCDATA</U><BR>)+
+<I>Price:</I>#PCDATA<BR><I>Publisher:</I>#PCDATA<BR></HTML>
+Example
+<HTML>
+<B>The Elements of Style</B><P>
+<U>William Strunk Jr.</U><BR>
+<U>E. B. White</U><BR>
+<I>Price:</I>$9.95<BR>
+<I>Publisher:</I>Longman<BR>
+</HTML>
+<HTML>
+<B>The Snow of Kilimanjaro</B><P>
+<U>Emest Hemingway</U><BR>
+<I>Publisher:</I>Scribner<BR>
+</HTML>
+Automatic Wrapper Construction (3 
+of 12)
+23
+<HTML><B>#PCDATA</B><P>(<U>#PCDATA</U><BR>)+
+(<I>Price:</I>#PCDATA<BR>)?<I>Publisher:</I>#PCDATA<BR></HTML>
+RoadRunner: Inferring Schema and 
+Program
+• Given a set of Web pages P = {p1,…,pk}
+– Examine P to infer extraction program (as a REGEX)
+– Then infer the schema from the extraction results
+• To infer extraction program, iterate
+– Initialize a REGEX to page p1
+– Generalize it to match p2, and so on
+– Return a REGEX that has been generalized (minimally) to 
+match all the pages in P
+Automatic Wrapper Construction (4 
+of 12)
+24
+The Generalization Step
+• Given a REGEX to page p1, generalize it to match p2
+– Tokenize pages into tokens (strings or HTML tags)
+– Compare two pages, starting from the first token
+– Eventually, will likely to run into a mismatch (of tokens)
+• String mismatch: “William Strunk Jr.” vs. “Emest Hemingway”
+• Tag mismatch: 2 tags, or 1 tag and 1 string
+• Resolving a string mismatch is not too hard
+• Resolving a tag mismatch is far more difficult
+Automatic Wrapper Construction (5 
+of 12)
+25
+Automatic Wrapper Construction (6 
+of 12)
+26
+Handling Tag Mismatch
+• Due to either an iterator or an optional
+– <UL> vs. <IMG src=…/> is due to an optional
+– </UL> on line 19 of p1 vs. <LI> on line 20 of p2 is due to an 
+iterator
+• When tag mismatch happens
+– Try to find if it is due to an iterator
+– If yes, generalize to incorporate iterator
+– Otherwise, generalize to incorporate optional
+– Reason why looking for iterator first?
+Automatic Wrapper Construction (7 
+of 12)
+27
+Handling Tag Mismatch
+• Generalize to incorporate an optional
+• Detect which page includes the optional
+– E.g., <IMG src=…/> is optional
+• Generalize accordingly
+– E.g., introducing a REGEX of (<IMG src=…/>)?
+• Generalize to incorporate an iterator
+• An iterator repeats a pattern, which we call a square
+– E.g., each book description is a square
+• Find the squares, then locate the list, finally generalize
+– E.g., (<LI><I>Title:</I>#PCDATA</LI>)+
+Automatic Wrapper Construction (8 
+of 12)
+28
+More Complex Examples on Handling 
+Tag Mismatch
+• Resolving an iterator mismatch often involves 
+recursion
+– While resolving an external mismatch (in outer 
+iterator), may run into an internal mismatch (inner 
+iterator)
+– Must revolve the iterator mismatch from inside 
+out, recursively
+Automatic Wrapper Construction (9 
+of 12)
+29
+Automatic Wrapper Construction (10 
+of 12)
+30
+Summary of RoadRunner
+• To generalize extraction program to match a page 
+p
+– Must detect and resolve all the external mismatches
+– For each mismatch, must detect if it is a string 
+mismatch, iterator mismatch, or optional mismatch
+– For an iterator or optional mismatch, there are often 
+many square candidates and optional candidates to 
+consider, which may need backtracking
+– For an iterator mismatch, may need to resolve internal 
+mismatches
+Automatic Wrapper Construction (11 
+of 12)
+31
+Summary
+• Extracting information from structured Web data
+• Different methods in this category
+– Manual wrapper construction
+• REGEX
+– Learning-based wrapper construction
+• HLRT 
+– Automatic wrapper construction
+• RoadRunner
+Automatic Wrapper Construction (12 
+of 12)
+32

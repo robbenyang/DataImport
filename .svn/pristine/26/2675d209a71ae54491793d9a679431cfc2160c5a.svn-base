@@ -1,0 +1,226 @@
+1 Expressiveness
+1.1 Finite Languages
+Finite Languages
+Definition 1. A language is finite if it has finitely many strings.
+Example 2. {0, 1, 00, 10} is a finite language, however, (00 ∪ 11)∗ is not.
+Proposition 3. If L is finite then L is regular.
+Proof. Let L = {w1, w2, . . . wn}. Then R = w1∪w2∪· · ·∪wn is a regular expression defining L.
+1.2 Non-Regular Languages
+Are all languages regular?
+Proposition 4. The language Leq = {w ∈ {0, 1}∗ | w has an equal number of 0s and 1s} is not
+regular.
+Proof? No DFA has enough states to keep track of the number of 0s and 1s it might see.
+Above is a weak argument because E = {w ∈ {0, 1}∗|w has an equal number of 01 and 10 substrings}
+is regular!
+2 Proving Non-regularity
+2.1 Lower Bound Method
+Proving Non-Regularity
+Proposition 5. The language Leq = {w ∈ {0, 1}∗ | w has an equal number of 0s and 1s} is not
+regular.
+Proof. Suppose (for contradiction) Leq is recognized by DFA M = (Q, {0, 1}, δ, q0, F ).
+Let W = {0}∗. For any w1, w2 ∈ W with w1 6= w2, δˆM (q0, w1) 6= δˆM (q0, w2). Let us observe
+that if the claim holds, then M has infinitely many states, and so is not a finite automaton, giving
+the desired contradiction.
+Claim: For any w1, w2 ∈W with w1 6= w2, δˆM (q0, w1) 6= δˆM (q0, w2).
+Proof of Claim: Suppose (for contradiction) there is w1 and w2 such that δˆM (q0, w1) = δˆM (q0, w2) =
+{q}. Without loss of generality we can assume that w1 = 0i and w2 = 0j , with i < j. Then,
+δˆM (q0, w11
+i = 0i1i) = δˆM (q, 1
+i) = δˆM (q0, w21
+i = 0j1i). Thus, M either accepts both 0i1i and 0j1i,
+or neither. But 0i1i ∈ Leq but 0j1i 6∈ Leq, contradicting the assumption that M recognizes Leq.
+1
+Example I
+Proposition 6. L0n1n = {0n1n | n ≥ 0} is not regular.
+Proof. Suppose L0n1n is regular and is recignized by DFA M = (Q, {0, 1}, δ, q0, F ).
+• Let W = {0}∗. For any w1, w2 ∈W with w1 6= w2, δˆM (q0, w1) 6= δˆM (q0, w2).
+– Suppose (for contradiction) δˆM (q0, w1) = δˆM (q0, w2) = {q}, where w1 = 0i and w2 = 0j ,
+with i < j.
+– Then, δˆM (q0, w11
+i = 0i1i) = δˆM (q, 1
+i) = δˆM (q0, w21
+i = 0j1i).
+– But 0i1i ∈ L0n1n but 0j1i 6∈ L0n1n, contradicting the assumption that M recognizes
+L0n1n.
+• Because of the claim, M has infinitely many states, and so is not a finite automaton!
+2.2 Using Closure Properties
+Example II
+Closure Properties
+Proposition 7. Lanban = {anban | n ≥ 0} is not regular.
+Proof. We could prove this proposition the way we demonstrated the other languages to be not
+regular. We could show that for any two (different) strings in W = {a}∗b, any DFA M recognizing
+Lanban must go to different states, thus showing that M cannot have finitely many states. However,
+we choose to demonstrate a different technique to prove non-regularity of languages. This relies on
+closure properties.
+The idea behind the proof is to show that if we had an automaton M accepting Lanban then
+we can construct an automaton accepting L0n1n = {0n1n | n ≥ 0}. But since we know L0n1n is
+not regular, we can conclude Lanban cannot be regular. This is the idea of reductions, where one
+shows that one problem (namely, L0n1n in this case) can be solved using a modified version of
+an algorithm solving another problem (Lanban in this case), which plays a central role in showing
+impossibility results. We will see more examples of this as the course goes on.
+How do we show that a DFA recognizing Lanban can be modified to obtain a DFA for L0n1n?
+We will use closure properties for this. More formally, we will show that by applying a sequence
+of “regularity preserving” operations to Lanban we can get L0n1n. Then, since L0n1n is not regular,
+Lanban cannot be regular. The proof is as follows.
+• Consider homomorphism h1 : {a, b, c}∗ → {a, b}∗ defined as h1(a) = a, h1(b) = b, h1(c) = a.
+– L1 = h
+−1
+1 (Lanban) = {(a ∪ c)nb(a ∪ c)n | n ≥ 0}
+• Let L2 = L1 ∩ L(a∗bc∗) = {anbcn | n ≥ 0}
+• Homomorphism h2 : {a, b, c}∗ → {0, 1}∗ is defined as h2(a) = 0, h2(b) = , and h2(c) = 1.
+2
+– L3 = h2(L2) = {0n1n | n ≥ 0} = L0n1n
+• Now if Lanban is regular then so are L1, L2, L3, and L0n1n. But L0n1n is not regular, and so
+L is not regular.
+Example III
+Proposition 8. Lneq = {w1w2 | w1, w2 ∈ {0, 1}∗, |w1| = |w2|, but w1 6= w2} is not regular.
+Proof. As before there are two ways to show this result. First we can show that if M with initial
+state q0 is a DFA recognizing Lww, then on any two (different) strings in W = {0, 1}∗, M must be
+in different states. This is because, suppose on x, y ∈ {0, 1}∗, δˆM (q0, x) = δˆ(q0, y) then δˆM (q0, xy) =
+δˆM (q0, yy). But xy ∈ Lneq and yy 6∈ Lneq, giving us the desired contradiction. Thus, M must have
+infinitely many states (since |W | is infinite), contradicting the fact that M is a finite automaton.
+Another proof uses closure properties. Consider the following sequence of languages.
+• Let h1 : {0, 1,#}∗ → {0, 1}∗ be a homomorphism such that h1(0) = 1, h1(1) = 1 and
+h1(#) = . Consider
+L1 = h
+−1
+1 (Lneq)∩L((0∪1)∗#(0∪1)∗) = {w1#w2|w1, w2 ∈ {0, 1}∗, |w1|+|w2| is even, and w1 6= w2}
+• L2 = {0, 1,#}∗ \ L1
+• L3 = L1 ∩ L((0 ∪ 1)∗#(0 ∪ 1)∗) ∩ (({0, 1,#}{0, 1,#})∗{0, 1,#}) = {w1#w2 | w1, w2 ∈
+{0, 1}∗, and w1 = w2}
+• Let h2 : {0, 1, 0¯, 1¯,#}∗ → {0, 1,#}∗ be a homomorphism where h2(0) = h2(0¯) = 0, h2(1) =
+h2(1¯) = 1 and h2(#) = #. Let L4 = h
+−1
+2 (L3) ∩ L((0¯ ∪ 1¯)∗#(0 ∪ 1)∗). Observe that
+L4 = {w1#w2 | w1 ∈ {0¯, 1¯}∗, w2 ∈ {0, 1}∗ and w1 is same as w2 except for the bars}
+• Let h3 : {0, 1, 0¯, 1¯,#}∗ → {0, 1}∗ be the homomorphism where h3(0¯) = 0, h3(1¯) = h3(#) =
+h3(1) = , and h3(0) = 1. Observe that h3(L4) = L0n1n.
+Due the closure properties of the regular languages, if Lneq is regular, then so are L1, L2, L3, L4, h3(L4 =
+L0n1n. But since L0n1n is not regular, Lneq is not regular.
+2.3 Pumping Lemma
+Pumping Lemma: Overview
+Pumping Lemma
+Gives the template of an argument that can be used to easily prove that many languages are
+non-regular.
+Pumping Lemma
+3
+Lemma 9. If L is regular then there is a number p (the pumping length) such that ∀w ∈ L with
+|w| ≥ p, ∃x, y, z ∈ Σ∗ such that w = xyz and
+1. |y| > 0
+2. |xy| ≤ p
+3. ∀i ≥ 0. xyiz ∈ L
+Proof. Let M = (Q,Σ, δ, q0, F ) be a DFA such that L(M) = L and let p = |Q|. Let w =
+w1w2 · · ·wn ∈ L be such that n ≥ p. For 1 ≤ i ≤ n, let {si} = δˆM (q0, w1 · · ·wi); define s0 = q0.
+• Since s0, s1, . . . , si, . . . sp are p+ 1 states, there must be j, k, 0 ≤ j < k ≤ p such that sj = sk
+(= q say).
+• Take x = w1 · · ·wj , y = wj+1 · · ·wk, and z = wk+1 · · ·wn
+• Observe that since j < k ≤ p, we have |xy| ≤ p and |y| > 0.
+Claim
+For all i ≥ 1, δˆM (q0, xyi) = δˆM (q0, x).
+Proof. We will prove it by induction on i.
+• Base Case: By our assumption that sj = sk and the definition of x and y, we have δˆM (q0, xy) =
+{sk} = {sj} = δˆM (q0, x).
+• Induction Step: We have
+δˆM (q0, xy
+`+1) = δˆM (q, y) where {q} = δˆM (q0, xy`)
+= δˆM (q, y) where {q} = δˆM (q0, x)
+= δˆM (q0, xy) = δˆM (q0, x)
+We now complete the proof of the pumping lemma.
+q0 sj = sk = q q′
+x
+y
+z
+• We have δˆM (q0, xyi) = δˆM (q0, x) for all i ≥ 1
+• Since w ∈ L, we have δˆM (q0, w) = δˆM (q0, xyz) ⊆ F
+• Observe, δˆM (q0, xz) = δˆM (q, z) = δˆM (q0, w), where {q} = δˆM (q0, x) = δˆM (q0, xy). So xz ∈ L
+• Similarly, δˆM (q0, xyiz) = δˆM (q0, xyz) ⊆ F and so xyiz ∈ L
+4
+Finite Languages and Pumping Lemma
+Question
+Do finite languages really satisfy the condition in the pumping lemma?
+Recall Pumping Lemma: If L is regular then there is a number p (the pumping length) such
+that ∀w ∈ L with |w| ≥ p, ∃x, y, z ∈ Σ∗ such that w = xyz and
+1. |y| > 0
+2. |xy| ≤ p
+3. ∀i ≥ 0. xyiz ∈ L
+Answer
+Yes, they do. Let p be larger than the longest string in the language. Then the condition “∀w ∈ L
+with |w| ≥ p, . . .” is vaccuously satisfied as there are no strings in the language longer than p!
+Using the Pumping Lemma
+L regular implies that L satisfies the condition in the pumping lemma. If L is not regular pumping
+lemma says nothing about L!
+Pumping Lemma, in contrapositive
+If L does not satisfy the pumping condition, then L not regular.
+Negation of the Pumping Condition
+∀p. ∃w ∈ L. with |w| ≥ p ∀x, y, z ∈ Σ∗. w = xyz
+(1) |y| > 0
+(2) |xy| ≤ p
+(3) ∀i ≥ 0. xyiz ∈ L
+not all of them hold
+Equivalent to showing that if (1), (2) then (3) does not. In other words, we can find i such that
+xyiz 6∈ L
+Game View
+Think of using the Pumping Lemma as a game between you and an opponent.
+L Task: To show that L is not regular
+∀p. Opponent picks p
+∃w. Pick w that is of length at least p
+∀x, y, z Opponent divides w into x, y, and z such that
+|y| > 0, and |xy| ≤ p
+∃k. You pick k and win if xykz 6∈ L
+5
+Pumping Lemma: If L is regular, opponent has a winning strategy (no matter what you do).
+Contrapositive: If you can beat the opponent, L not regular.
+Your strategy should work for any p and any subdivision that the opponent may come up with.
+Example I
+Proposition 10. L0n1n = {0n1n | n ≥ 0} is not regular.
+Proof. Suppose L0n1n is regular. Let p be the pumping length for L0n1n.
+• Consider w = 0p1p
+• Since |w| > p, there are x, y, z such that w = xyz, |xy| ≤ p, |y| > 0, and xyiz ∈ L0n1n, for
+all i.
+• Since |xy| ≤ p, x = 0r, y = 0s and z = 0t1p. Further, as |y| > 0, we have s > 0.
+xy0z = 0r0t1p = 0r+t1p
+Since r + t < p, xy0z 6∈ L0n1n. Contradiction!
+Example II
+Proposition 11. Leq = {w ∈ {0, 1}∗ | w has an equal number of 0s and 1s} is not regular.
+Proof. Suppose Leq is regular. Let p be the pumping length for Leq.
+• Consider w = 0p1p
+• Since |w| > p, there are x, y, z such that w = xyz, |xy| ≤ p, |y| > 0, and xyiz ∈ Leq, for all i.
+• Since |xy| ≤ p, x = 0r, y = 0s and z = 0t1p. Further, as |y| > 0, we have s > 0.
+xy0z = 0r0t1p = 0r+t1p
+Since r + t < p, xy0z 6∈ Leq. Contradiction!
+Example III
+Proposition 12. Lp = {0i | i prime} is not regular
+Proof. Suppose Lp is regular. Let p be the pumping length for Lp.
+• Consider w = 0m, where m ≥ p+ 2 and m is prime.
+• Since |w| > p, there are x, y, z such that w = xyz, |xy| ≤ p, |y| > 0, and xyiz ∈ Lp, for all i.
+6
+• Thus, x = 0r, y = 0s and z = 0t. Further, as |y| > 0, we have s > 0. xyr+tz = 0r(0s)(r+t)0t =
+0r+s(r+t)+t. Now r + s(r + t) + t = (r + t)(s + 1). Further m = r + s + t ≥ p + 2 and s > 0
+mean that t ≥ 2 and s+ 1 ≥ 2. Thus, xyr+tz 6∈ Lp. Contradiction!
+Example IV
+Question
+Is Leq = {xx | x ∈ {0, 1}∗} is regular?
+Suppose Leq is regular, and let p be the pumping length of Leq.
+• Consider w = 0p0p ∈ L.
+• Can we find substrings x, y, z satisfying the conditions in the pumping lemma? Yes! Consider
+x = , y = 00, z = 02p−2.
+• Does this mean Leq satisfies the pumping lemma? Does it mean it is regular?
+– No! We have chosen a bad w. To prove that the pumping lemma is violated, we only
+need to exhibit some w that cannot be pumped.
+• Another bad choice (01)p(01)p.
+Example IV
+Reloaded
+Proposition 13. Leq = {xx | x ∈ {0, 1}∗} is not regular.
+Proof. Suppose Leq is regular. Let p be the pumping length for Lxx.
+• Consider w = 0p10p1.
+• Since |w| > p, there are x, y, z such that w = xyz, |xy| ≤ p, |y| > 0, and xyiz ∈ Lp, for all i.
+• Since |xy| ≤ p, x = 0r, y = 0s and z = 0t10p1. Further, as |y| > 0, we have s > 0.
+xy0z = 0r0t10p1 = 0r+t10p1
+Since r + t < p, xy0z 6∈ Leq. Contradiction!
+Lessons on Expressivity
+Limits of Finite Memory
+Finite automata cannot
+• “keep track of counts”: e.g., L0n1n not regular.
+• “compare far apart pieces” of the input: e.g. Lxx not regular.
+• do “computations that require it to look at global properties” of the input.
+7

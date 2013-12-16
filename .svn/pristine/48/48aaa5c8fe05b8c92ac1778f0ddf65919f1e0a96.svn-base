@@ -1,0 +1,369 @@
+10/1/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+10/1/13 2 
+Why Data Types? 
+n  Data types play a key role in: 
+n  Data abstraction in the design of programs 
+n  Type checking in the analysis of programs 
+n  Compile-time code generation in the 
+translation and execution  of programs 
+10/1/13 3 
+Terminology 
+n  Type: A type t defines a set of possible 
+data values 
+n  E.g. short  in C is {x| 215 - 1 ≥ x ≥ -215} 
+n   A value in this set is said to have type t 
+ 
+n  Type system: rules of a language 
+assigning types to expressions 
+10/1/13 4 
+Types as Specifications 
+n  Types describe properties 
+n  Different type systems describe different 
+properties, eg 
+n  Data is read-write versus read-only 
+n  Operation has authority to access data 
+n  Data came from “right” source 
+n  Operation might or could not raise an exception 
+n  Common type systems focus on types describing 
+same data layout and access methods 
+10/1/13 5 
+Sound Type System 
+n  If an expression is assigned type t, and it 
+evaluates to a value v, then v is in the set of 
+values defined by t 
+n  SML, OCAML, Scheme and Ada have sound 
+type systems 
+n  Most implementations of C and C++ do not  
+10/1/13 6 
+Strongly Typed Language 
+n  When no application of an operator to 
+arguments can lead to a run-time type 
+error, language is strongly typed 
+n  Eg: 1 + 2.3;; 
+n  Depends on definition of “type error” 
+10/1/13 7 
+Strongly Typed Language 
+n  C++ claimed to be “strongly typed”, but  
+n  Union types allow creating a value at one 
+type and using it at another 
+n  Type coercions  may cause unexpected 
+(undesirable) effects 
+n  No array bounds check (in fact, no runtime 
+checks at all) 
+n  SML, OCAML “strongly typed” but still must 
+do dynamic array bounds checks, runtime 
+type case analysis, and other checks 
+10/1/13 8 
+Static vs Dynamic Types 
+•  Static type: type assigned to an expression 
+at compile time 
+•  Dynamic type: type assigned to a storage 
+location at run time 
+•  Statically typed language: static type 
+assigned to every expression at compile time 
+•  Dynamically typed language: type of an 
+expression determined at run time 
+10/1/13 9 
+Type Checking 
+n  When is op(arg1,…,argn) allowed? 
+n  Type checking assures that operations are 
+applied to the right number of arguments of 
+the right types 
+n  Right type may mean same type as was 
+specified, or may mean that there is a 
+predefined implicit coercion that will be 
+applied 
+n  Used to resolve overloaded operations 
+10/1/13 10 
+Type Checking 
+n  Type checking may be done statically at 
+compile time or dynamically at run time 
+n  Dynamically typed (aka untyped) 
+languages (eg LISP, Prolog) do only 
+dynamic type checking 
+n  Statically typed languages can do most 
+type checking statically 
+10/1/13 11 
+Dynamic Type Checking 
+n  Performed at run-time before each 
+operation is applied 
+n  Types of variables and operations left 
+unspecified until run-time 
+n   Same variable may be used at different 
+types 
+10/1/13 12 
+Dynamic Type Checking 
+n  Data object must contain type 
+information 
+n  Errors aren’t detected until violating 
+application is executed (maybe years 
+after the code was written) 
+10/1/13 13 
+Static Type Checking 
+n  Performed after parsing, before code 
+generation 
+n  Type of every variable and signature of 
+every operator must be known at 
+compile time 
+10/1/13 14 
+Static Type Checking 
+n  Can eliminate need to store type 
+information in data object if no dynamic 
+type checking is needed 
+n  Catches many programming errors at 
+earliest point 
+n  Can’t check types that depend on 
+dynamically computed values 
+n  Eg: array bounds 
+10/1/13 15 
+Static Type Checking 
+n  Typically places restrictions on 
+languages 
+n  Garbage collection 
+n  References instead of pointers 
+n  All variables initialized when created 
+n  Variable only used at one type 
+n  Union types allow for work-arounds, but 
+effectively introduce dynamic type checks 
+10/1/13 16 
+Type Declarations 
+n  Type declarations: explicit assignment 
+of types to variables (signatures to 
+functions) in the code of a program 
+n  Must be checked in a strongly typed 
+language 
+n  Often not necessary for  strong typing or 
+even static typing (depends on the type 
+system) 
+10/1/13 17 
+Type Inference 
+n  Type inference: A program analysis to 
+assign a type to an expression from the 
+program context of the expression 
+n  Fully static type inference first introduced 
+by Robin Miller in ML 
+n  Haskle, OCAML, SML all use type inference 
+n  Records are a problem for type 
+inference 
+10/1/13 18 
+Format of Type Judgments 
+n  A type judgement  has the form 
+Γ |- exp : τ 
+n   Γ is a typing environment 
+n  Supplies the types of variables and functions 
+n   Γ is a list of the form [ x : σ , . . . ] 
+n   exp  is a program expression 
+n   τ is a type to be assigned to exp 
+n  |- pronounced “turnstyle”, or “entails” (or 
+“satisfies”) 
+10/1/13 19 
+Axioms - Constants 
+|- n : int   (assuming n is an integer constant) 
+ 
+ 
+|- true : bool            |- false : bool 
+ 
+n   These rules are true with any typing 
+environment 
+n   n is a meta-variable 
+10/1/13 20 
+Axioms – Variables (Monomorphic Rule) 
+Notation: Let Γ(x) = σ  if x : σ ∈ Γ and 
+there is no x : τ to the left of x : σ in Γ 
+ 
+Variable axiom: 
+ 
+ Γ |- x : σ     if Γ(x) = σ 
+10/1/13 21 
+Simple Rules - Arithmetic 
+Primitive operators ( ⊕ ∈ { +, -, *, …}): 
+ Γ |- e1:τ     Γ |- e2:τ   (⊕):τ → τ → τ 
+ Γ |- e1 ⊕ e2 : τ 
+Relations ( ˜ ∈ { < , > , =, <=, >= }): 
+Γ |- e1 : τ     Γ |- e2 : τ 
+ Γ |- e1 ˜ e2 :bool  
+For the moment, think τ is int 
+10/1/13 22 
+Simple Rules - Booleans 
+Connectives  
+ Γ |- e1 : bool     Γ |- e2 : bool 
+ Γ |- e1 && e2 : bool 
+ 
+ Γ |- e1 : bool     Γ |- e2 : bool 
+ Γ |- e1 || e2 : bool 
+10/1/13 23 
+Type Variables in Rules 
+n  If_then_else rule: 
+ Γ |- e1 : bool   Γ |- e2  : τ   Γ |- e3  : τ 
+ Γ |- (if e1 then e2  else e3) : τ 
+n   τ is a type variable (meta-variable) 
+n   Can take any type at all 
+n   All instances in a rule application must get 
+same type 
+n   Then branch, else branch and if_then_else 
+must all have same type 
+10/1/13 24 
+Function Application 
+n  Application rule: 
+ Γ |- e1 : τ1 → τ2   Γ |- e2  : τ1 
+ Γ |- (e1 e2) : τ2 
+n   If you have a function expression e1 of 
+type  τ1 → τ2 applied to an argument of 
+type τ1, the resulting expression has 
+type τ2  
+10/1/13 25 
+Fun Rule 
+n  Rules describe types, but also how the 
+environment Γ may change 
+n   Can only do what rule allows! 
+n   fun rule: 
+ [x : τ1 ] + Γ |- e  : τ2 
+ Γ |- fun x -> e  : τ1 → τ2 
+10/1/13 26 
+Fun Examples 
+[y : int ] + Γ |- y + 3  : int 
+Γ |- fun y -> y + 3  : int → int  
+[f : int → bool] + Γ |- f 2 :: [true]  : bool list 
+Γ |- (fun f -> f 2 :: [true])  
+                       : (int → bool) → bool list  
+ 
+10/1/13 27 
+(Monomorphic) Let and Let Rec 
+n  let rule: 
+ Γ |- e1  : τ1       [x : τ1 ] + Γ |- e2  : τ2 
+Γ |- (let x = e1 in e2 ) : τ2 
+n  let rec rule: 
+ [x: τ1 ] + Γ |- e1:τ1  [x: τ1 ] + Γ |- e2:τ2 
+Γ |- (let rec x = e1 in e2 ) : τ2 
+10/1/13 28 
+Example 
+n  Which rule do we apply? 
+                                   
+ 
+ ? 
+  |- (let rec one = 1 :: one in  
+      let x = 2 in 
+        fun y -> (x :: y :: one) ) : int → int list 
+10/1/13 29 
+Example 
+n  Let rec rule:      2   [one : int list] |- 
+  1                                (let x = 2 in 
+[one : int list] |-        fun y -> (x :: y :: one)) 
+ (1 :: one) : int list          : int → int list 
+  |- (let rec one = 1 :: one in  
+      let x = 2 in 
+        fun y -> (x :: y :: one) ) : int → int list 
+10/1/13 30 
+Proof of 1 
+n  Which rule? 
+ 
+                                    
+[one : int list] |- (1 :: one) : int list 
+10/1/13 31 
+Proof of 1 
+n  Application 
+3                                           4 
+  [one : int list] |-               [one : int list] |- 
+   ((::) 1): int list→ int list        one : int list 
+[one : int list] |- (1 :: one) : int list 
+10/1/13 32 
+Proof of 3 
+Constants Rule               Constants Rule 
+ 
+[one : int list] |-                    [one : int list] |-  
+ (::) : int → int list→ int list    1 : int 
+[one : int list] |- ((::) 1) : int list → int list 
+10/1/13 33 
+Proof of 4 
+n  Rule for variables 
+[one : int list] |- one:int list 
+10/1/13 34 
+Proof of 2 
+                             5    [x:int; one : int list] |- 
+n  Constant                    fun y -> 
+                                      (x :: y :: one)) 
+[one : int list] |- 2:int       : int → int list 
+    [one : int list] |-  (let x = 2 in 
+     fun y -> (x :: y :: one)) : int → int list 
+10/1/13 35 
+Proof of 5 
+ 
+ 
+ 
+  
+? 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+10/1/13 36 
+Proof of 5 
+ 
+                    
+ 
+ ? 
+[y:int; x:int; one : int list] |- (x :: y :: one) : int list 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+10/1/13 37 
+Proof of 5 
+ 
+ 6                                        7                     
+[y:int; x:int; one : int list] |-   [y:int; x:int; one : int 
+list] |- 
+ ((::) x):int list→ int list          (y :: one) : int list 
+[y:int; x:int; one : int list] |- (x :: y :: one) : int list 
+[x:int; one : int list] |- fun y -> (x :: y :: one)) 
+                    : int → int list 
+10/1/13 38 
+Proof of 6 
+Constant                            Variable 
+ 
+[…] |- (::) 
+: int→ int list→ int list    […; x:int;…] |- x:int 
+[y:int; x:int; one : int list] |- ((::) x) 
+                                  :int list→ int list 
+10/1/13 39 
+Proof of 7 
+Pf of 6 [y/x]                         Variable 
+ 
+    
+[y:int; …] |- ((::) y)     […; one: int list] |-  
+   :int list→ int list               one: int list 
+[y:int; x:int; one : int list] |- (y :: one) : int 
+list 
+10/1/13 40 
+Curry - Howard Isomorphism 
+n  Type Systems are logics; logics are type 
+systems 
+n  Types are propositions; propositions are 
+types 
+n  Terms are proofs; proofs are terms 
+n  Functions space arrow corresponds to 
+implication; application corresponds to 
+modus ponens  
+10/1/13 41 
+Curry - Howard Isomorphism 
+n  Modus Ponens 
+A ⇒ B   A 
+B 
+•  Application 
+ Γ |- e1 : α → β   Γ |- e2  : α 
+ Γ |- (e1 e2) : β 
+10/1/13 42 
+Mia Copa 
+n  The above system can’t handle polymorphism as 
+in OCAML 
+n  No type variables in type language (only meta-
+variable in the logic) 
+n  Would need:  
+n  Object level type variables and some kind of 
+type quantification 
+n  let and let rec rules to introduce polymorphism 
+n  Explicit rule to eliminate (instantiate) 
+polymorphism 

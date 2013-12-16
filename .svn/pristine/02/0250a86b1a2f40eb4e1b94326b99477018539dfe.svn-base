@@ -1,0 +1,22 @@
+Week #8: Classical Synchronization 
+Exam Review Question  
+CS 241: Fall 2013 
+These questions are provided to you to help you study material covered in CS 241 that may appear on the 
+final exam.  These exact questions may or may not appear on the final exam, but the topics they cover will 
+almost certainly be on the final exam. 
+1. In lecture, you saw two solutions to the Producer-Consumer problem.  The first solution used two 
+semaphores; the second solution used a single conditional variable. 
+a. In the solution using semaphores, why were two semaphores used? 
+b. In the solution using a conditional variable, why was pthread_cond_signal() 
+sufficient and pthread_cond_broadcast() was not needed? 
+ 
+2. What does it mean if the Readers-Writers problem has a solution that has a “writers-preference”?  
+What does this specifically mean for the readers?  
+ 
+3. What are three different solutions to the Dinning Philosophers problem?  Identify if each solution 
+requires any global state (eg: a global lock). 
+ 
+4. In the solution to the Sleeping Barber problem, how does the code ensure that only one customer 
+is having his or her hair cut at a time? 
+ 
+ 

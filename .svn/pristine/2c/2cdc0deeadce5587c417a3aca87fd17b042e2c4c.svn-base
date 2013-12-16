@@ -1,0 +1,100 @@
+CS225 
+Data Structures and Software 
+Principles 
+CS 225 Introductions: 
+Me: Daniel Uhlig  
+ grad student in Aerospace (PhD 2014),  
+ CS225 TA for 2 years 
+Co-teaching with Cinda Heeren - CS PhD, 2004, UIUC 
+Lectures at 12 and 1  
+Has taught the class for a while 
+ 
+Course staff:   
+ 
+You:   
+All you need to know is here: 
+http://cs.illinois.edu/class/cs225 
+Info on: 
+– Staff 
+– Office hours –online queue 
+• https://chara.cs.illinois.edu/ 
+– Communications – Piazza  
+– Lab sections 
+– MPs 
+– Exams 
+– Grading  
+– Academic Integrity 
+Today’s announcements: 
+HW0, due 9/4, in class and your svn repo. 
+MP1 available 8/26, due 9/3, 11:59p. 
+My Office hours - every Wed, 3:00-4:00p 
+(Siebel 2102) 
+DYB (Siebel 2102):   
+– Every Thursday, 1:30-3:00p (Cinda) 
+Sections DO meet this week (and are very 
+important). 
+What’s this course about? 
+Where’s Bill Bindi? 
+
+What’s this course like? 
+• A programming and “thinking” course 
+– Not an easy course 
+– Expect to work hard 
+• A fundamental computer science course 
+– Must know if you claim to be a computer scientist 
+– Must know if you want to be a good programmer 
+and designer 
+– Essential for many follow up courses 
+Where did you come from? 
+Java 
+(cs125) 
+C 
+(ece190) 
+C++ 
+(cs225) 
+Classes in C++: 
+Every variable has ______, ______, __________, ________ 
+Primitive types: 
+ 
+int myFavoInt; 
+char rating = ‘E’; 
+double u = 37.;  
+User defined types: 
+sphere myFavoSphere; 
+______ is a group of ___________ and ___________ 
+Structure of a class defn: 
+how do we implement sphere myFavoSphere; ? 
+class sphere{ 
+//member declarations 
+… 
+ 
+ 
+ 
+ 
+}; 
+sphere member function 
+definitions. 
+Structure of a class defn (cont): 
+class sphere{ 
+public: 
+ 
+ 
+ 
+ 
+ 
+private: 
+ 
+}; 
+int main(){ 
+ 
+ 
+ 
+ 
+}; 
+sphere representation:  
+ 
+sphere functionality: 
+1. 
+2. 
+3. 
+Class Definition… where are we? 

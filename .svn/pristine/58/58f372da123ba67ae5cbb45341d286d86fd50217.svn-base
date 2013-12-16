@@ -1,0 +1,171 @@
+• Does not change the relational instance
+• Changes the relational schema only
+• Notation:  S(B1,…,Bn) (R)
+• Input schema: R(A1, …, An)
+• Output schema: S(B1, …, Bn)
+• Example:
+LastName, SocSocNo (Employee)
+Renaming
+19
+Renaming Example
+20
+Employee
+Name SSN
+John 999999999
+Tony 777777777
+LastName SocSocNo
+John 999999999
+Tony 777777777
+LastName, SocSocNo (Employee)
+• Codd proposed R.A. right up front‐‐ in the 1970 CACM paper on 
+relational model.
+• As a query language? No.
+• For defining “data health” by derivability.
+Behind the Scene: Why Codd invented rel. algebra?
+21
+• Difference:  all tuples both in R1 and in R2
+• Notation: ܴଵ ∩ ܴଶ	
+• Input: ܴଵ, ܴଶ	must have the same schema
+• Output: ܴଵ ∩ ܴଶhas the same schema as ܴଵ, ܴଶ
+• Example
+• UnionizedEmployees ‐ RetiredEmployees
+• Intersection is derived:
+• ܴଵ ∩ ܴଶ ൌ ܴଵ െ ܴଵ െ ܴଶ
+Set Operations: Intersection
+22
+• Theta join 
+• Natural join
+• Equi‐join
+• Semi‐join
+• Inner join
+• Outer join
+Joins
+23
+• A join that involves a predicate
+• Notation: ܴଵ ⋈ఏ ܴଶ , where  is a condition
+• Input schemas: ܴଵሺܣଵ,… , ܣ௡ሻ, ܴଶሺܤଵ,… , ܤ௠ሻ
+• ܣଵ, … , ܣ௡ ∩ ܤଵ, … , ܤ௠ ൌ ∅
+• Output schema: ܵሺܣଵ,… , ܣ௡, ܤଵ,… , ܤ௠ሻ
+• Derived operator:
+ܴଵ ⋈ఏ ܴଶ ൌ ߪఏ	ሺܴଵ ൈ ܴଶሻ
+Theta Join
+24
+Example
+25
+Sells( bar, beer, price  ) Bars( name, addr )
+Joe’s Bud 2.50 Joe’s Maple St.
+Joe’s Miller 2.75 Sue’s River Rd.
+Sue’s Bud 2.50
+Sue’s Coors 3.00
+BarInfo := Sells Sells.bar = Bars.name Bars
+BarInfo( bar, beer, price, name, addr )
+Joe’s Bud 2.50 Joe’s Maple St.
+Joe’s Miller 2.75 Joe’s Maple St.
+Sue’s Bud 2.50 Sue’s River Rd.
+Sue’s Coors 3.00 Sue’s River Rd.
+•Notation:  ଵ ଶ
+• Input Schema:  ଵ ଵ ௡ ଶ ଵ ௠
+•Output Schema:  ଵ ௣
+• ܥଵ,… , ܥ௣ ൌ 	 ܣଵ, … , ܣ௡ ∪	ሼܤଵ, … , ܤ௠ሽ
+•Meaning: combine all pairs of tuples in  ଵ and  ଶ
+that agree on the attributes:
+• ܣଵ,… , ܣ௡ ∩	 ܤଵ, … , ܤ௠ , the join attributes.
+•Derived operator:
+•Q: How to derive it in terms of ܴଵ ൈ ܴଶ and ߪ?
+•Example:   Employee  Dependents
+Natural Join
+26
+27
+Natural Join Example
+Employee
+Name SSN
+John 999999999
+Tony 777777777
+Dependents
+SSN Dname
+999999999 Emily
+777777777 Joe
+Name SSN Dname
+John 999999999 Emily
+Tony 777777777 Joe
+Employee         Dependents = 
+Name, SSN, Dname( SSN=SSN2(Employee x SSN2, Dname(Dependents))
+• Given ܴሺܣ, ܤ, ܥ, ܦሻ, ܵሺܣ, ܥ, ܧሻ,	what is the schema of ܴ ⋈ ܵ ?
+• Given ܴሺܣ, ܤ, ܥሻ, ܵሺܦ, ܧሻ,	what is the schema of ܴ ⋈ ܵ ?
+• Given ܴሺܣ, ܤሻ, ܵሺܣ, ܤሻ,	what is the schema of ܴ ⋈ ܵ ?
+Natural Join
+28
+• Most frequently used in practice:
+ܴଵ ⋈஺ୀ஻ ܴଶ
+• Natural join is a particular case of equi‐join.
+• A lot of research on how to do it efficiently.
+Equi‐join
+29
+• Basic primitives:
+•
+• ߪ௖ ܧ
+• ߨ஺భ,,..,஺೙ ܧ
+• ܧଵ ൈ ܧଶ
+• ܧଵ ∪ ܧଶ
+• ܧଵ െ ܧଶ
+• ߩௌ ஺భ,…,஺೙ ሺܧሻ
+•Derived: 
+• ܧଵ ⋈ ܧଶ
+• ܧଵ ⋈௖ ܧଶ
+• ܧଵ ∩ ܧଶ
+Summary of Relational Algebra
+30
+Find the manufacturer of the beers that people in Champaign like.
+Relational algebra:
+• Join Drinkers(bname, city) with Likes(drinker, beer).
+• Join that with Beers(bname, manf).
+• Restrict to tuples to Drinker.city = “Champaign, IL”.
+• Project over Beers.manf.
+Relational calculus:
+• Return Beers.manf such that there exists Likes.beer = Beers.name and 
+Likes.drinker = Drinkers.name and Drinkers.city = “Champaign, IL”.
+Do you see‐‐ So what’s the difference?
+Behind the Scene: Other query languages?
+31
+• Create temporary relation names.
+• Renaming can be implied by giving relations a list of attributes.
+• ܺଵ:ൌ ܦݎ݅݊݇݁ݎݏ ݀݊ܽ݉݁, ܿ݅ݐݕ ⋈ௗ௡௔௠௘ୀௗ௥௜௡௞௘௥ ܮ݅݇݁ݏ ݀ݎ݅݊݇݁ݎ, ܾ݁݁ݎ
+• ܺଶ:ൌ ଵܺ ⋈௕௘௘௥ୀ௕௡௔௠௘ ܤ݁݁ݎݏ ܾ݊ܽ݉݁,݂݉ܽ݊
+• ܣ݊ݏݓ݁ݎ ܿ݋݉݌ܽ݊ݕ ≔ ߨ௠௔௡௙ሺߪ௖௜௧௬ୀ"௖௛௔௠௣௔௜௚௡"	ܺଶሻ
+Sequences of Assignments
+32
+• Leaves are operands ‐‐‐ either variables standing for relations or 
+particular, constant relations.
+• Interior nodes are operators, applied to their child or children.
+Expression Trees
+33
+• Given Bars(name, addr), Sells(bar, beer, price), find the names of all the bars 
+that are either on Maple St. or sell Bud for less than $3.
+Example
+34
+
+As a Tree:
+35
+Bars Sells
+ߪ price<3 AND beer=“Bud”
+ߨ௡௔௠௘ ߨ	bar
+∪
+ߩோ ௡௔௠௘
+ߪ௔ௗௗ௥ୀ"maple st." 
+• Using Sells(bar, beer, price), find the bars that sell two different beers 
+at the same price.
+Q: How to do this?
+36
+• Union:  {a,b,b,c} U {a,b,b,b,e,f,f} = {a,a,b,b,b,b,b,c,e,f,f}
+• add the number of occurrences
+• Difference: {a,b,b,b,c,c} – {b,c,c,c,d} = {a,b,b}
+• subtract the number of occurrences
+• Intersection: {a,b,b,b,c,c}   {b,b,c,c,c,c,d} = {b,b,c,c}
+• minimum of the two numbers of occurrences
+• Selection: preserve the number of occurrences
+• Projection: preserve the number of occurrences (no duplicate elimination)
+• Cartesian product, join: no duplicate elimination
+• Read book for detail.
+• But, why do we care?
+Operations on Bags (and why we care)
+37

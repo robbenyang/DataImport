@@ -1,0 +1,504 @@
+11/15/13 Cache performance 1 
+Cache Writing & Performance 
+  Today we’ll finish up with caches; we’ll cover: 
+—  Writing to caches: keeping memory consistent & write-allocation. 
+—  We’ll try to quantify the benefits of different cache designs, and see 
+how caches affect overall performance. 
+—  We’ll also see how to mitigate cache misses through pre-fetching.  
+11/15/13 Cache performance 2 
+Four important questions 
+1.  When we copy a block of data from main memory to 
+the cache, where exactly should we put it? 
+2.  How can we tell if a word is already in the cache, or if 
+it has to be fetched from main memory first? 
+3.  Eventually, the small cache memory might fill up. To 
+load a new block from main RAM, we’d have to replace 
+one of the existing blocks in the cache... which one? 
+4.  How can write operations be handled by the memory 
+system? 
+  Previous lectures answered the first 3.  Today, we consider the 4th. 
+3 
+Writing to a cache 
+  Writing to a cache raises several additional issues 
+  First, let’s assume that the address we want to write to is already loaded 
+in the cache. We’ll assume a simple direct-mapped cache: 
+  If we write a new value to that address, we can store the new data in the 
+cache, and avoid an expensive main memory access [but inconsistent] 
+Index Tag Data V Address 
+... 
+110 
+... 
+1 11010  42803 
+Data 
+ 42803 
+... 
+1101 0110 
+... 
+Index Tag Data V Address 
+... 
+110 
+... 
+1 11010  21763 
+Data 
+ 42803 
+... 
+1101 0110 
+... 
+Mem[1101 0110] = 21763 
+11/15/13 Cache performance 
+4 
+Write-through caches 
+  A write-through cache solves the inconsistency problem by forcing all 
+writes to update both the cache and the main memory 
+  This is simple to implement and keeps the cache and memory consistent 
+  Why is this not so good? 
+Index Tag Data V Address 
+... 
+110 
+... 
+1 11010  21763 
+Data 
+21763 
+... 
+1101 0110 
+... 
+Mem[1101 0110] = 21763 
+11/15/13 Cache performance 
+5 
+Write-back caches 
+  In a write-back cache, the memory is not updated until the cache block 
+needs to be replaced (e.g., when loading data into a full cache set) 
+  For example, we might write some data to the cache at first, leaving it 
+inconsistent with the main memory as shown before 
+—  The cache block is marked “dirty” to indicate this inconsistency 
+  Subsequent reads to the same memory address will be serviced by the 
+cache, which contains the correct, updated data 
+Index Tag Data Dirty Address 
+... 
+110 
+... 
+1 11010  21763 
+Data 
+ 42803 
+1000 1110 
+1101 0110 
+... 
+Mem[1101 0110] = 21763 
+1225 
+V 
+1 
+11/15/13 Cache performance 
+6 
+Finishing the write back 
+  We don’t need to store the new value back to main memory unless the 
+cache block gets replaced 
+  e.g. on a read from Mem[1000 1110], which maps to the same cache block, 
+the modified cache contents will first be written to main memory 
+  Only then can the cache block be replaced with data from address 142 
+Index Tag Data 
+... 
+110 
+... 
+10001 1225 
+Address Data 
+21763 
+1000 1110 
+1101 0110 
+... 
+1225 
+Index Tag Data 
+... 
+110 
+... 
+Dirty 
+0 
+Dirty 
+1 11010   21763 
+Address Data 
+21763 
+1000 1110 
+1101 0110 
+... 
+1225 
+V 
+1 
+V 
+1 
+11/15/13 Cache performance 
+11/15/13 Cache performance 7 
+Write-back cache discussion 
+  Each block in a write-back cache needs a dirty bit to indicate whether or 
+not it must be saved to main memory before being replaced—otherwise 
+we might perform unnecessary writebacks. 
+  Notice the penalty for the main memory access will not be applied until 
+the execution of some subsequent instruction following the write. 
+—  In our example, the write to Mem[214] affected only the cache. 
+—  But the load from Mem[142] resulted in two memory accesses: one to 
+save data to address 214, and one to load data from address 142. 
+•  The write can be “buffered” and written in background when 
+memory is free. 
+  The advantage of write-back caches is that not all write operations need 
+to access main memory, as with write-through caches. 
+—  If a single address is frequently written to, then it doesn’t pay to 
+keep writing that data through to main memory. 
+—  If several bytes within the same cache block are modified, they will 
+only force one memory write operation at write-back time. 
+11/15/13 Cache performance 8 
+11/15/13 Cache performance 9 
+10 
+Write misses 
+  A second scenario is if we try to write to an address that is not already 
+contained in the cache; this is called a write miss 
+  Let’s say we want to store 21763 into Mem[1101 0110] but we find that 
+address is not currently in the cache 
+  When we update Mem[1101 0110], should we also load it into the cache? 
+Index Tag Data V Address 
+... 
+110 
+... 
+1 00010 123456 
+Data 
+6378 
+... 
+1101 0110 
+... 
+11/15/13 Cache performance 
+11 
+Allocate on write 
+  An allocate on write strategy would instead load the newly written data 
+into the cache 
+ 
+  If that data is needed again soon, it will be available in the cache 
+  This is generally the baseline behavior or processors. 
+Index Tag Data V Address 
+... 
+110 
+... 
+1 11010 21763 
+Data 
+21763 
+... 
+1101 0110 
+... 
+Mem[214] = 21763 
+for (int i = 0; i < LARGE; i++) 
+  a[i] = i; 
+  What about the following? 
+11/15/13 Cache performance 
+12 
+  For code where the stored values won’t get used in the near future, like: 
+ 
+  for (int i = 0; i < LARGE; i++) 
+   a[i] = i; 
+ 
+  There is no point in putting these values in the cache. 
+  With a write around policy, the write operation goes directly to main 
+memory without affecting the cache. 
+ 
+  Some modern processors with write-allocate caches provide special store 
+instructions called non-temporal stores that do this. 
+ 
+Non-temporal stores (write-around/write-no-allocate) 
+Index Tag Data V 
+... 
+110 
+... 
+1 00010 123456 
+Address Data 
+21763 
+... 
+1101 0110 
+... 
+Mem[1101 0110] = 21763 
+11/15/13 Cache performance 
+11/15/13 Cache performance 13 
+Real Designs 
+11/15/13 Cache performance 14 
+First Observations 
+  Split Instruction/Data caches: 
+—  Pro: No structural hazard between IF & MEM stages 
+•  A single-ported unified cache stalls fetch during load or store 
+—  Con: Static partitioning of cache between instructions & data 
+•  Bad if working sets unequal: e.g., code/DATA or CODE/data 
+  Cache Hierarchies: 
+—  Trade-off between access time & hit rate 
+•  L1 cache can focus on fast access time (with okay hit rate) 
+•  L2 cache can focus on good hit rate (with okay access time) 
+—  Such hierarchical design is another “big idea” 
+ 
+L1 cache CPU Main 
+Memory 
+L2 cache 
+11/15/13 Cache performance 15 
+Opteron Vital Statistics 
+  L1 Caches:  Instruction & Data 
+—  64 kB 
+—  64 byte blocks 
+—  2-way set associative 
+—  2 cycle access time 
+  L2 Cache: 
+—  1 MB 
+—  64 byte blocks 
+—  4-way set associative 
+—  16 cycle access time (total, not just miss penalty) 
+  Memory 
+—  200+ cycle access time 
+L1 cache CPU Main 
+Memory 
+L2 cache 
+11/15/13 Cache performance 16 
+Comparing cache organizations 
+  Like many architectural features, caches are evaluated experimentally. 
+—  As always, performance depends on the actual instruction mix, since 
+different programs will have different memory access patterns. 
+—  Simulating or executing real applications is the most accurate way to 
+measure performance characteristics. 
+  The graphs on the next few slides illustrate the simulated miss rates for 
+several different cache designs. 
+—  Again lower miss rates are generally better, but remember that the 
+miss rate is just one component of average memory access time and 
+execution time. 
+—  We will do some cache simulations on the MP’s. 
+11/15/13 Cache performance 17 
+Associativity tradeoffs and miss rates 
+  As we saw last time, higher associativity means more complex hardware. 
+  But a highly-associative cache will also exhibit a lower miss rate. 
+—  Each set has more blocks, so there’s less chance of a conflict between 
+two addresses which both belong in the same set. 
+  This graph shows the miss rates decreasing as the associativity increases. 
+0% 
+3% 
+6% 
+9% 
+12% 
+Eight-way Four-way Two-way One-way 
+M
+is
+s 
+ra
+te
+ 
+Associativity 
+11/15/13 Cache performance 18 
+Cache size and miss rates 
+  The cache size also has a significant impact on performance. 
+—  The larger a cache is, the less chance there will be of a conflict. 
+  This graph depicts the miss rate as a function of both the cache size and 
+its associativity. 
+0% 
+3% 
+6% 
+9% 
+12% 
+15% 
+Eight-way Four-way Two-way One-way 
+1 KB 
+2 KB 
+4 KB 
+8 KB 
+M
+is
+s 
+ra
+te
+ 
+Associativity 
+11/15/13 Cache performance 19 
+Block size and miss rates 
+  Finally, Figure 7.12 on p. 559 shows miss rates relative to the block size 
+and overall cache size. 
+—  Smaller blocks do not take maximum advantage of spatial locality. 
+1 KB  
+8 KB  
+16 KB 
+64 KB 
+256 
+40% 
+35% 
+30% 
+25% 
+20% 
+15% 
+10% 
+5% 
+0% 
+M
+is
+s 
+ra
+te
+ 
+64 16 4 
+Block size (bytes) 
+11/15/13 Cache performance 20 
+Block size and miss rates 
+  Finally, Figure 7.12 on p. 559 shows miss rates relative to the block size 
+and overall cache size. 
+—  Smaller blocks do not take maximum advantage of spatial locality. 
+—  But if blocks are too large, there will be fewer blocks available, and 
+more potential misses due to conflicts. 
+1 KB  
+8 KB  
+16 KB 
+64 KB 
+256 
+40% 
+35% 
+30% 
+25% 
+20% 
+15% 
+10% 
+5% 
+0% 
+M
+is
+s 
+ra
+te
+ 
+64 16 4 
+Block size (bytes) 
+What happens on a cache miss? 
+  Can’t do write back (into register file) until data is fetched. 
+—  Easiest thing to do is stall immediately. 
+•  Sub-optimal if data isn’t used right away. 
+  Optimization: Non-blocking cache. 
+—  Remember miss and which register it should write into & continue 
+—  Stalls when: 
+•  Data is needed 
+•  Or too many misses outstanding 
+  Exploit by “hoist”ing loads up from their uses, but… 
+—  Uses up a register 
+—  For potentially many cycles (~100 to memory) 
+—  Might be guessing what will be accessed. 
+ 
+11/15/13 Cache performance 21 
+lw     $t0, 64($a0) 
+… 
+… 
+… 
+… 
+add   $v0, $t0, $t1 
+Software Prefetching 
+  Most modern architectures provide special software prefetch instructions 
+—  They look like loads w/o destination registers 
+•  e.g., on SPIM, lw  $0, 64($a0)   # write to the zero register. 
+—  These are hints to the processor: 
+•  “I think I might use cache block containing this address” 
+•  Hardware will try to move the block into the cache. 
+•  But, hardware can ignore (if busy) 
+—  Useful for fetching data ahead of use: 
+ 
+for (int i = 0 ; i < LARGE ; i ++) { 
+ prefetch A[i+16];   // prefetch 16 iterations ahead. 
+ computation A[i]; 
+} 
+11/15/13 Cache performance 22 
+Prefetching, cont. 
+  Remember this graph? 
+11/15/13 Cache performance 23 
+0
+5
+10
+15
+20
+25
+30
+35
+40
+45
+0 2000 4000 6000 8000 10000
+Series1
+size 
+ti
+m
+e 
+Actual Data from remsun2.ews.uiuc.edu 
+0 
+2 
+4 
+6 
+8 
+10 
+12 
+14 
+16 
+18 
+20 
+0 20000 40000 60000 80000 100000 120000 
+Ti
+m
+e 
+(i
+n 
+se
+co
+nd
+s)
+ 
+SIZE 
+Intel Core 2 Duo 
+time 
+int array[SIZE];   
+int A = 0;   
+ 
+for (int i = 0 ; i < 200000 ; ++ i) {   
+ for (int j = 0 ; j < SIZE ; ++ j) { 
+  A += array[j];          
+ }   
+} 
+Hardware Stream Prefetching 
+  Inner loop has very simple access pattern. 
+—  A, A+4, A+8, A+12, … 
+—  What is called a stream 
+  We can easily build hardware to recognize streams 
+  If we get a pair of sequential misses (blocks X, X+1), predict a stream. 
+—  Fetch the next two blocks (X+2, X+3) 
+  Continue fetching the stream if the prefetch blocks accessed. 
+—  If X+2 is read/written, prefetch X+4 … 
+  As confidence in stream increases, increase # of outstanding prefetches 
+—  If we get to X+8, have prefetches for X+9, X+10, X+11, X+12, X+13  
+  Can learn strides as well (X, X+16, X+32, …) and (X, X-1, X-2, …) 
+11/15/13 Cache performance 24 
+int array[SIZE];   
+int A = 0;   
+ 
+for (int i = 0 ; i < 200000 ; ++ i) {   
+ for (int j = 0 ; j < SIZE ; ++ j) { 
+  A += array[j];          
+ }   
+} 
+PC-based HW Prefetching 
+  What about the following? 
+for (int i=0 ; i < LARGE ; i ++) { 
+ C[i] = A[i] + B[i]; 
+} 
+  3 separate streams 
+—  Might confuse naïve prefetcher. 
+  Observation: A, B, and C accessed by different instructions. 
+  Learn a stream for each instruction 
+  Modern x86 chips do both stream, and PC-based stride prefetching in HW 
+11/15/13 Cache performance 25 
+So what do we need SW prefetching for? 
+  Non-stride accesses!    
+  Like linked data structures: 
+—  lists, arrays of pointers, etc. 
+  Consider: 
+element_t *A[SIZE]; 
+for (int i=0 ; i < SIZE ; i ++) { 
+     process(A[i]); 
+} 
+11/15/13 Cache performance 26 
+11/15/13 Cache performance 27 
+Summary 
+  Writing to a cache poses a couple of interesting issues. 
+—  Write-through and write-back policies keep the cache consistent with 
+main memory in different ways for write hits. 
+—  Write-around and allocate-on-write are two strategies to handle write 
+misses, differing in whether updated data is loaded into the cache. 
+  Hardware prefetching handles most streams and strides. 
+—  We’ll talk later about 1 limitation. 
+  Software prefetching is useful for linked data structures 
+—  Must be added by programmer (or very smart compiler) 
+  Next time, we’ll look at cache-conscious programming. 

@@ -1,0 +1,222 @@
+Checkpoint the database periodically
+• Stop accepting new transactions
+• Wait until all curent transactions complete
+• Flush log to disk
+• Write a <CKPT> log record, flush
+• Resume transactions
+Checkpointing
+Transaction Management (42 of 61)Undo Logging (9 of 13)
+Undo Recovery with Checkpointing
+Transaction Management (43 of 61)
+…
+…
+<T9,X9,v9>
+…
+…
+(all completed)
+<CKPT>
+<START T2>
+<START T3
+<START T5>
+<START T4>
+<T1,X1,v1>
+<T5,X5,v5>
+<T4,X4,v4>
+<COMMIT T5>
+<T3,X3,v3>
+<T2,X2,v2>
+During recovery,
+Can stop at first
+<CKPT>
+transactions T2,T3,T4,T5
+other transactions
+Undo Logging (10 of 13)
+• Problem with checkpointing: database freezes 
+during checkpoint
+• Would like to checkpoint while database is 
+operational
+• =nonquiescent checkpointing
+Nonquiescent Checkpointing
+Transaction Management (44 of 61)Undo Logging (11 of 13)
+• Write a <START CKPT(T1,…,Tk)>
+where T1,…,Tk are all active transactions
+• Continue normal operation
+• When all of T1,…,Tk have completed, write <END 
+CKPT>
+Nonquiescent Checkpointing
+Transaction Management (45 of 61)Undo Logging (12 of 13)
+Undo Recovery with Nonquiescent 
+Checkpointing
+Transaction Management (46 of 61)
+…
+…
+…
+…
+…
+…
+<START CKPT T4, T5, T6>
+…
+…
+…
+…
+<END CKPT>
+…
+…
+…
+T4, T5, T6, plus
+later transactions
+earlier completed trans plus
+T4, T5, T6
+later transactions
+Q: why do we need 
+<END CKPT> ?Undo Logging (13 of 13)
+Redo Logging
+Transaction Management (47 of 61)Redo Logging (0 of 8)
+Log records
+• <START T> = transaction T has begun
+• <COMMIT T> = T has committed
+• <ABORT T>= T has aborted
+• <T,X,v>= T has updated element X, and its new
+value is v
+Redo Logging
+Transaction Management (48 of 61)Redo Logging (1 of 8)
+R1: If T modifies X, then both <T,X,v> and <COMMIT 
+T> must be written to disk before X is written to 
+disk
+• Hence: OUTPUTs are done late (after commit)
+Redo‐Logging Rules
+Transaction Management (49 of 61)Redo Logging (2 of 8)
+Transaction Management (50 of 61)
+Action T Mem A Mem B Disk A Disk B Log
+<START T>
+REAT(A,t) 8 8 8 8
+t:=t*2 16 8 8 8
+WRITE(A,t) 16 16 8 8 <T,A,16>
+READ(B,t) 8 16 8 8 8
+t:=t*2 16 16 8 8 8
+WRITE(B,t) 16 16 16 8 8 <T,B,16>
+<COMMIT T>
+OUTPUT(A) 16 16 16 16 8
+OUTPUT(B) 16 16 16 16 16
+Redo Logging (3 of 8)
+After system’s crash, run recovery manager 
+• Step 1. Decide for each transaction T whether it is 
+completed or not
+• <START T>….<COMMIT T>….    = yes
+• <START T>….<ABORT T>…….    = yes
+• <START T>………………………   = no
+• Step 2. Read log from the beginning, redo all 
+updates of committed transactions
+Recovery with Redo Log
+Transaction Management (51 of 61)Redo Logging (4 of 8)
+Recovery with Redo Log
+Transaction Management (52 of 61)
+<START T1>
+<T1,X1,v1>
+<START T2>
+<T2, X2, v2>
+<START T3>
+<T1,X3,v3>
+<COMMIT T2>
+<T3,X4,v4>
+<T1,X5,v5>
+…
+…
+Redo Logging (5 of 8)
+• Write a <START CKPT(T1,…,Tk)>
+where T1,…,Tk are all active transactions
+• Flush to disk all blocks of committed transactions 
+(dirty blocks), while continuing normal operation
+• When all blocks have been written, write <END 
+CKPT>
+Nonquiescent Checkpointing
+Transaction Management (53 of 61)Redo Logging (6 of 8)
+Redo Recovery with Nonquiescent 
+Checkpointing
+Transaction Management (54 of 61)
+…
+<START T1>
+…
+<COMMIT T1>
+…
+…
+<START CKPT T4, T5, T6>
+…
+…
+…
+…
+<END CKPT>
+…
+…
+…
+<START CKPT T9, T10>
+…
+Step 1: look for
+The last
+<END CKPT>
+Step 2: redo
+from <START Ti> for 
+Ti in {T4, T5, T6}.
+All OUTPUTs 
+of T1 are
+known to be on disk
+Redo Logging (7 of 8)
+• Undo logging:
+• OUTPUT must be done early
+• If <COMMIT T> is seen, T definitely has written all its data 
+to disk (hence, don’t need to undo)
+• Redo logging
+• OUTPUT must be done late
+• If <COMMIT T> is not seen, T definitely has not written 
+any of its data to disk (hence there is not dirty data on 
+disk)
+• Would like more flexibility on when to OUTPUT: 
+undo/redo logging (next)
+Comparison Undo/Redo
+Transaction Management (55 of 61)Redo Logging (8 of 8)
+
+Undo/redo Logging
+Transaction Management (56 of 61)Undo/redo Logging (0 of 5)
+Log records, only one change
+• <T,X,u,v>= T has updated element X, its old value 
+was u, and its new value is v
+Undo/Redo Logging
+Transaction Management (57 of 61)Undo/redo Logging (1 of 5)
+UR1: If T modifies X, then <T,X,u,v> must be written 
+to disk before X is written to disk
+Note: we are free to OUTPUT early or late (I.e. before 
+or after <COMMIT T>)
+Undo/Redo‐Logging Rule
+Transaction Management (58 of 61)Undo/redo Logging (2 of 5)
+Transaction Management (59 of 61)
+Action T Mem A Mem B Disk A Disk B Log
+<START T>
+REAT(A,t) 8 8 8 8
+t:=t*2 16 8 8 8
+WRITE(A,t) 16 16 8 8 <T,A,8,16>
+READ(B,t) 8 16 8 8 8
+t:=t*2 16 16 8 8 8
+WRITE(B,t) 16 16 16 8 8 <T,B,8,16>
+OUTPUT(A) 16 16 16 16 8
+<COMMIT T>
+OUTPUT(B) 16 16 16 16 16
+Undo/redo Logging (3 of 5)
+After system’s crash, run recovery manager 
+• Redo all committed transaction, top‐down
+• Undo all uncommitted transactions, bottom‐up
+Recovery with Undo/Redo Log
+Transaction Management (60 of 61)Undo/redo Logging (4 of 5)
+Recovery with Undo/Redo Log
+Transaction Management (61 of 61)
+<START T1>
+<T1,X1,v1>
+<START T2>
+<T2, X2, v2>
+<START T3>
+<T1,X3,v3>
+<COMMIT T2>
+<T3,X4,v4>
+<T1,X5,v5>
+…
+…
+Undo/redo Logging (5 of 5)

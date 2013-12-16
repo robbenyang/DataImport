@@ -1,0 +1,452 @@
+12/5/13 1 
+Programming Languages and 
+Compilers (CS 421) 
+Elsa L Gunter 
+2112 SC, UIUC 
+http://courses.engr.illinois.edu/cs421 
+Based in part on slides by Mattox Beckman, as updated 
+by Vikram Adve and Gul Agha 
+12/5/13 2 
+Axiomatic Semantics 
+n  Also called Floyd-Hoare Logic 
+n  Based on formal logic (first order 
+predicate calculus) 
+n  Axiomatic Semantics is a logical system 
+built from axioms and inference rules 
+n  Mainly suited to simple imperative 
+programming languages 
+12/5/13 3 
+Axiomatic Semantics 
+n  Used to formally prove a property (post-
+condition) of the state (the values of the 
+program variables) after the execution 
+of program, assuming another property 
+(pre-condition) of the state holds before 
+execution 
+12/5/13 4 
+Axiomatic Semantics 
+n  Goal: Derive statements of form 
+{P} C {Q} 
+n  P , Q  logical statements about state, 
+P precondition, Q postcondition,        
+C program 
+n  Example:  {x = 1} x := x + 1 {x = 2} 
+12/5/13 5 
+Axiomatic Semantics 
+n  Approach: For each type of language 
+statement, give an axiom or inference rule 
+stating how to derive assertions of form  
+ {P} C {Q}  
+  where C is a statement of that type 
+n  Compose axioms and inference rules to 
+build proofs for complex programs 
+12/5/13 6 
+Axiomatic Semantics 
+n  An expression {P} C {Q} is a partial 
+correctness statement 
+n  For total correctness must also prove 
+that C terminates (i.e. doesn’t run 
+forever) 
+n  Written:  [P] C [Q] 
+n  Will only consider partial correctness 
+here 
+12/5/13 7 
+Language 
+n  We will give rules for simple imperative 
+language 
+<command> 
+  ::= <variable> := <term> 
+    |  <command>; … ;<command> 
+    |  if <statement> then <command> else 
+<command> 
+    | while <statement> do <command> 
+ 
+n  Could add more features, like for-loops 
+12/5/13 8 
+Substitution 
+n  Notation:   P[e/v]  (sometimes P[v <- e]) 
+n  Meaning:   Replace every v in P by e 
+n  Example:  
+ (x + 2) [y-1/x] = ((y – 1) + 2) 
+12/5/13 9 
+The Assignment Rule 
+ 
+{P [e/x] } x := e {P} 
+Example: 
+ {    ?    } x := y {x = 2} 
+12/5/13 10 
+The Assignment Rule 
+ 
+{P [e/x] } x := e {P} 
+Example: 
+ { _ = 2 } x := y { x = 2} 
+12/5/13 11 
+The Assignment Rule 
+ 
+{P [e/x] } x := e {P} 
+Example: 
+ { y = 2 } x := y { x = 2} 
+12/5/13 12 
+The Assignment Rule 
+{P [e/x] } x := e {P} 
+Examples: 
+ {y = 2} x := y {x = 2} 
+ {y = 2} x := 2 {y = x} 
+ {x + 1 = n + 1} x := x + 1  {x = n + 1} 
+ {2 = 2} x := 2 {x = 2} 
+12/5/13 13 
+The Assignment Rule – Your Turn 
+n  What is the weakest precondition of 
+x := x + y {x + y = w – x}? 
+{(x + y) + y = w – (x + y)} 
+x := x + y 
+{x + y = w – x} 
+? 
+12/5/13 14 
+The Assignment Rule – Your Turn 
+n  What is the weakest precondition of 
+x := x + y {x + y = w – x}? 
+{(x + y) + y = w – (x + y)} 
+x := x + y 
+{x + y = w – x} 
+12/5/13 15 
+Precondition Strengthening 
+P è P’    {P’} C {Q} 
+{P} C {Q} 
+ 
+n  Meaning: If we can show that P 
+implies P’  (Pè P’) and we can 
+show that {P’} C {Q}, then we know 
+that {P} C {Q} 
+n  P is stronger  than P’ means P è 
+P’  
+12/5/13 16 
+Precondition Strengthening 
+n  Examples: 
+x = 3 è x < 7  {x < 7} x := x + 3 {x < 10} 
+{x = 3} x := x + 3 {x < 10} 
+ 
+True è 2 = 2   {2 = 2} x:= 2 {x = 2} 
+{True}  x:= 2 {x = 2} 
+ 
+x=n è x+1=n+1    {x+1=n+1} x:=x+1 {x=n+1} 
+{x=n} x:=x+1 {x=n+1} 
+12/5/13 17 
+Which Inferences Are Correct? 
+ 
+{x > 0 & x < 5} x := x * x {x < 25} 
+{x = 3} x := x * x {x < 25} 
+ 
+{x = 3} x := x * x {x < 25} 
+{x > 0 & x < 5} x := x * x {x < 25} 
+ 
+{x * x < 25 } x := x * x {x < 25} 
+{x > 0 & x < 5} x := x * x {x < 25} 
+ 
+12/5/13 18 
+Which Inferences Are Correct? 
+ 
+{x > 0 & x < 5} x := x * x {x < 25} 
+{x = 3} x := x * x {x < 25} 
+ 
+{x = 3} x := x * x {x < 25} 
+{x > 0 & x < 5} x := x * x {x < 25} 
+ 
+{x * x < 25 } x := x * x {x < 25} 
+{x > 0 & x < 5} x := x * x {x < 25} 
+ 
+12/5/13 19 
+Sequencing 
+{P} C1 {Q}     {Q} C2 {R} 
+{P} C1; C2 {R} 
+ 
+n  Example: 
+{z = z & z = z} x := z {x = z & z = z} 
+{x = z & z = z} y := z {x = z & y = z} 
+{z = z & z = z} x := z; y := z {x = z & y = z} 
+12/5/13 20 
+Sequencing 
+{P} C1 {Q}     {Q} C2 {R} 
+{P} C1; C2 {R} 
+ 
+n  Example: 
+{z = z & z = z} x := z {x = z & z = z} 
+{x = z & z = z} y := z {x = z & y = z} 
+{z = z & z = z} x := z; y := z {x = z & y = z} 
+12/5/13 21 
+Postcondition Weakening 
+{P} C {Q’}    Q’ è Q 
+{P} C {Q} 
+ 
+Example: 
+{z = z & z = z} x := z; y := z {x = z & y = z} 
+(x = z & y = z) è (x = y) 
+{z = z & z = z} x := z; y := z {x = y} 
+ 
+12/5/13 22 
+Rule of Consequence 
+P è P’    {P’} C {Q’}    Q’ è Q 
+{P} C {Q} 
+ 
+n  Logically equivalent to the combination of 
+Precondition Strengthening and 
+Postcondition Weakening 
+n  Uses P è P and  Q è Q 
+12/5/13 23 
+If Then Else 
+{P and B} C1 {Q}   {P and (not B)} C2 {Q} 
+{P} if B then C1 else C2 {Q} 
+n  Example:  Want 
+{y=a} 
+ if x < 0 then y:= y-x else y:= y+x  
+{y=a+|x|} 
+Suffices to show: 
+   (1) {y=a&x<0}  y:=y-x  {y=a+|x|}  and      
+(4) {y=a&not(x<0)}  y:=y+x  {y=a+|x|} 
+12/5/13 24 
+(3)        (y=a&x<0)è y-x=a+|x| 
+(2)      {y-x=a+|x|}  y:=y-x   {y=a+|x|} 
+(1)      {y=a&x<0}  y:=y-x  {y=a+|x|} 
+   
+(1) Reduces to (2) and (3) by   
+      Precondition Strengthening 
+(2) Follows from assignment axiom 
+(3) Because x<0 è |x| = -x 
+{y=a&x<0}  y:=y-x  {y=a+|x|} 
+12/5/13 25 
+(6)     (y=a&not(x<0))è(y+x=a+|x|) 
+(5)     {y+x=a+|x|}  y:=y+x   {y=a+|x}} 
+(4)   {y=a&not(x<0)}  y:=y+x  {y=a+|x|} 
+   
+(4) Reduces to (5) and (6) by 
+Precondition Strengthening 
+(5) Follows from assignment axiom 
+(6) Because not(x<0) è |x| = x 
+{y=a&not(x<0)} y:=y+x {y=a+|x|} 
+12/5/13 26 
+If then else 
+ 
+(1)          {y=a&x<0}y:=y-x{y=a+|x|}         . 
+(4)      {y=a&not(x<0)}y:=y+x{y=a+|x|}     . 
+{y=a}  
+if x < 0 then y:= y-x else y:= y+x 
+ {y=a+|x|} 
+ 
+By the if_then_else rule 
+12/5/13 27 
+While 
+n  We need a rule to be able to make 
+assertions about while loops. 
+n   Inference rule because we can only draw 
+conclusions if we know something about 
+the body 
+n  Let’s start with: 
+{     ?     }     C    {      ?     } 
+{      ?      }   while   B  do   C    {  P  } 
+12/5/13 28 
+While 
+n  The loop may never be executed, so if 
+we want P to hold after, it had better 
+hold before, so let’s try: 
+{     ?     }     C    {      ?     } 
+{  P  }   while   B  do   C    {  P  } 
+12/5/13 29 
+While 
+n  If all we know is  P  when we enter the 
+while loop, then we all we know when 
+we enter the body is   (P and  B) 
+n  If we need to know   P  when we finish 
+the while loop, we had better know it 
+when we finish the loop body: 
+{ P and B}  C  { P } 
+{ P }  while  B  do  C  { P } 
+12/5/13 30 
+While 
+n  We can strengthen the previous rule 
+because we also know that when the 
+loop is finished,  not B  also holds 
+n  Final while rule: 
+{ P and B }  C  { P } 
+{ P } while  B  do  C  { P and not B } 
+12/5/13 31 
+While 
+{ P and B }  C  { P } 
+{ P } while  B  do  C  { P and not B } 
+ 
+n  P satisfying this rule is called a loop 
+invariant because it must hold 
+before and after the each iteration 
+of the loop 
+12/5/13 32 
+While 
+n  While rule generally needs to be 
+used together with precondition 
+strengthening and postcondition 
+weakening 
+n  There is NO algorithm for 
+computing the correct P; it requires 
+intuition and an understanding of 
+why the program works 
+12/5/13 33 
+Example 
+n  Let us prove  
+   {x>= 0 and x = a} 
+   fact := 1; 
+   while x > 0 do (fact := fact * x; x := x –1) 
+   {fact = a!} 
+12/5/13 34 
+Example 
+n  We need to find a condition P that is true 
+both before and after the loop is executed, 
+and such that 
+ 
+(P and not x > 0) è (fact = a!) 
+12/5/13 35 
+Example 
+n  First attempt: 
+{a! = fact * (x!)} 
+n  Motivation: 
+n  What we want to compute:  a! 
+n  What we have computed:  fact  
+ which is the sequential product of  a down 
+through (x + 1) 
+n  What we still need to compute:  x! 
+12/5/13 36 
+Example 
+By post-condition weakening suffices to 
+show 
+1.   {x>=0 and x = a}  
+      fact := 1; 
+      while x > 0 do (fact := fact * x; x := x –1) 
+      {a! = fact * (x!) and not (x > 0)} 
+and 
+2.  {a! = fact * (x!) and not (x > 0) } è       
+{fact = a!} 
+12/5/13 37 
+Problem 
+2.  {a! = fact * (x!) and not (x > 0)} è {fact = a!} 
+n  Don’t know this if x < 0 
+n  Need to know that x = 0 when loop 
+terminates 
+n  Need a new loop invariant 
+n  Try adding x >= 0 
+n  Then will have x = 0 when loop is done 
+12/5/13 38 
+Example 
+Second try, combine the two: 
+P = {a! = fact * (x!) and x >=0} 
+Again,  suffices to show 
+1.   {x>=0 and x = a}  
+      fact := 1; 
+      while x > 0 do (fact := fact * x; x := x –1) 
+      {P and not x > 0} 
+and 
+2.   {P and not x > 0} è  {fact = a!} 
+12/5/13 39 
+Example 
+n  For 2, we need 
+{a! = fact * (x!) and x >=0 and not (x > 0)} è 
+{fact = a!} 
+   But {x >=0 and not (x > 0)} è {x = 0} so  
+fact * (x!) = fact * (0!) = fact 
+   Therefore 
+{a! = fact * (x!) and x >=0 and not (x > 0)} è 
+{fact = a!} 
+12/5/13 40 
+Example 
+n  For 1, by the sequencing rule it suffices to 
+show 
+3. {x>=0 and x = a}  
+      fact := 1 
+    {a! = fact * (x!) and x >=0 } 
+And 
+4.  {a! = fact * (x!) and x >=0} 
+      while x > 0 do  
+      (fact := fact * x; x := x –1) 
+     {a! = fact * (x!) and x >=0 and not (x > 0)} 
+12/5/13 41 
+Example 
+n  Suffices to show that 
+{a! = fact * (x!) and x >= 0}  
+   holds before the while loop is entered and 
+that if 
+{(a! = fact * (x!)) and x >= 0 and x > 0} 
+ holds before we execute the body of the 
+loop, then 
+{(a! = fact * (x!)) and x >= 0} 
+holds after we execute the body 
+12/5/13 42 
+Example 
+By the assignment rule, we have 
+{a! = 1 * (x!) and x >= 0} 
+fact := 1 
+{a! = fact * (x!) and x >= 0} 
+Therefore, to show (3), by  
+precondition strengthening, it suffices  
+to show 
+(x>= 0 and x = a) è 
+(a! = 1 * (x!) and x >= 0) 
+12/5/13 43 
+Example 
+(x>= 0 and x = a) è 
+(a! = 1 * (x!) and x >= 0) 
+holds because x = a è x! = a! 
+ 
+Have that {a! = fact * (x!) and x >= 0} 
+holds at the start of the while loop 
+12/5/13 44 
+Example 
+To show (4):  
+  {a! = fact * (x!) and x >=0} 
+  while x > 0 do  
+  (fact := fact * x; x := x –1) 
+  {a! = fact * (x!) and x >=0 and not (x > 0)} 
+we need to show that  
+{(a! = fact * (x!)) and x >= 0} 
+is a loop invariant 
+12/5/13 45 
+Example 
+We need to show: 
+{(a! = fact * (x!)) and x >= 0 and x > 0} 
+( fact = fact * x; x := x – 1 ) 
+{(a! = fact * (x!)) and x >= 0} 
+ 
+We will use assignment rule,  
+sequencing rule and precondition  
+strengthening 
+12/5/13 46 
+Example 
+By the assignment rule, we have  
+{(a! = fact * ((x-1)!)) and x – 1 >= 0} 
+x := x – 1 
+{(a! = fact * (x!)) and x >= 0} 
+By the sequencing rule, it suffices to show 
+{(a! = fact * (x!)) and x >= 0 and x > 0} 
+fact = fact * x 
+{(a! = fact * ((x-1)!)) and x – 1 >= 0} 
+12/5/13 47 
+Example 
+By the assignment rule, we have that 
+{(a! = (fact * x) * ((x-1)!)) and x – 1 >= 0} 
+fact = fact * x 
+{(a! = fact * ((x-1)!)) and x – 1 >= 0} 
+By Precondition strengthening, it suffices  
+to show that  
+((a! = fact * (x!)) and x >= 0 and x > 0) è 
+((a! = (fact * x) * ((x-1)!)) and x – 1 >= 0) 
+12/5/13 48 
+Example 
+However 
+fact * x * (x – 1)! = fact * x 
+and              (x > 0) è x – 1 >= 0 
+since x is an integer,so 
+{(a! = fact * (x!)) and x >= 0 and x > 0} è 
+{(a! = (fact * x) * ((x-1)!)) and x – 1 >= 0} 
+12/5/13 49 
+Example 
+Therefore, by precondition strengthening 
+{(a! = fact * (x!)) and x >= 0 and x > 0} 
+fact = fact * x 
+{(a! = fact * ((x-1)!)) and x – 1 >= 0} 
+ 
+This finishes the proof 

@@ -1,0 +1,166 @@
+1 An equivalence relation on strings
+1.1 Preliminaries
+Equivalence Relations
+Definition 1. A binary relation R ⊆ A×A is an equivalence relation iff
+Reflexivity For every a ∈ A, (a, a) ∈ R,
+Symmetry For every a, b ∈ A, if (a, b) ∈ R then (b, a) ∈ R, and
+Transitivity For every a, b, c ∈ A, if (a, b) ∈ R and (b, c) ∈ R then (a, c) ∈ R.
+For an equivalence relation ≡, we will often write a ≡ b instead of (a, b) ∈≡.
+Definition 2. For an equivalence relation ≡⊆ A×A, the equivalence class of a ∈ A (denoted [a]≡)
+is given by
+[a]≡ = {b ∈ A | b ≡ a}
+The index of ≡, denoted as #(≡), is the number of equivalence classes of ≡. We will say that ≡
+has finite index if #(≡) is a finite number.
+Example 3. Consider the relation =3⊆ N×N such that (i, j) ∈=3 iff i mod 3 = j mod 3. It is easy
+to see that =3 is reflexive, symmetric, and transitive (and hence an equivalence relation).
+The equivalence class of 5 is given by
+[5]=3 = {i ∈ N | i mod 3 = 2 = 5 mod 3}
+The relation =3 has 3 equivalence classes given by
+A0 = {i ∈ N | i mod 3 = 0}
+A1 = {i ∈ N | i mod 3 = 1}
+A2 = {i ∈ N | i mod 3 = 2}
+Thus, #(=3) = 3.
+Let us consider another equivalence relation =⊆ N × N such that (i, j) ∈= iff i = j. Now the
+equivalence class for any number i is [i]= = {i}. The collection of all equivalence classes of = is
+{{i} | i ∈ N}. Thus #(=) is infinite.
+1.2 An Equivalence Relation on Strings
+A Language theoretic equivalence
+Definition 4. For any L ⊆ Σ∗, define ≡L⊆ Σ∗ × Σ∗ such that
+x ≡L y iff ∀z ∈ Σ∗. xz ∈ L↔ yz ∈ L
+1
+Proposition 5. For any language L, ≡L is an equivalence relation.
+Proof left as exercise.
+Examples
+Example 6. Let L = {w | w has an odd number of 0s and 1s }. Observe that 110 ≡L 000 because
+for any z ∈ {0, 1}∗
+110z ∈ L iff z has an odd number of 1s and an even number of 0s iff 000z ∈ L
+In fact, [110]≡L = {w | w has an even number of 1s and an odd number of 0s}. Consider
+Aee = {w | w has an even number of 0s and 1s}
+Aoe = {w | w has an even number of 0s and an odd number of 1s}
+Aeo = {w | w has an odd number of 0s and an even number of 1s}
+Aoo = {w | w has an odd number of 0s and 1s}
+Now for any x, y ∈ Aee, we can show that x ≡L y. Let z be any string. xz ∈ L iff z has an odd
+number of 0s and 1s iff yz ∈ L. Similarly one can show that any pair of strings in Aoe (or Aeo or
+Aoo) are equivalent w.r.t. ≡L.
+On the other hand, if x and y belong to different sets above then x 6≡L y. For example, let
+x ∈ Aee and y ∈ Aoe. Then x10 ∈ L (because x10 has an odd number of 0s and 1s). But y10 6∈ L
+because y10 has an even number of 0s and an odd number of 1s. The other cases are similar.
+Thus, the collection of equivalence classes of ≡L is {Aee, Aoe, Aeo, Aoo}. Therefore #(≡L) = 4.
+Example 7. Let P = {w |w contains 001 as a substring }. Observe that x = 10 6≡P y = 100 because
+taking z = 1, we have xz = 101 6∈ P but yz = 1001 ∈ P . On the other hand, 1001 ≡P 001 because
+for every z, we have 1001z ∈ L and 001z ∈ L. The equivalence classes of ≡P are
+A001 = {w | w has 001 as a substring}
+A0 = {w | w does not have 001 as substring and ends in 0 and the second last symbol is not 0}
+A00 = {w | w does not have 001 as substring and ends in 00}
+A1 = {w | w does not have 001 as substring and ends in 1 or is }
+One can show that for any two strings x, y that belong to the same set (in the above listing),
+x ≡P y, and x, y belong to different sets then x 6≡P y. We show these for one particular case;
+the rest can be similarly established. Consider x, y ∈ A0. Now xz ∈ P iff either z has 001 as a
+substring or z begins with 01 iff yz ∈ L. On the other hand, suppose x ∈ A0 and y ∈ A00. Take
+z = 1. Now yz = y1 ∈ P because the last 3 symbols of yz is 001. On the other hand xz = x1 6∈ L
+because x1 does not have 001 as a substring.
+Since the collection of all equivalence classes of ≡P is {A001, A0, A00, A1}, #(≡P ) = 4.
+Example 8. Consider L0n1n = {0n1n | n ≥ 0}. Consider x = 0i and y = 0j with i 6= j. x 6≡L0n1n y
+because 0i1i ∈ L0n1n but 0j1i 6∈ L0n1n. In fact, for any i, [0i]≡L0n1n = {0i}. If we consider strings
+of the form 0i1j where 1 ≤ j ≤ i, we have [0i1j ]≡L0n1n = {0k1` |k− ` = i− j} because 0i1jz ∈ L0n1n
+iff z = 1j−i iff 0k1` ∈ L0n1n when k − ` = i − j. Finally, when we consider any two strings x and
+y such that x and y are not of the form 0i1j , where j ≤ i, we have xz and yz are never in the set
+L0n1n, and so (vaccuously) x ≡L0n1n y.
+Based on the above analysis, #(≡L0n1n) is infinite.
+2
+Properties of ≡L
+Proposition 9. For any language L, if x ≡L y then for any w, xw ≡L yw.
+Proof. Assume for contradiction that x ≡L y but for some w, xw 6≡L yw. Since xw 6≡L yw, there
+is a z such that either (xwz ∈ L and ywz 6∈ L) or (xwz 6∈ L and ywz ∈ L). In either case, we
+can conclude that x 6≡L y because taking z′ = wz, we have xz′ ∈ L and xz′ 6∈ L (or xz′ 6∈ L and
+yz′ ∈ L). This contradicts the assumption that x ≡L y.
+2 Myhill-Nerode Theorem
+Regular languages have finite index
+Proposition 10. Let L be recognized by DFA M with initial state q0. If δˆM (q0, x) = δˆM (q0, y) then
+x ≡L y.
+Proof. This proof is essentially the basis of all our DFA lower bound proofs. We repeat the crux
+of the argument again here.
+Suppose x, y are such that δˆM (q0, x) = δˆM (q0, y). It follows that for any z ∈ Σ∗, δˆM (q0, xz) =
+δˆM (q0, yz). Hence, xz is accepted by M iff yz if accepted by M . In other words, xz ∈ L(M) = L
+iff yz ∈ L(M) = L. Thus, x ≡L y.
+Corollary 11. Let L be a regular language and let k = #(≡L). If M is a DFA that recognizes L
+and suppose M has n states, then n ≥ k.
+Proof. This our lower bound proof technique. It is the contrapositive of the previous proposition
+because it says that if x 6≡L y then δˆM (q0, x) 6= δˆM (q0, y).
+Corollary 12. If L is regular then ≡L has finite index.
+Proof. If L is regular then there is a DFA M recognizing L. Suppose M has n states. Then by
+proposition, we have #(≡L) ≤ n, and thus, ≡L has finitely many equivalence classes.
+Finite Index implies Regularity
+Proposition 13. Let L ⊆ Σ∗ be such that #(≡L) is finite. Then L is regular.
+Proof. Our proof will construct a DFA that recognizes L. Since≡L has finite index, let E1, E2, . . . Ek
+be the set of all the equivalence classes of ≡L. The states of the DFA ML recognizing L will be the
+equivalence classes of≡L. The formal construction is as follows. The DFAML = (QL,Σ, δL, qL0 , FL)
+where
+• QL = {E1, . . . Ek},
+3
+• qL0 = []≡L
+• FL = {[x]≡L | x ∈ L}; observe that FL is well-defined because if x ∈ L and x ≡L y then
+x ∈ L ⇒ y = y ∈ L.
+• And δL is given by
+δL([x]≡L , a) = [xa]≡L
+Notice that δL is well defined because if x ≡L y then xa ≡L ya.
+Correctnes of the above construction requires us to prove that L(ML) = L, i.e., ∀w. w ∈ L(ML)
+iff w ∈ L. As for all DFA correctness proofs, this one will also be proved by induction on |w| by
+strengthening this statement. We will show
+∀w. δˆML(qL0 , w) = {[w]≡L}
+First observe that if the stronger statement is established then correctness follows because w is
+accepted by ML iff δˆML(q
+L
+0 , w)(= {[w]≡L})∩FL 6= ∅ iff [w]≡L ∈ FL iff w ∈ L (by definition of FL).
+To complete the proof we will show
+∀w. δˆML(qL0 , w) = {[w]≡L}
+by induction on |w|.
+• Base Case When |w| = 0, w = . We know that δˆML(q0, ) = {q0} = {[]≡L} since q0 = []≡L
+• Ind. Hyp. Assume that δˆML(q0, w) = {[w]≡L} for all w s.t. |w| < n.
+• Ind. Step Consider w = ua such that a ∈ Σ and u ∈ Σn−1.
+δˆML(q0, w = ua) = {δL(q, a)} where δˆML(q0, u) = {q}
+= {δL([u]≡L , a)} because by ind. hyp. q = [u]≡L
+= {[ua = w]≡L}because of the defn. of δL
+Corollary 14. If L is such that #(≡L) = k then the DFA with the fewest states that recognizes L
+has k states.
+Proof. We previously showed that #(≡L) is lower bound on the number of statates that any DFA
+recognizing L must have. The above construction of the DFA in fact shows that there is a DFA
+recognizing L that has exactly k states. Thus, it must be the DFA with fewest states.
+Example
+4
+Example 15. Consider L = {w |w has an odd number of 0s and 1s }. We previously observed that
+the equivalence classes of ≡L are
+Aee = {w | w has an even number of 0s and 1s}
+Aoe = {w | w has an even number of 0s and an odd number of 1s}
+Aeo = {w | w has an odd number of 0s and an even number of 1s}
+Aoo = {w | w has an odd number of 0s and 1s}
+Now for w ∈ Aee, w0 ∈ Aoe and w1 ∈ Aeo. Thus in DFA ML the transtion from Aee on 0 will go to
+Aoe and on 1 will go to Aeo. Similarly we can figure out the other transtions. The resulting DFA
+looks like
+Aee Aeo
+AooAoe
+1
+1
+1
+1
+0 0 0 0
+Example 16. For the language P = {w | w contains 001 as a substring }, we saw that the set of
+equivalence classes are
+A001 = {w | w has 001 as a substring}
+A0 = {w | w does not have 001 as substring and ends in 0 and the second last symbol is not 0}
+A00 = {w | w does not have 001 as substring and ends in 00}
+A1 = {w | w does not have 001 as substring and ends in 1 or is }
+Once again we can figure out transitions easily. For example, for w ∈ A001, w0 and w1 are A001.
+The resulting DFA is
+A1 A0 A00 A001
+1
+0
+1
+0
+0
+1
+0, 1
+Myhill-Nerode Theorem
+Theorem 17. L is regular iff ≡L has finitely many equivalence classes.
+Proof. Follows from all the observation made so far.
+5

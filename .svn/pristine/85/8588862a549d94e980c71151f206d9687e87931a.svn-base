@@ -1,0 +1,139 @@
+1 
+Instruc(on	  sets	  &	  RISC	  vs.	  CISC,	  	  
+Compilers,	  Assemblers,	  Linkers,	  &	  Loaders,	  
+malloc/new	  &	  Memory	  images,	  	  
+and	  who	  cares	  about	  assembly.	  
+2 
+Today’s	  lecture	  
+  ISA	  review	  &	  history	  
+  Compila(on	  process	  
+  Types	  of	  memory	  &	  memory	  image	  
+  Global,	  automa+c	  (stack),	  and	  heap	  
+  Loading	  
+3 
+Instruction Set Architecture (ISA) 
+  The ISA is the interface between hardware and 
+software. 
+  The ISA serves as an abstraction layer between the HW 
+and SW 
+  Software doesn’t need to know how the processor is implemented 
+  Any processor that implements the ISA appears equivalent 
+  An ISA enables processor innovation without changing 
+software 
+  This is how Intel has made billions of dollars. 
+  Before ISAs, software was re-written/re-compiled for 
+each new machine. 
+Software 
+Proc #1 
+ISA 
+Proc #2 
+4 
+A little ISA history 
+  1964:	  IBM	  System/360,	  the	  first	  computer	  family	  
+  IBM	  wanted	  to	  sell	  a	  range	  of	  machines	  that	  ran	  the	  same	  so>ware	  
+  1960’s,	  1970’s:	  Complex	  Instruc(on	  Set	  Computer	  (CISC)	  era	  
+  Much	  assembly	  programming,	  compiler	  technology	  immature	  
+  Simple	  machine	  implementa+ons	  
+  Complex	  instruc+ons	  simplified	  programming,	  liDle	  impact	  on	  design	  
+  1980’s:	  Reduced	  Instruc(on	  Set	  Computer	  (RISC)	  era	  
+  Most	  programming	  in	  high-­‐level	  languages,	  mature	  compilers	  
+  Aggressive	  machine	  implementa+ons	  
+  Simpler,	  cleaner	  ISA’s	  facilitated	  pipelining,	  high	  clock	  frequencies	  
+  1990’s:	  Post-­‐RISC	  era	  
+  ISA	  complexity	  largely	  relegated	  to	  non-­‐issue	  
+  CISC	  and	  RISC	  chips	  use	  same	  techniques	  (pipelining,	  superscalar,	  ..)	  
+  ISA	  compa+bility	  outweighs	  any	  RISC	  advantage	  in	  general	  purpose	  
+  Embedded	  processors	  prefer	  RISC	  for	  lower	  power,	  cost	  
+  2000’s:	  Mul(-­‐core	  and	  Mul(threading	  
+5 
+RISC vs. CISC 
+  MIPS	  was	  one	  of	  the	  first	  RISC	  architectures.	  It	  was	  started	  about	  20	  years	  
+ago	  by	  John	  Hennessy,	  one	  of	  the	  authors	  of	  our	  textbook.	  
+  The	  architecture	  is	  similar	  to	  that	  of	  other	  RISC	  architectures,	  including	  
+Sun’s	  SPARC,	  IBM’s	  PowerPC,	  and	  ARM-­‐based	  processors.	  
+  Older	  processors	  used	  complex	  instruc(on	  sets,	  or	  CISC	  architectures.	  
+  Many	  powerful	  instruc+ons	  were	  supported,	  making	  the	  assembly	  
+language	  programmer’s	  job	  much	  easier.	  
+  But	  this	  meant	  that	  the	  processor	  was	  more	  complex,	  which	  made	  the	  
+hardware	  designer’s	  life	  harder.	  
+  Many	  new	  processors	  use	  reduced	  instruc(on	  sets,	  or	  RISC	  architectures.	  
+  Only	  rela+vely	  simple	  instruc+ons	  are	  available.	  But	  with	  high-­‐level	  
+languages	  and	  compilers,	  the	  impact	  on	  programmers	  is	  minimal.	  
+  On	  the	  other	  hand,	  the	  hardware	  is	  much	  easier	  to	  design,	  op+mize,	  
+and	  teach	  in	  classes.	  
+  Even	  most	  current	  CISC	  processors,	  such	  as	  Intel	  8086-­‐based	  chips,	  are	  
+now	  implemented	  using	  a	  lot	  of	  RISC	  techniques.	  
+6 
+Differences between ISA’s 
+  Much	  more	  is	  similar	  between	  ISA’s	  than	  different.	  	  Compare	  MIPS	  &	  x86:	  
+  Instruc+ons:	  	  
+  same	  basic	  types	  
+  different	  names	  and	  variable-­‐length	  encodings	  
+  x86	  branches	  use	  condi+on	  codes	  	  
+  x86	  supports	  (register	  +	  memory)	  -­‐>	  (register)	  format	  
+  Registers:	  
+  Register-­‐based	  architecture	  
+  different	  number	  and	  names,	  x86	  allows	  par+al	  reads/writes	  
+  Memory:	  
+  Byte	  addressable,	  32-­‐bit	  address	  space	  
+  x86	  has	  addi+onal	  addressing	  modes	  
+  x86	  does	  not	  require	  addresses	  to	  be	  aligned	  
+  x86	  has	  segmenta+on,	  but	  not	  used	  by	  most	  modern	  O/S’s	  
+7 
+October 14, 2013 ISA's, Compilers, and Assembly 7 
+The compilation process 
+  To	  produce	  assembly	  code:	  	  gcc –S test.c 
+  produces	  test.s 
+  To	  produce	  object	  code:	  	  gcc –c test.c 
+  produces	  test.o 
+  To	  produce	  executable	  code:	  	  gcc test.c 
+  produces	  a.out 
+8 
+October 14, 2013 ISA's, Compilers, and Assembly 8 
+The purpose of a linker 
+  The	  linker	  is	  a	  program	  that	  takes	  one	  or	  more	  object	  files	  and	  
+assembles	  them	  into	  a	  single	  executable	  program.	  
+  The	  linker	  resolves	  references	  to	  undefined	  symbols	  by	  finding	  out	  
+which	  other	  object	  defines	  the	  symbol	  in	  ques(on,	  and	  replaces	  
+placeholders	  with	  the	  symbol's	  address 
+9 
+October 14, 2013 ISA's, Compilers, and Assembly 9 
+What the linker does 
+10 
+Object File Formats 
+11 
+Loader 
+  Before	  we	  can	  start	  execu(ng	  a	  program,	  the	  O/S	  must	  load	  it:	  
+  Loading	  involves	  5	  steps:	  
+1.  Allocates	  memory	  for	  the	  program's	  execu+on.	  	  
+2.  Copies	  the	  text	  and	  data	  segments	  from	  the	  executable	  into	  memory.	  	  
+3.  Copies	  program	  arguments	  (e.g.,	  command	  line	  arguments)	  onto	  the	  
+stack.	  	  
+4.  Ini+alizes	  registers:	  sets	  $sp	  to	  point	  to	  top	  of	  stack,	  clears	  the	  rest.	  	  
+5.  Jumps	  to	  start	  rou+ne,	  which:	  1)	  copies	  main's	  arguments	  off	  of	  the	  
+stack,	  and	  2)	  jumps	  to	  main.	  
+12 
+The three types of memory	  
+	  
+int	  array1[100];	  
+int	  an_int_with_a_value	  =	  100;	  
+	  
+void	  	  a_func(on()	  {	  
+int	  array2[100];	  
+int	  *array3	  =	  (int	  *)	  malloc(100	  *	  sizeof(int));	  
+	  
+	  
+	  
+/*	  func(on	  contents	  …	  */	  
+}	  
+13 
+MIPS memory image 
+14 
+Whither Assembly Language 
+15 
+Inline assembly Example 
+intadd(int a, int b) { /* return a + b */   !
+!int ret_val;   !
+!__asm("add %2, %0, %1", a, b, ret_val);   !
+!return(ret_val); !
+} !

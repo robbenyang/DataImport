@@ -1,0 +1,138 @@
+NonRel Data 1: Semistructured Data
+Key concepts:
+1. Representation/querying
+2. JSON, XPath, XQuery
+Details:
+● Slides 1­2
+○ Last lecture
+■ Semi­structured data does not “predefine” data schema. Data schema
+comes along with data files.
+■ Semi­structured data is useful for those applications which need flexible
+schemas, for example, information integration, information exchange.
+■ XML is one of the most important semi­structured data on the web
+● Slide 3
+○ This lecture
+■ JSON is another popular semi­structured data language
+■ We will cover XPath & XQuery for querying XML
+● Slide 4­7
+○ JSON is JavaScript Object Notation
+■ It is human­readable
+■ It extends from the JavaScript language
+● ex. var JSONObj = {“name”: “google.com”, “year” :
+1996, “public” : false, “stock” : null};
+● Slide 8
+○ JSON is widely used as the data format for Web services to release their public
+data.
+■ Advantage: small size, save the network transmission cost.
+● Slide 9­11
+○ How is JSON different from XML?
+■ JSON has data types; in XML everything is a string
+● Look at above JSONObj example­ JSON has numbers, strings,
+booleans, and NULL values
+● Slide 12­13
+○ JSON objects are key:value pairs, enclosed by curly braces “{ ... }”
+○ JSON array is an ordered sequence of values, using square braces “[ … ]”
+■ values can be of different types
+● Slide 14­16
+○ Nesting
+■ Objects can be nested in an array
+● ex. [{“name”:”Google”, mobile:”android”},
+{“name”:”Apple”, mobile:”iOS”}]
+■ Arrays can be nested in an object, i.e. as the value for a key
+● ex. {“name”:”Google”,
+“path”:[{“link” : “google.com”}
+,{“link” : “googl.com”}]
+}
+■ Objects can be nested in objects
+● ex. {“name”: “Altgeld Hall”, “coordinates” :
+{“latitude” : “44N”,
+“longitude: “48W”}
+}
+● Slide 17­18
+○ JSON usually has smaller file size than XML­> no attributes or tag names
+■ in place of tags, JSON uses key:value pairs
+■ XML only has string representation, while JSON has numbers, booleans,
+null, objects, arrays, as well as strings
+○ Hence, it is less verbose and easier to write than XML
+● Slide 19­20
+○ example of XML doc: https://dl.dropboxusercontent.com/u/3528286/movie.xml
+○ How do we query this data
+● Slide 21
+○ XPath: used to navigate through paths in an XML document
+● Slide 22­24
+○ Using the tag name to retrieve XML data is not a good choice due to duplicate
+names of attributes
+○ BUT, all XML elements are embedded within each other, so we can represent it
+as a tree structure!
+■ To access any node, we can offer a unique path from the root to that node
+(hence the name XPath)
+● Slide 25­29
+○ How to use XPath
+■ Specify the XML document
+● ex.doc("https://dl.dropboxusercontent.com/u/3528
+286/movie.xml");
+■ Use path expressions to locate elements
+● ex. doc(“filename”)/root/Movie/Title returns all movie
+titles
+■ Find attributes in a path expression
+● Adding an “@” symbol before attribute names returns all attributes
+instead of element values
+● ex. doc(“filename”)/root/Movie/@id returns all attribute
+tags
+■ Use wildcards in a path expression
+● We can use an asterisk to match any tags
+● ex. instead of this: doc(“filename”)/root/Movie/Title
+   we can use this: doc(“filename”)/*/*/Title
+■ Use conditions with square brackets (can input multiple conditions
+separated by comma)
+● ex. doc("...")/*/Movie[Year=1980]/Title returns all
+titles made in 1980
+● Slide 30­31
+○ Limitation of XPath
+■ Cannot support aggregation, join, or ordering
+■ Only returns parts of the XML file
+● Slide 32
+○ XQuery is more powerful than XPath
+■ Extended from XPath, and very similar to SQL
+○ Similarities between XQuery and SQL in Preparing the Data
+■ Specify Data Source:
+● SQL: FROM tableName
+● XQuery: FOR $v IN doc(“...”)/.../     ­­ Using an XPath to get the
+data.
+■ Get the Data:
+● SQL: each tuple represents a row in the table.
+● XQuery: each variable $v represents a piece of JSON code
+following the given XPath.
+■ Refer to Data Detail:
+● SQL: use tableName.columnName.
+● XQuery: continue to use XPath after variable $v, i.e., $v/.../...
+● Slide 33­39
+○ XQuery syntax
+■ for...return is similar to SELECT...FROM in SQL
+● “for” is for specifying the data source, “return” is for projecting
+specific data
+■ where is for defining conditions (like WHERE in SQL)
+■ let clause is similar to AS in SQL
+■ joining two tables
+■ group by and order by are similar to the SQL commands of same name
+● Additional Content:
+○ Elimination of Duplicates in XQuery
+■ syntax: distinct­value (...)
+■ Example: List all possible genres without duplication:
+for $v in
+distinct­values(doc("https://dl.dropboxusercontent.com/u/3528286/movie.x
+ml")/*/Movie/Genres/Genre)
+return <Genre>{$v}</Genre>
+○ Quantification in XQuery:
+■ syntax: every variable in expression1 satisfies expression2
+some variable in expression1 satisfies expression2
+■ Example: List all the movies which are only categorized as “Comedy”
+(ignore the “more” tag)
+for $v in
+doc("https://dl.dropboxusercontent.com/u/3528286/movie.xml")/*/Movie
+where every $c in $v/Genres/Genre satisfies $c='Comedy' or $c='(more)'
+return $v/Title
+Points to Remember:
+● JSON is an alternative form of semistructured data other than XML
+● JSON objects are arranged in key:value pairs, while XML has tags
+● XPath and XQuery are two languages used to traverse an XML document

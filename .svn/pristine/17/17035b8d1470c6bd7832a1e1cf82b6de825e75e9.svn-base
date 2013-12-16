@@ -1,0 +1,109 @@
+1 Reductions
+1.1 Introduction
+Reductions
+A reduction is a way of converting one problem into another problem such that a solution to the
+second problem can be used to solve the first problem. We say the first problem reduces to the
+second problem.
+• Informal Examples: Measuring the area of rectangle reduces to measuring the length of the
+sides; Solving a system of linear equations reduces to inverting a matrix
+• The problem Ld reduces to the problem Atm as follows: “To see if 〈M〉 ∈ Ld check if
+〈M, 〈M〉〉 ∈ Atm.”
+Undecidability using Reductions
+Proposition 1. Suppose L1 reduces to L2 and L1 is undecidable. Then L2 is undecidable.
+Proof Sketch.
+Suppose for contradiction L2 is decidable. Then there is a M that always halts and decides L2.
+Then the following algorithm decides L1
+• On input w, apply reduction to transform w into an input w′ for problem 2
+• Run M on w′, and use its answer.
+This can be seen Pictorially as follows.
+Algorithm for Problem 1
+Reduction f
+Algorithm
+for Prob-
+lem 2
+w f(w)
+yes
+no
+Figure 1: Reductions schematically
+The Halting Problem
+Proposition 2. The language HALT = {〈M,w〉 |M halts on input w} is undecidable.
+1
+Proof. We will reduce Atm to HALT. Based on a machine M , let us consider a new machine f(M)
+as follows:
+On input x
+Run M on x
+If M accepts then halt and accept
+If M rejects then go into an infinite loop
+Observe that f(M) halts on input w if and only if M accepts w
+Suppose HALT is decidable. Then there is a Turing machine H that always halts and L(H) =
+HALT. Consider the following program T
+On input 〈M,w〉
+Construct program f(M)
+Run H on 〈f(M), w〉
+Accept if H accepts and reject if H rejects
+T decides Atm. But, Atm is undecidable, which gives us the contradiction.
+1.2 Definitions and Observations
+Mapping Reductions
+Definition 3. A function f : Σ∗ → Σ∗ is computable if there is some Turing Machine M that on
+every input w halts with f(w) on the tape.
+Definition 4. A reduction (a.k.a. mapping reduction/many-one reduction) from a language A to
+a language B is a computable function f : Σ∗ → Σ∗ such that
+w ∈ A if and only if f(w) ∈ B
+In this case, we say A is reducible to B, and we denote it by A ≤m B.
+Convention
+In this course, we will drop the adjective “mapping” or “many-one”, and simply talk about reduc-
+tions and reducibility.
+Reductions and Recursive Enumerability
+Proposition 5. If A ≤m B and B is r.e., then A is r.e.
+Proof. Let f be a reduction from A to B and let MB be a Turing Machine recognizing B. Then
+the Turing machine recognizing A is
+2
+On input w
+Compute f(w)
+Run MB on f(w)
+Accept if MB accepts, and reject if MB rejects
+Corollary 6. If A ≤m B and A is not r.e., then B is not r.e.
+Reductions and Decidability
+Proposition 7. If A ≤m B and B is decidable, then A is decidable.
+Proof. Let f be a reduction from A to B and let MB be a Turing Machine deciding B. Then a
+Turing machine that decides A is
+On input w
+Compute f(w)
+Run MB on f(w)
+Accept if MB accepts, and reject if MB rejects
+Corollary 8. If A ≤m B and A is undecidable, then B is undecidable.
+1.3 Examples
+The Halting Problem
+Proposition 9. The language HALT = {〈M,w〉 |M halts on input w} is undecidable.
+Proof. Recall Atm = {〈M,w〉 | w ∈ L(M)} is undecidable. Will give reduction f to show Atm ≤m
+HALT =⇒ HALT undecidable.
+Let f(〈M,w〉) = 〈N,w〉 where N is a TM that behaves as follows:
+On input x
+Run M on x
+If M accepts then halt and accept
+If M rejects then go into an infinite loop
+N halts on input w if and only if M accepts w. i.e., 〈M,w〉 ∈ Atm iff f(〈M,w〉) ∈ HALT
+Emptiness of Turing Machines
+Proposition 10. The language Etm = {〈M〉 | L(M) = ∅} is not r.e.
+Proof. Recall Ld = {〈M〉 |M 6∈ L(M)} is not r.e.
+Ld is reducible to Etm as follows. Let f(M) = 〈N〉 where N is a TM that behaves as follows:
+3
+On input x
+Run M on 〈M〉
+Accept x only if M accepts 〈M〉
+Observe that L(N) = ∅ if and only if M does not accept 〈M〉 if and only if 〈M〉 ∈ Ld.
+Checking Regularity
+Proposition 11. The language REGULAR = {〈M〉 | L(M) is regular} is undecidable.
+Proof. We give a reduction f from Atm to REGULAR. Let f(〈M,w〉) = 〈N〉, where N is a TM
+that works as follows:
+On input x
+If x is of the form 0n1n then accept x
+else run M on w and accept x only if M does
+If w ∈ L(M) then L(N) = Σ∗. If w 6∈ L(M) then L(N) = {0n1n | n ≥ 0}. Thus, 〈N〉 ∈
+REGULAR if and only if 〈M,w〉 ∈ Atm
+Checking Equality
+Proposition 12. EQtm = {〈M1,M2〉 | L(M1) = L(M2)} is not r.e.
+Proof. We will give a reduction f from Etm to EQtm. Let M1 be the Turing machine that on any
+input, halts and rejects i.e., L(M1) = ∅. Take f(M) = 〈M,M1〉.
+Observe 〈M〉 ∈ Etm iff L(M) = ∅ iff L(M) = L(M1) iff 〈M,M1〉 ∈ EQtm.
+4

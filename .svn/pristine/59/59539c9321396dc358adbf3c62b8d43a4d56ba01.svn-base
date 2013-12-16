@@ -1,0 +1,96 @@
+Assume	  the	  following	  register	  alloca3on:	  	  	  $13	  =	  x,	  $20	  =	  y,	  $15	  =	  z	  
+Write	  MIPS	  code	  to	  compute	  the	  following	  expression?	  
+	  
+z	  =	  4	  +	  x*y	  –	  z;	  
+	  
+op rs rt rd shamt func 
+6 bits 5 bits 5 bits 5 bits 5 bits 6 bits 
+—  op is an operation code or opcode 
+that selects a specific operation. 
+—  rs is always a the first source 
+register 
+—  rt is either a second source (R-
+type) or a destination (I-type) 
+—  rd is the destination register in R-
+type 
+—  shamt is only used for shift 
+instructions. 
+—  func is used together with op to 
+select an arithmetic instruction.  
+—  Imm is a 16-bit signed two’s-
+complement value from -32,768 to 
++32,767.  
+R-­‐type	  
+I-­‐type	  
+add  $5, $10, $4!
+op rs rt imm 
+6 bits 5 bits 5 bits 16 bits 
+ori  $7, $2, 0xff!
+16
+11
+op
+rs
+rt
+rd
+-
+func
+imm
+31
+0
+5
+6
+10
+15
+20
+21
+25
+26
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+dataAregA
+reset
+w_en
+dataBregB
+w_reg
+w_data
+Register 
+File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+Instruc(on   Opcode   Func   alu_op   itype   wr_enable  
+add	  
+sub	  
+and	  
+or	  
+xor	  
+nor	  
+addi	  
+andi	  
+ori	  
+xori	  
+15	  
+31	   0	  
+0	  
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+wr_enable
+itype
+alu_op[2:0]
+inst[5:0]
+inst[31:26]
+except
+6
+6
+3

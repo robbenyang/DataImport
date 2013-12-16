@@ -1,0 +1,786 @@
+Kevin	  C.	  Chang
+Query  Processing
+Database	  Systems
+1 	  
+	  
+• Logical/physical	  operators
+•Cost	  parameters	  and	  sorting	  
+•One-­‐pass	  algorithms	  
+• Nested-­‐loop	  join	  
+•Two-­‐pass	  algorithms
+• Sort-­‐merge	  join
+• Hash-­‐based	  join
+• Index-­‐based	  algorithms
+• Index-­‐based	  join
+Concepts	  You	  Will	  Learn
+Indexing	  (1	  of	  66)Default	  Section	  (1	  of	  2) 	  
+An	  outline	  of	  what	  will	  be	  covered	  	  
+Logical/Physical	  Operators:	  more 
+One-­‐pass	  algorithms:	  more 
+Two-­‐pass	  algorithms:	  Similar	  to	  one-­‐
+pass	  but	  makes	  two	  passes	  over	  the	  
+data:	  the	  first	  to	  assign	  temp	  labels	  and	  
+record	  equivalences	  and	  the	  second	  to	  
+the	  temp	  label. 
+Index-­‐based	  algorithm:	  Didn’t	  get	  to	  it. 
+ 
+	  
+The	  Big	  Picture:	  Where	  We	  Are
+Indexing  (2  of  66)
+Data	  Access
+Data	  Modeling
+Data/Query	  Processing
+Data	  Acquisition
+Relational NonRelational
+St
+ru
+ct
+ur
+ed
+Se
+m
+iS
+tr
+uc
+tu
+re
+d
+Transaction	  Management
+N
+oS
+Q
+L  
+D
+at
+ab
+as
+es
+XM
+L  
+D
+at
+ab
+as
+es
+U
+nt
+ru
+ct
+ur
+ed
+Relational  Databases
+• SQL
+• Relational  Algebra
+• Query  Optimization
+• Query  Execution
+• Indexing
+• Concurrency  Control
+• Logging  Recovery
+Database  Systems Toolkits
+M
+ap
+  R
+ed
+uc
+e
+(P
+ar
+al
+le
+l)
+St
+or
+m
+  
+(S
+tr
+ea
+m
+)
+Information  Extraction
+ER  à Relational  Model
+Query	  Language
+	  
+There	  are	  2	  dimensions	  to	  data.	  	  
+The	  first	  dimension	  -­‐	  In	  red,	  we	  can	  see	  
+the	  format	  of	  the	  data	  in	  the	  world.	  This	  
+comes	  as	  structured	  and	  unstructured.	  
+The	  second	  dimension	  can	  be	  derived	  
+from	  the	  question:	  Is	  it	  relational	  or	  not?	  
+(Content	  in	  blue).	  	  
+The	  question	  thus	  far	  has	  been,	  given	  
+unstructured	  data,	  how	  do	  we	  get	  that	  
+into	  a	  structured	  database?	  
+As	  highlighted	  in	  the	  data,	  we	  can	  see	  the	  
+transition	  of	  the	  class	  from	  SQL	  to	  
+relational	  algebra,	  to	  XML	  and	  so	  forth.	  
+This	  is	  our	  exploration	  of	  Relational	  and	  
+Non-­‐relational.	  	  
+Query  Execution
+4
+Query compiler
+Execution engine
+Index/record mgr.
+Buffer manager
+Storage manager
+storage
+User/
+Application
+Query
+or update
+Query execution
+plan
+Record, index
+requests
+Page 
+commands
+Read/write
+pages
+	  
+The	  figure	  depicts	  a	  fine	  grain	  model	  of	  
+query	  execution.	  If	  we	  were	  to	  run	  a	  
+query,	  then	  we	  follow	  the	  path	  shown:	  
+An	  SQL	  command	  goes	  into	  a	  query	  
+complier.	  This	  will	  be	  processed	  by	  the	  
+execution	  engine,	  which	  runs	  on	  every	  
+operator.	  The	  index	  then	  comes	  in	  to	  give	  
+you	  the	  appropriate	  value	  (B-­‐tree,	  Hash	  
+etc	  are	  the	  index	  types	  we	  are	  referring	  
+to).	  Following	  that,	  they	  will	  come	  into	  
+the	  buffer	  manager.	  This	  is	  the	  virtual	  
+manager	  where	  it	  is	  decided	  what	  will	  
+come	  to	  the	  memory	  (This	  is	  the	  pin	  index	  
+to	  the	  memory).	  And	  finally,	  it	  goes	  to	  the	  
+storage	  manager	  that	  gets	  us	  the	  final	  
+output.	  	  	  
+• Logical	  operators
+•what they	  do
+• e.g.,	  union,	  selection,	  project,	  join,	  grouping
+•Physical	  operators
+• how they	  do	  it
+• e.g.,	  nested	  loop	  join,	  sort-­‐merge	  join,	  hash	  join,	  index	  
+join
+Logical	  v.s.	  Physical	  Operators
+5 	  
+Query	  is	  simply	  a	  structure	  of	  “lego”	  
+operators,	  thus	  all	  queries	  boil	  down	  to	  
+operators. 
+Logical	  operators:	  has	  input	  and	  output. 
+Physical	  operator:	  defined	  by	  method 
+Logical/Physical	  Operators:	  more	  info. 
+ 
+	  
+Query  Execution  Plans
+6
+Purchase Person
+Buyer=name
+City=‘urbana’ phone>’5430000’
+buyer
+(Simple Nested Loops)
+SELECT S.sname
+FROM          Purchase  P,  Person  Q
+WHERE    P.buyer=Q.name  AND
+Q.city=‘urbana’  AND
+Q.phone >  ‘5430000’  
+σ
+Query  Plan:
+• logical  tree
+• implementation      
+choice  at  every  node
+• scheduling  of  
+operations.
+(Table scan) (Index scan)
+Some  operators  are  from  relational
+algebra,  and  others  (e.g.,  scan,  group)  are  not.
+	  
+Given	  several	  building	  blocks,	  we	  get	  the	  
+alternative	  of	  having	  multiple	  ways	  of	  
+performing	  a	  task.	  This	  means	  that	  given	  
+a	  set	  of	  methods	  to	  perform	  a	  task,	  an	  
+optimal	  method	  may	  exist.	  	  The	  diagram	  
+to	  the	  left	  shows	  a	  breakdown	  of	  the	  
+query	  listed.	  	  
+Through	  query	  optimization,	  we	  can	  
+generate	  a	  tree	  as	  shown.	  	  
+The	  iterator	  model.
+•Each	  operation	  is	  implemented	  by	  3	  functions:
+• Open:	  sets	  up	  the	  data	  structures	  and	  performs	  
+initializations
+• GetNext:	  returns	  the	  the next	  tuple	  of	  the	  result.
+• Close:	  ends	  the	  operations.	  Cleans	  up	  the	  data	  structures.
+•Enables	  pipelining!
+How	  do	  We	  Combine	  Operations?
+7 	  
+The	  iterator	  model	  is	  a	  model	  that	  we	  can	  
+use	  to	  help	  the	  query	  optimizing	  process.	  
+The	  iterator	  model	  means	  that	  you	  as	  a	  
+programmer	  will	  follow	  3	  functions:	  
+Open,	  GetNext,	  and	  Close.	  	  
+The	  iterator	  model	  also	  enables	  
+pipelining.	  This	  is	  simply	  the	  process	  line	  
+of	  different	  stages	  where	  every	  stage	  
+(such	  as	  selection,	  join,	  etc)	  is	  a	  busy	  
+process	  in	  some	  tuple.	  This	  means	  that	  if	  
+we	  have	  a	  multi-­‐core	  processor,	  then	  we	  
+are	  using	  all	  cores	  such	  that	  there	  is	  no	  
+waste	  in	  resources.	  	  
+•Cost	  parameters	  	  
+• M	  =	  number	  of	  blocks	  that	  fit	  in	  main	  memory
+• B(R)	  =	  number	  of	  blocks	  holding	  R
+• T(R)	  =	  number	  of	  tuples	  in	  R
+• V(R,a)	  =	  number	  of	  distinct	  values	  of	  the	  attribute	  a
+•Estimating	  the	  cost:
+• Important	  in	  optimization	  (next	  lecture)
+• Compute	  I/O	  cost	  only
+• We	  compute	  the	  cost	  to	  read the	  tables	  
+• We	  don’t	  compute	  the	  cost	  to	  write the	  result	  (because	  
+pipelining)
+Cost	  Parameters
+8 	  
+Sellinger:	  The	  director	  of	  the	  IBM	  
+computer	  science	  division.	  Worked	  on	  the	  
+system	  R	  project	  and	  worked	  on	  the	  
+concept	  of	  cost	  based	  optimization	  for	  
+queries.	  	  
+Optimization	  fundamentally	  means	  
+searching	  for	  the	  best.	  	  
+The	  concept	  	  
+Since	  different	  query	  plans	  have	  different	  
+costs,	  Sellinger	  decided	  that	  this	  can	  be	  
+used	  to	  optimize	  the	  query.	  The	  
+parameters	  that	  are	  ideal	  for	  utilization	  
+for	  this	  are	  listed	  on	  the	  slide.	  	  
+•Two	  pass	  multi-­‐way	  merge	  sort
+•Step	  1:
+• Read	  M	  blocks	  at	  a	  time,	  sort,	  write
+• Result:	  have	  runs	  of	  length	  M	  on	  disk
+•Step	  2:
+• Merge	  M-­‐1	  at	  a	  time,	  write	  to	  disk
+• Result:	  have	  runs	  of	  length	  M(M-­‐1)≈M2
+•Cost:	  3B(R),	  	  Assumption:	  B(R)	  ≤M2
+Sorting
+9 	  
+**	  This	  is	  different	  from	  the	  sorting	  
+algorithms	  we	  have	  learned	  in	  our	  data	  
+structures	  courses.	  	  
+For	  example:	  	  
+Suppose	  we	  want	  to	  sort	  R	  such	  that,	  
+memory	  to	  disk	  =	  1000,	  B(R)	  =	  20kb.	  
+First	  we	  read	  R.	  Memory	  can	  only	  hold	  
+1000	  elements,	  so	  R	  will	  run	  20	  times	  
+(each	  time	  1000	  elements,	  20k	  total).	  
+Merge	  after	  one	  at	  a	  time.	   
+We	  are	  assuming	  B(R)	  <=	  M2.	  If	  this	  is	  
+not	  satisfied,	  we	  will	  need	  more	  
+steps/iterations.	  That	  will	  make	  it	  more	  
+expensive.	  The	  cost	  is	  3*B(R)	  if	  the	  
+assumption	  is	  qualified. 
+.	  	  
+•The	  table	  is	  clustered	  (I.e.	  blocks	  consists	  only	  of	  
+records	  from	  this	  table):
+• Table-­‐scan:	  if	  we	  know	  where	  the	  blocks	  are
+• Index	  scan:	  if	  we	  have	  index	  to	  find	  the	  blocks
+•The	  table	  is	  unclustered (e.g.	  its	  records	  are	  placed	  
+on	  blocks	  with	  other	  tables)
+• May	  need	  one	  read	  for	  each	  record
+Scanning	  Tables
+10 	  
+Tuples are clusters or unclustered.  
+If	  table	  is	  clustered,	  we	  mean	  they	  are	  
+contiguous	  on	  disk.	  Thus,	  when	  reading,	  
+you	  spend	  B(R)	  time	  to	  read	  it. 
+If	  tables	  are	  unclustered,	  it	  is	  possible	  
+that	  every	  record	  is	  placed	  in	  a	  different	  
+block.	  Worst	  case	  time	  spent	  reading	  it	  
+could	  be	  T(R). 
+	  	  
+	  	  
+•Clustered	  relation:
+• Table	  scan:	  	  B(R);	  to	  sort:	  3B(R)
+• Index	  scan:	  	  B(R);	  to	  sort:	  B(R)	  or	  3B(R)
+•Unclustered relation
+• T(R);	  to	  sort:	  T(R)	  +	  2B(R)
+Cost	  of	  the	  Scan	  Operator
+11 	  
+Professor	  didn’t	  really	  touch	  on	  this	  one…	  
+Selection	  σ(R),	  projection	  Π(R)
+•Both	  are	  tuple-­‐at-­‐a-­‐Time algorithms
+•Cost:	  B(R)
+One-­‐pass	  Algorithms
+12
+Input buffer Output bufferUnary
+operator
+	  
+One-­‐pass	  algorithm	  
+A	  pass	  is	  a	  “phase”	  of	  processing.	  Imagine	  
+this	  as	  one	  pass	  through	  the	  data.	  	  
+At	  each	  pass,	  we	  have	  a	  unary	  operator,	  
+like	  a	  select	  or	  a	  projection	  that	  goes	  
+through	  the	  data	  and	  gives	  an	  output	  in	  
+the	  buffer.	  One	  tuple	  at	  a	  time	  is	  
+processed.	  	  
+Duplicate	  elimination	  δ(R)
+•Need	  to	  keep	  a	  dictionary	  in	  memory:
+• balanced	  search	  tree
+• hash	  table
+• etc
+•Cost:	  B(R)
+•Assumption:	  B(δ(R))	  <=	  M
+One-­‐pass	  Algorithms
+13 	  
+In	  the	  example	  of	  a	  duplicate	  elimination,	  
+we	  use	  a	  delta	  operator.	  	  
+The	  operator	  DISTINCT	  is	  a	  great	  example	  
+of	  a	  way	  to	  eliminate	  duplicates.	  With	  the	  
+query	  SELECT	  DISTINCT	  names	  FROM	  
+users,	  we	  get	  all	  the	  distinct	  user	  names.	  	  
+However,	  what	  this	  means	  is	  that	  we	  
+need	  to	  maintain	  a	  dictionary	  in	  memory.	  	  
+If	  we	  have	  a	  tuple	  coming	  in,	  then	  what	  
+we	  do	  is	  check	  it	  in	  the	  dictionary.	  If	  the	  
+tuple	  does	  not	  exist,	  then	  it	  is	  outputted	  
+and	  added	  to	  the	  data	  structure.	  
+However,	  if	  it	  is,	  then	  it	  means	  that	  it	  is	  a	  
+duplicate.	  We	  are	  basically	  building	  a	  
+dictionary	  in	  the	  main	  memory.	  	  
+Grouping:	  γcity,	  sum(price) (R)
+•Need	  to	  keep	  a	  dictionary	  in	  memory
+•Also	  store	  the	  sum(price)	  for	  each	  city
+•Cost:	  B(R)
+•Assumption:	  number	  of	  cities	  fits	  in	  memory
+One-­‐pass	  Algorithms
+14 	  
+Furthermore,	  operators	  such	  as	  Grouping	  
+(union,	  etc)	  all	  follow	  this	  same	  use	  case.	  	  
+Binary	  operations:	  R	  ∩	  S,	  R	  U	  S,	  R	  – S
+•Assumption:	  min(B(R),	  B(S))	  <=	  M
+•Scan	  one	  table	  first,	  then	  the	  next,	  eliminate	  
+duplicates
+•Cost:	  B(R)+B(S)
+One-­‐pass	  Algorithms
+15 	  
+Self-­‐explanatory	  
+•Tuple-­‐based	  nested	  loop	  𝑅   ⋈   𝑆
+•R=outer	  relation,	  S=inner	  relation
+for each	  tuple	  r	  in	  R	  do
+for each	  tuple	  s	  in	  S	  do
+if r	  and	  s	  join	  then output	  (r,s)
+•Cost:	  T(R)	  T(S),	  	  sometimes	  T(R)	  B(S)
+Nested	  Loop	  Joins
+16 	  
+Join	  processes	  are	  very	  expensive.	  So	  
+we	  get	  the	  question	  of	  how	  we	  can	  
+optimize	  this.	   
+For	  first	  tuple	  of	  R,	  loop	  through	  S;	  for	  
+second	  tuple	  of	  R,	  loop	  through	  S	  again,	  
+etc.	  Thus,	  nested	  loop. 
+	  	  
+•Block-­‐based	  Nested	  Loop	  Join
+for each	  (M-­‐1)	  blocks	  bs of	  S	  do
+for each	  block	  br of	  R	  do
+for each	  tuple	  s	  in	  bs do
+for each	  tuple	  r	  in	  br do
+if r	  and	  s	  join	  then output(r,s)
+Nested	  Loop	  Joins
+17 	  
+To	  be	  smarter,	  store	  S	  in	  memory	  (can	  
+store	  M-­‐1	  items,	  1	  reserved	  for	  R).	  Loop	  
+S	  through	  every	  tuple	  in	  R.	  Then	  store	  
+another	  M-­‐1	  items	  in	  S.	  Keep	  doing	  this	  
+until	  S	  is	  looped	  through.	   
+Total	  Cost:	  B(S)	  +	  B(R)	  X	  B(S)/M 
+	  
+Nested  Loop  Joins
+18
+. . .
+. . .
+R & S
+Blocks of S
+(k < M-1 pages)
+Input buffer for R Output buffer
+. . .
+Join Result
+	  
+	  
+•Block-­‐based	  Nested	  Loop	  Join
+•Cost:
+• Read	  S	  once:	  cost	  B(S)
+• Outer	  loop	  runs	  B(S)/(M-­‐1)	  times,	  and	  each	  time	  need	  to	  
+read	  R:	  costs	  B(S)B(R)/(M-­‐1)
+• Total	  cost:	  	  B(S)	  	  +	  	  B(S)B(R)/(M-­‐1)
+•Notice:	  it	  is	  better	  to	  iterate	  over	  the	  smaller	  
+relation	  first– i.e.,	  S	  smaller
+Nested	  Loop	  Joins
+19 	  
+	  
+Two  pass  algorithms
+20 	  
+Why	  do	  we	  need	  two	  pass	  algorithm	  to	  
+solve?	  -­‐-­‐	  Because	  it’s	  not	  always	  possible	  
+to	  fit	  the	  relation	  data	  inside	  memory!	  
+Which	  means	  B(R)	  <=	  M	  does	  not	  hold.	  
+In	  the	  first	  pass:	  we	  organize	  data	  to	  get	  
+them	  prepared	  for	  our	  operation.	  E.g.	  
+sorting,	  hashing.	  
+In	  the	  second	  pass:	  we	  do	  the	  wanted	  
+operation	  based	  the	  prepared	  data.	  
+	  
+	  
+Duplicate	  elimination	  δ(R)
+•Simple	  idea:	  like	  sorting,	  but	  include	  no	  duplicates
+•Step	  1:	  sort	  runs	  of	  size	  M,	  write
+• Cost:	  2B(R)
+•Step	  2:	  merge	  M-­‐1	  runs,	  
+but	  include	  each	  tuple	  only	  once
+• Cost:	  B(R)
+•Total	  cost:	  3B(R),	  Assumption:	  B(R) <=	  M2
+Two-­‐Pass	  Algorithms	  Based	  on	  Sorting
+21 	  
+Background	  information:	  Merge	  Sort.	  	  
+1) Load	  M	  blocks	  a	  time	  into	  memory,	  
+do	  sort	  and	  output	  to	  the	  disk.	  	  
+2) Merge	  by	  looking	  at	  the	  most	  outside	  
+element	  and	  merge	  by	  comparing	  
+them.	  	  
+Here	  we	  assume	  B(R)<=	  M2	  because	  for	  
+the	  merging	  phase,	  we	  assume	  that	  the	  
+main	  memory	  can	  hold	  one	  element	  from	  
+each	  run,	  and	  that’s	  B(R)/M.	  So	  we	  have	  
+B(R)/M	  <=M	  and	  thus,	  B(R)<=	  M2.	  And	  
+remember	  that	  we	  shall	  have	  lot’s	  of	  M2	  
+appearing	  next	  because	  we	  all	  assume	  the	  
+whole	  process	  has	  two	  pass,	  which	  means	  
+we	  don’t	  need	  additional	  pass	  for	  
+merging.	  
+•Selection?
+•Projection?
+•Set	  operations?
+• Join?
+•Duplicate	  elimination?
+•Grouping?
+Q:	  What	  can	  sorting	  help?	  And,	  how?
+22 	  
+1) Selection	  -­‐	  Sorting	  will	  help	  selection	  
+but	  not	  quite,	  because	  it	  can	  help	  us	  
+find	  the	  range	  faster	  by	  making	  us	  
+just	  care	  about	  the	  boarder	  value.	  
+However,	  for	  equal	  selection	  it	  will	  
+not	  improve	  our	  finding	  a	  little	  bit	  by	  
+providing	  the	  chance	  of	  using	  binary	  
+search.	  	  
+2) Projection	  -­‐	  Sorting	  will	  not	  help	  in	  
+projection	  because	  it	  cannot	  help	  us	  
+selecting	  on	  a	  specific	  attribute.	  	  
+3) Set	  Operation	  -­‐	  Sorting	  can	  help	  in	  
+duplicate	  elimination,	  because	  with	  
+the	  duplicate	  attribute	  sorted,	  we	  
+can	  find	  out	  the	  duplicate	  values	  by	  
+comparing	  with	  neighboring	  values,	  
+and	  merge	  back	  only	  once	  for	  each	  
+value.	  	  
+4) For	  other	  operations,	  see	  discussion	  
+below.	  
+Grouping:	  γcity,	  sum(price) (R)
+•Same	  as	  before:	  sort,	  then	  compute	  the	  sum(price)	  
+for	  each	  group
+•As	  before:	  compute	  sum(price)	  during	  the	  merge	  
+phase.
+•Total	  cost:	  3B(R)
+•Assumption:	  B(R) <=	  M2
+Two-­‐Pass	  Algorithms	  Based	  on	  Sorting
+23 	  
+Sorting	  will	  help	  for	  grouping	  because	  we	  
+can	  sort	  the	  group	  value	  and	  when	  
+merging,	  we	  can	  do	  the	  aggregation	  like	  
+sum(),	  average(),	  count()	  etc.	  
+Binary	  operations:	  R	  ∩	  S,	  R	  U	  S,	  R	  – S
+• Idea:	  sort	  R,	  sort	  S,	  then	  do	  the	  right	  thing
+•A	  closer	  look:
+• Step	  1:	  split	  R	  into	  runs	  of	  size	  M,	  then	  split	  S	  into	  runs	  of	  
+size	  M.	  	  Cost:	  2B(R)	  +	  2B(S)
+• Step	  2:	  merge	  all	  x runs	  from	  R;	  merge	  all	  y runs	  from	  S;	  
+ouput	  a	  tuple	  on	  a	  case	  by	  cases	  basis	  (x +	  y <=	  M)
+•Total	  cost:	  3B(R)+3B(S)
+•Assumption:	  B(R)+B(S)<=	  M2
+Two-­‐Pass	  Algorithms	  Based	  on	  Sorting
+24 	  
+Sorting	  can	  help	  binary	  operations	  
+because	  by	  sorting	  the	  two	  relations	  R	  
+and	  S,	  we	  can	  split	  the	  two	  relations	  and	  
+merge	  them	  back	  as	  tuples.	  	  
+However,	  since	  when	  merging,	  we	  have	  
+to	  hold	  them	  all	  in	  the	  memory	  to	  form	  
+tuples,	  thus	  we	  shall	  have	  B(R)+B(S)<=M2.	  
+	  
+Join	  𝑅 ⋈ 𝑆
+•Start	  by	  sorting	  both	  R	  and	  S	  on	  the	  join	  attribute:
+• Cost:	  4B(R)+4B(S)	  	  (because	  need	  to	  write	  to	  disk)
+•Read	  both	  relations	  in	  sorted	  order,	  match	  tuples
+• Cost:	  B(R)+B(S)
+•Difficulty:	  many	  tuples	  in	  R	  may	  match	  many	  in	  S
+• If	  at	  least	  one	  set	  of	  tuples	  fits	  in	  M,	  we	  are	  OK
+• Otherwise	  need	  nested	  loop,	  higher	  cost
+•Total	  cost:	  5B(R)+5B(S)
+•Assumption:	  B(R) <=	  M2,	  B(S) <=	  M2
+Sort-­‐Merge	  Join
+25 	  
+Sorting	  can	  also	  help	  join.	  This	  is	  done	  like	  
+this:	  We	  assume	  that	  we	  can	  have	  either	  
+tuples	  in	  R	  or	  S	  that	  can	  fit	  in	  M	  –	  
+min(B(R),	  B(S))<=M2.	  Then	  with	  S	  fit	  in	  
+memory,	  we	  can	  check	  one	  tuple	  in	  R	  
+with	  all	  the	  tuples	  in	  S	  each	  time	  to	  merge	  
+the	  result	  of	  join.	  	  
+We	  can	  also	  do	  the	  join	  ahead	  by	  without	  
+writing	  the	  sorted	  R	  and	  S	  back	  to	  file.	  But	  
+this	  will	  require	  that	  we	  can	  hold	  both	  R	  
+and	  S	  in	  memory,	  with	  B(R)+B(S)<=M2	  
+The	  cost	  will	  be	  3(B(R)+B(S))	  in	  this	  case	  
+while	  the	  size	  assumption	  is	  still	  
+B(R)+B(S)≤ 𝑀!.	  
+(B+-­‐tree	  and	  B+	  tree	  demo:	  
+B+-­‐Trees	  http://pfunproject.web.cs.illinois.edu/extra/FayezBPlusTree.html	  
+B+-­‐Trees	  http://www.seanster.com/BplusTree/BplusTree.html	  
+B-­‐Trees	  http://slady.cz/java/bt/	  
+B-­‐Trees	  http://idlebox.net/2007/stx-­‐btree/demo.htt	  
+Comparison:	  For	  B-­‐tree	  searching	  always	  
+needs	  to	  go	  to	  the	  leave	  nodes	  while	  for	  
+B+-­‐tree	  it	  may	  hit	  some	  nodes	  earlier)	  
+•Pass	  1?
+•Pass	  2?
+Q:	  Why	  is	  sorting-­‐based	  “two”	  pass?
+26 	  
+For	  pass	  1,	  we	  load	  M	  blocks	  into	  memory	  
+and	  do	  sorting	  before	  output	  to	  the	  disk.	  
+For	  pass	  2,	  we	  merge	  them	  back	  and	  
+perform	  the	  intended	  operation	  in	  the	  
+meantime.	  	  
+• Idea:	  partition	  a	  relation	  R	  into	  buckets,	  on	  disk
+•Each	  bucket	  has	  size	  approx.	  B(R)/M
+•Does	  each	  bucket	  fit	  in	  main	  memory	  ?
+• Yes	  if	  B(R)/M	  <=	  M,	  	  	  i.e.	  B(R)	  <=	  M2
+Two	  Pass	  Algorithms	  Based	  on	  Hashing
+27
+M main memory buffers DiskDisk
+Relation R
+OUTPUT
+2INPUT
+1
+hash
+function
+h M-1
+Partitions
+1
+2
+M-1
+. . .
+1
+2
+B(R)
+	  
+For	  the	  first	  pass:	  we	  do	  the	  hash	  
+operation	  and	  put	  the	  output	  into	  
+different	  buckets	  based	  on	  different	  hash	  
+result.	  	  
+For	  the	  second	  pas:	  we	  do	  the	  intended	  
+operation	  on	  the	  partitioned	  blocks.	  	  
+•Selection?
+•Projection?
+•Set	  operations?
+• Join?
+•Duplicate	  elimination?
+•Grouping?
+Q:	  What	  can	  hashing	  help?	  And,	  how?
+28 	  
+1) Hashing	  can	  help	  selection,	  because	  it	  
+can	  help	  us	  quickly	  find	  out	  where	  our	  
+intended	  result	  should	  locate.	  But	  it	  
+cannot	  help	  on	  range	  query.	  
+2) Hashing	  cannot	  help	  project,	  because	  
+it	  has	  nothing	  to	  do	  with	  selecting	  a	  
+specific	  attribute.	  	  
+3) It	  can	  also	  help	  set	  operations	  
+because	  we	  need	  only	  look	  at	  the	  
+same	  bucket.	  	  
+4) For	  the	  rest,	  please	  see	  below.	  
+• Recall:	  	  δ(R)	  = duplicate	  elimination	  
+• Step	  1.	  Partition	  R	  into	  buckets
+• Step	  2.	  Apply	  δ to	  each	  bucket	  (may	  read	  in	  main	  memory)
+• Cost:	  3B(R)
+• Assumption:B(R)	  <=	  M2
+Hash	  Based	  Algorithms	  for	  	  δ
+29 	  
+Hashing	  can	  help	  duplicate	  elimination,	  
+because	  with	  the	  same	  value	  hashing	  to	  
+the	  same	  bucket,	  we	  can	  easily	  do	  the	  
+elimination	  inside	  the	  bucket.	  
+•Recall:	  	  γ(R)	  = grouping	  and	  aggregation
+•Step	  1.	  Partition	  R	  into	  buckets
+•Step	  2.	  Apply	  γ to	  each	  bucket	  (may	  read	  in	  main	  
+memory)
+•Cost:	  3B(R)
+•Assumption:	  B(R)	  <=	  M2
+Hash	  Based	  Algorithms	  for	  	  γ
+30 	  
+Hashing	  can	  help	  for	  grouping	  and	  
+aggregation,	  because	  we	  first	  do	  hashing	  
+on	  the	  grouping	  attribute,	  and	  do	  the	  
+aggregation	  inside	  each	  bucket.	  
+𝑅 ⋈ 𝑆
+•Simple	  version:	  main	  memory	  hash-­‐based	  join
+• Scan	  S,	  build	  buckets	  in	  main	  memory
+• Then	  scan	  R	  and	  join
+•Requirement:	  min(B(R),	  B(S))	  <=	  M
+Hash-­‐based	  Join
+31 	  
+Take	  the	  matching	  attributes	  as	  the	  input	  
+of	  hash	  function.	  
+Build	  the	  hash	  buckets	  of	  smaller	  relation	  
+S	  into	  the	  main	  memory.	  For	  each	  tuple	  
+of	  R	  in	  bucket	  Ri,	  the	  tuples	  that	  it	  can	  join	  
+with	  must	  be	  in	  Si.	  
+	  
+𝑅 ⋈ 𝑆
+•Step	  1:
+• Hash	  S	  into	  M	  buckets
+• send	  all	  buckets	  to	  disk
+•Step	  2
+• Hash	  R	  into	  M	  buckets
+• Send	  all	  buckets	  to	  disk
+•Step	  3
+• Join	  every	  pair	  of	  buckets
+Partitioned	  Hash	  Join
+32 	  
+In	  the	  join	  part,	  we	  take	  the	  whole	  
+buckets	  Ri	  	  and	  Si	  then	  join	  the	  tuples	  
+inside	  these	  two	  buckets.	  
+The	  cost	  is	  3B(R)+3B(S).	  
+The	  size	  requirement	  is	  min(B(R),B(S))  ≤𝑀!.	  
+• Partition	  both	  
+relations	  using	  hash	  fn
+h:	  	  R	  tuples	  in	  partition	  
+i will	  only	  match	  S	  
+tuples	  in	  partition	  i.
+• Read	  in	  a	  partition	  of	  
+R,	  hash	  it	  using	  h2	  (<>	  
+h!).	  Scan	  matching	  
+partition	  of	  S,	  search	  
+for	  matches.
+Partitioned	  Hash-­‐Join
+Partitions
+of R & S
+Input buffer
+for Ri
+Hash table for partition
+Si ( < M-1 pages)
+B main memory buffersDisk
+Output 
+buffer
+Disk
+Join Result
+hash
+fn
+h2
+h2
+B main memory buffers DiskDisk
+Original 
+Relation OUTPUT
+2INPUT
+1
+hash
+function
+h M-1
+Partitions
+1
+2
+M-1
+. . .
+	  
+A	  graph	  explanation	  of	  the	  above.	  	  
+•Cost:	  3B(R)	  +	  3B(S)
+•Assumption:	  At	  least	  one	  full	  bucket	  of	  the	  smaller	  
+rel must	  fit	  in	  memory:	  min(B(R),	  B(S))	  <=	  M2
+Partitioned	  Hash	  Join
+34 	  
+In	  here,	  because	  we	  assume	  that	  at	  least	  
+one	  full	  bucket	  of	  the	  two	  relations	  has	  fit	  
+into	  main	  memory.	  We	  thus	  have	  
+min(B(R)/M,	  B(S)/M)<=M	  	  =>	  
+min(B(R),B(S))<=M2.	  
+	  
+• In	  a	  clustered	  index	  all	  tuples	  with	  the	  same	  value	  
+of	  the	  key	  are	  clustered	  on	  as	  few	  blocks	  as	  
+possible.
+Indexed	  Based	  Algorithms
+35
+a a a a a a a a a a       
+	  
+Index	  can	  help	  us	  directly	  go	  to	  the	  part	  
+that	  we	  are	  interested	  in.	  
+•Selection	  on	  equality:	  σa=v(R)
+•Clustered	  index	  on	  a:	  	  cost	  B(R)/V(R,a)
+•Unclustered index	  on	  a:	  cost	  T(R)/V(R,a)
+Index	  Based	  Selection
+36 	  
+B(R)	  means	  the	  block	  number	  of	  R;	  
+V(R,	  a)	  means	  the	  number	  of	  distinct	  
+tuples	  in	  attribute	  a	  of	  R.	  	  
+T(R)	  means	  the	  number	  of	  tuples	  in	  R.	  
+The	  cost	  of	  using	  clustered	  index	  can	  be	  
+approximated	  by	  the	  average	  number	  of	  
+blocks	  for	  a	  certain	  value.	  
+Similarly,	  The	  cost	  of	  using	  unclustered	  
+index	  can	  be	  approximated	  by	  the	  
+average	  number	  of	  tuples	  for	  a	  certain	  
+value.	  
+That’s	  the	  cost	  of	  simply	  read	  the	  data.	  
+•Example:	  B(R)	  =	  2000,	  	  T(R)	  =	  100,000,	  V(R,	  a)	  =	  20,	  
+compute	  the	  cost	  of	  σa=v(R)
+•Cost	  of	  table	  scan:
+• If	  R	  is	  clustered:	  B(R)	  =	  2000	  I/Os
+• If	  R	  is	  unclustered:	  T(R)	  =	  100,000	  I/Os
+•Cost	  of	  index	  based	  selection:
+• If	  index	  is	  clustered:	  B(R)/V(R,a)	  =	  100
+• If	  index	  is	  unclustered:	  T(R)/V(R,a)	  =	  5000
+•Notice:	  when	  V(R,a)	  is	  small,	  then	  unclustered	  index	  
+is	  useless
+Index	  Based	  Selection
+37 	  
+When	  V(R,a)	  is	  small,	  the	  cost	  of	  using	  an	  
+unclustered	  index	  will	  be	  similar	  to	  simply	  
+scanning	  through	  the	  table	  without	  any	  
+index.	  
+𝑅   ⋈ 𝑆
+• Assume	  S	  has	  an	  index	  on	  the	  join	  attribute
+• Iterate over	  R,	  for	  each	  tuple	  fetch	  corresponding	  tuple(s)	  
+from	  S
+• Assume	  R	  is	  clustered.	  Cost:
+• If	  index	  is	  clustered:	  	  B(R)	  +	  T(R)B(S)/V(S,a)
+• If	  index	  is	  unclustered:	  B(R)	  +	  T(R)T(S)/V(S,a)
+Index	  Based	  Join
+38 	  
+Assume	  that	  S	  has	  an	  index	  on	  the	  join	  
+attribute.	  Then	  we	  need	  to	  iterate	  over	  R	  
+and	  find	  the	  corresponding	  tuples	  in	  S	  
+that	  satisfy	  the	  join	  condition.	  Then	  
+output	  that	  to	  file.	  	  
+Because	  we	  need	  to	  read	  R	  from	  disk,	  we	  
+need	  B(R),	  and	  we	  iterate	  through	  R,	  
+that’s	  T(R)	  times.	  Then	  the	  finding	  of	  
+tuples	  in	  S	  will	  have	  B(S)/V(s,a)	  or	  
+T(S)/V(S,a)	  based	  on	  whether	  it	  is	  
+clustered	  or	  not.	  	  
+•Assume	  both	  R	  and	  S	  have	  a	  sorted	  index	  (B+	  tree)	  
+on	  the	  join	  attribute
+•Then	  perform	  a	  merge	  join	  (called	  zig-­‐zag join)
+•Cost:	  B(R)	  +	  B(S)
+Index	  Based	  Join
+39 	  
+If	  the	  indexes	  on	  the	  join	  attribute	  are	  
+sorted,	  then	  we	  need	  to	  perform	  only	  the	  
+final	  step	  of	  the	  simple	  sort-­‐based	  join.	  
+This	  method	  is	  called	  zig-­‐zag	  join,	  because	  
+we	  jump	  back	  and	  forth	  between	  the	  
+indexes	  finding	  join	  values	  that	  they	  share	  
+in	  common.	  	  
+	  

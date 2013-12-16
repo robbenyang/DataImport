@@ -1,0 +1,30 @@
+Week #6: Threading 
+Exam Review Question  
+CS 241: Fall 2013 
+These questions are provided to you to help you study material covered in CS 241 that may appear on the 
+final exam.  These exact questions may or may not appear on the final exam, but the topics they cover will 
+almost certainly be on the final exam. 
+1. Consider the code below: 
+void *thread(void *ptr) { 
+  printf("Hello!"); 
+} 
+ 
+void main() { 
+  pthread_t pid1, pid2; 
+  pthread_create(&pid1, NULL, thread, NULL); 
+  pthread_create(&pid2, NULL, thread, NULL); 
+ 
+  pthread_join(pid1, NULL); 
+} 
+ 
+ 
+How many times is “Hello!” printed? 
+ 
+2. Name two things that are shared between multiple threads in a single process   Additionally, 
+name two things that are not shared. 
+ 
+3. What is one specific reason that a context switch between two threads that are in a single process 
+faster than a context switch between two processes? 
+ 
+4. In terms of the system resources needed to create them, is it cheaper to create a thread or a 
+process?  Why? 

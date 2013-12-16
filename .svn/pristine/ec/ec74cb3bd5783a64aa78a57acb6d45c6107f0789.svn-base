@@ -1,0 +1,210 @@
+D3
+D2
+D1
+D0
+Q3
+Q2
+Q1
+Q0
+reset
+enable
+A[3:0]
+out
+[3:0]
+B[3:0]
+Adder
+0
+0
+0
+1
+0
+1
+0
+1
+Time
+0
+1
+0
+1
+Q[3:0]
+D[3:0]
+clk
+reset
+PC	  
+Instruc+on	  Memory	  +	  Arithme+c	  Unit	  
+nextPC	  
+Complete	  the	  +ming	  diagram	  based	  on	  	  
+the	  following	  circuit:	  
+PC	  
+nextPC	  
+Write	  the	  assembly	  code	  	  
+corresponding	  to:	  
+$3	  =	  10	  
+$5	  =	  -­‐7	  
+$7	  =	  $3	  +	  $5	  
+	  
+op	   rs	   rt	   imm	  
+op	   rs	   rt	   imm	  
+op	   rs	   rt	   rd	   shmt	   func	  
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+Sign 
+Extender
+out[31:0]
+in[15:0]
+inst[31:0] 0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+Rt
+Rd
+imm16
+imm32
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+30	  
+31	  
+26	  
+25	  
+21	  
+20	  
+16	  
+15	  
+op	  
+rs	  
+rt	  
+imm	  
+alu_op[2:0]
+write_enable
+itype
+except
+opcode[5:0]
+funct[5:0]
+MIPS decoder
+A[31:0]
+alu_op[2:0]
+out[31:0]
+B[31:0]
+ALU
+rsDatarsNum
+reset
+rdNum
+rtDatartNum
+rdWriteEnable
+rdData
+Register File
+reset
+clk
+wr_enable
+Rdest
+Rt
+Rs
+zero
+negative
+overflow
+0
+1
+wr_enable
+itype
+itype
+alu_op[2:0]
+Sign 
+Extender
+out[31:0]
+in[15:0]
+inst[31:0] 0
+1
+itype
+inst[25:21]
+inst[20:16]
+inst[15:11]
+inst[20:16]
+inst[5:0]
+inst[15:0]
+inst[31:26]
+except
+Rt
+Rd
+imm16
+imm32
+5
+5
+5
+16
+32
+6
+6
+32
+32
+32
+32
+32
+3
+30	  
+31	  
+26	  
+25	  
+21	  
+20	  
+16	  
+15	  
+op	  
+rs	  
+rt	  
+rd	  
+shamt	  
+func	  
+11	  
+10	  
+6	  
+5	  

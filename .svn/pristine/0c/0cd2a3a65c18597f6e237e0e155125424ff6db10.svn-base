@@ -1,0 +1,233 @@
+MP4 available, due 10/18, 11:59p. 
+TODAY:  BST remove 
+(http://webdiis.unizar.es/asignaturas/EDA/AVLTree/avltree.html)
+1
+Announcements
+void Dictionary<K,D>::insert(treeNode * cRoot, const K & key, const D & data){
+   if (cRoot == NULL)
+      cRoot = new treeNode(key,data);
+   else if (key < cRoot->key)
+      insert(cRoot->left, key, data);
+   else if (key > cRoot->key)
+      insert(cRoot->right, key, data);
+}
+Dictionary ADT:  (BST implementation)
+insert
+remove
+find
+traverse
+template <class K, class D>
+class Dictionary{
+public:
+// constructor for empty tree.
+private:
+   struct treeNode{
+      D data;
+      K key;
+      treeNode * left;
+      treeNode * right;
+   };
+   treeNode * root
+};
+Binary Search Tree - Remove
+void BST<K>::remove(treeNode * & cRoot, const T & d) {
+   if (cRoot != NULL) {
+      if (cRoot->key == d)
+         doRemoval(cRoot);
+      else if (d < cRoot->key)
+         remove(cRoot->left, d);
+      else
+         remove(cRoot->right, d);
+   }
+}
+Binary Search Tree - Remove
+T.remove(37);
+T.remove(10); T.remove(13);
+void BST<K>::remove(treeNode * & cRoot, const T & d) {
+   if (cRoot != NULL) {
+      if (cRoot->key == d)
+         doRemoval(cRoot);
+      else if (d < cRoot->key)
+         remove(cRoot->left, d);
+      else
+         remove(cRoot->right, d);
+   }
+}
+Binary Search Tree - Remove
+void BST<K>::doRemoval(treeNode * & cRoot) {
+   if ((cRoot->left == NULL) && (cRoot->right == NULL))
+    noChildRemove(cRoot);
+   else if ((cRoot->left != NULL) && (cRoot->right != NULL))
+      twoChildRemove(cRoot);
+   else 
+      oneChildRemove(cRoot);
+}
+void BST<K>::remove(treeNode * & cRoot, const T & d) {
+   if (cRoot != NULL) {
+      if (cRoot->key == d)
+         doRemoval(cRoot);
+      else if (d < cRoot->key)
+         remove(cRoot->left, d);
+      else
+         remove(cRoot->right, d);
+   }
+}
+Binary Search Tree - Remove
+void BST<K>::doRemoval(treeNode * & cRoot) {
+   if ((cRoot->left == NULL) && (cRoot->right == NULL))
+      noChildRemove(cRoot);
+   else if ((cRoot->left != NULL) && (cRoot->right != NULL))
+      twoChildRemove(cRoot);
+   else 
+      oneChildRemove(cRoot);
+}
+void BST<K>::noChildRemove(treeNode * & cRoot) {
+   delete cRoot;
+   cRoot = NULL;
+}
+void BST<K>::remove(treeNode * & cRoot, const T & d) {
+   if (cRoot != NULL) {
+      if (cRoot->key == d)
+         doRemoval(cRoot);
+      else if (d < cRoot->key)
+         remove(cRoot->left, d);
+      else
+         remove(cRoot->right, d);
+   }
+}
+Binary Search Tree - Remove
+void BST<K>::doRemoval(treeNode * & cRoot) {
+   if ((cRoot->left == NULL) && (cRoot->right == NULL))
+      noChildRemove(cRoot);
+   else if ((cRoot->left != NULL) && (cRoot->right != NULL))
+      twoChildRemove(cRoot);
+   else 
+      oneChildRemove(cRoot);
+}
+void BST<T,S>::noChildRemove(treeNode * & cRoot) {
+   treeNode * temp = cRoot;
+   cRoot = NULL;
+   delete temp;
+}
+void BST<K>::oneChildRemove(treeNode * & cRoot) {
+   treeNode * temp = cRoot;
+   if (cRoot->left == NULL) cRoot = cRoot->right;
+   else cRoot = t->left; 
+   delete temp;     
+}
+void BST<K>::remove(treeNode * & cRoot, const T & d) {
+   if (cRoot != NULL) {
+      if (cRoot->key == d)
+         doRemoval(cRoot);
+      else if (d < cRoot->key)
+         remove(cRoot->left, d);
+      else
+         remove(cRoot->right, d);
+   }
+}
+Binary Search Tree - Remove
+void BST<K>::doRemoval(treeNode * & cRoot) {
+   if ((cRoot->left == NULL) && (cRoot->right == NULL))
+      noChildRemove(cRoot);
+   else if ((cRoot->left != NULL) && (cRoot->right != NULL))
+      twoChildRemove(cRoot);
+   else 
+      oneChildRemove(cRoot);
+}
+void BST<T,S>::noChildRemove(treeNode * & cRoot) {
+   treeNode * temp = cRoot;
+   cRoot = NULL;
+   delete temp;
+}
+void BST<T,S>::oneChildRemove(treeNode * & cRoot) {
+   treeNode * temp = cRoot;
+   if (cRoot->left == NULL) cRoot = cRoot->right;
+   else cRoot = cRoot->left; 
+   delete temp;     
+}
+void BST<K>::twoChildRemove(treeNode * & cRoot) {
+   treeNode * iop = IOP(cR ot);
+   cRoot->key = iop->key;
+   doRemoval(IOP(cRoot));     
+}
+void BST<K>::remove(treeNode * & cRoot, const T & d) {
+   if (cRoot != NULL) {
+      if (cRoot->key == d)
+         doRemoval(cRoot);
+      else if (d < cRoot->key)
+         remove(cRoot->left, d);
+      else
+         remove(cRoot->right, d);
+   }
+}
+Binary Search Tree - Remove
+void BST<K>::doRemoval(treeNode * & cRoot) {
+   if ((cRoot->left == NULL) && (cRoot->right == NULL))
+      noChildRemove(cRoot);
+   else if ((cRoot->left != NULL) && (cRoot->right != NULL))
+      twoChildRemove(cRoot);
+   else 
+      oneChildRemove(cRoot);
+}
+void BST<T,S>::noChildRemove(treeNode * & cRoot) {
+   treeNode * temp = cRoot;
+   cRoot = NULL;
+   delete temp;
+}
+void BST<T,S>::oneChildRemove(treeNode * & cRoot) {
+   treeNode * temp = cRoot;
+   if (cRoot->left == NULL) cRoot = cRoot->right;
+   else cRoot = cRoot->left; 
+   delete temp;     
+}
+void BST<T,S>::twoChildRemove(treeNode * & cRoot) {
+   treeNode * iop = IOP(cRoot);
+   cRoot->key = iop->key;
+   doRemoval(iop);     
+}
+treeNode * & BST<K>::IOP(treeNode * & cRoot) {
+   return rightMostChild(cRoot->left);
+}
+void BST<K>::remove(treeNode * & cRoot, const T & d) {
+   if (cRoot != NULL) {
+      if (cRoot->key == d)
+         doRemoval(cRoot);
+      else if (d < cRoot->key)
+         remove(cRoot->left, d);
+      else
+         remove(cRoot->right, d);
+   }
+}
+Binary Search Tree - Remove
+void BST<K>::doRemoval(treeNode * & cRoot) {
+   if ((cRoot->left == NULL) && (cRoot->right == NULL))
+      noChildRemove(cRoot);
+   else if ((cRoot->left != NULL) && (cRoot->right != NULL))
+      twoChildRemove(cRoot);
+   else 
+      oneChildRemove(cRoot);
+}
+void BST<T,S>::noChildRemove(treeNode * & cRoot) {
+   treeNode * temp = cRoot;
+   cRoot = NULL;
+   delete temp;
+}
+void BST<T,S>::oneChildRemove(treeNode * & cRoot) {
+   treeNode * temp = cRoot;
+   if (cRoot->left == NULL) cRoot = cRoot->right;
+   else cRoot = cRoot->left; 
+   delete temp;     
+}
+void BST<T,S>::twoChildRemove(treeNode * & cRoot) {
+   treeNode * iop = IOP(cRoot);
+   cRoot->key = iop->key;
+   doRemoval(iop);     
+}
+treeNode * & BST<T,S>::IOP(treeNode * & cRoot) {
+   return rightMostChild(cRoot->left);
+}
+treeNode * & BST<K>::rightMostChild(treeNode * & cRoot) 
+{
+   if (cRoot->right == NULL) return cRoot;
+  else return rightMostChild(cRoot->right);
+}

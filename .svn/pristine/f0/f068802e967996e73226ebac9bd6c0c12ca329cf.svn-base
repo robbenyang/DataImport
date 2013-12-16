@@ -1,0 +1,216 @@
+1 
+Boolean'Algebra'and'Its'Rela1on'to'Gates'
+An#Introduc+on#to#CS233''
+#
+2 
+233'in'one'slide!'
+  The'class'consists'roughly'of'4'quarters:'
+1.  You#will#build#a#simple#computer#processor#
+2.  You#will#learn#how#high>level#language#code#executes#on#a#processor#
+3.  You#will#learn#why#computers#perform#the#way#they#do#
+4.  You#will#learn#about#hardware#mechanisms#for#parallelism#
+  We'will'have'a'SPIMbot'contest!'
+  Sec1on'begins'this'week,'so'I'must'teach'you'something!'
+  More#on#class#mechanics#on#Wednesday…#
+3 
+Today’s'lecture'
+  Basic'Boolean'expressions'
+  Booleans#
+  AND,#OR#and#NOT#
+  Expressing#Boolean#func+ons:#
+  as#truth'tables'
+  as#mathema+cal#expressions'
+  as#digital#circuits#made#of#gates'
+  using#hardware'descrip1on'languages#
+4 
+Compu1ng:'It'is'all'just'ones'and'zeros'
+  Computers'use'voltages'to'represent'informa1on.'
+  For'reliability'and'ease'of'design,'however,'we'
+group'ranges'of'voltages'into'two'discrete,'or'
+digital,'values:'1'and'0.''
+  This#two>valued#domain#is#referred#to#as#BINARY'
+  OPen#1#is#used#for#TRUE#and#0#for#FALSE.#
+  Everything'in'digital'computers'is'represented'with'
+ones'and'zeros'
+  We’ll#show#you#how.#
+Volts 
+1.8 
+ 
+ 
+ 
+0 
+1 
+0 
+5 
+Boolean'values'
+  If'we'think'of'our'digital'voltages'as'two'logical'
+values,'true'and'false,'we'call'these'“Booleans”'
+  APer#the#mathema+cian#George#Boole#
+  For'simplicity,'we'oZen's1ll'write'digits'instead:'
+  1##is#true#
+  0#is#false#
+Volts 
+1.8 
+ 
+ 
+ 
+0 
+True 
+False 
+  Boolean'algebra'is'the'mathema1cs'defined'over'this'binary'
+domain.'
+6 
+Boolean'func1ons'
+  Just'like'in'other'mathema1cs,'we'can'define'func1ons:!
+y!=!f(x)!
+  The'output'is'specified'purely'by'the'func1on'&'inputs'
+  Because'there'are'a'finite'number'(2)'of'boolean'values…'
+  There'are'a'finite'number'of'boolean'func1ons''
+  For'1ainput'func1ons'(e.g.,'f(x))'there'are'only'4'possible'
+  (let’s#first#see#how#to#represent#these…)#
+7 
+Truth'tables'
+  A'truth'table'shows'all'possible'inputs'&'outputs'of'a'func1on.'
+  Each'input'variable'is'either'1'or'0.'''(so'are'the'outputs.)'
+  Because#there#are#only#a#finite#number#of#values#(1#and#0),#
+truth#tables#themselves#are#finite.#
+  A#func+on#with#n#variables#has#2n#possible#combina+ons#of#
+inputs.#
+x y z f(x,y,z)
+0 0 0 1
+0 0 1 1
+0 1 0 1
+0 1 1 1
+1 0 0 0
+1 0 1 1
+1 1 0 0
+1 1 1 1
+8 
+1ainput'Boolean'func1ons'
+y!=!f(x)'
+  A'1ainput'Boolean'func1on'has'21'='2'possible'inputs:'
+  There'are'2(#'of'inputs)'possible'func1ons'
+  For#each#input,#there#are#2#possible#outputs#
+  The#outputs#are#independent#for#each#input#(hence#the#mul+plica+on)#
+  The'4'possible'1ainput'Boolean'func1ons'
+9 
+2ainput'Boolean'func1ons'
+z!=!f(x,y)'
+  4'possible'inputs,'16'possible'func1ons:'
+  We’ll'focus'on'2'for'now'
+10 
+Basic'Boolean'opera1ons''
+  There'are'three'basic'opera1ons'for'logical'values.'
+These'are'sufficient'to'implement'any'Boolean'func1on'
+AND (product) 
+of two inputs 
+OR (sum) of 
+two inputs 
+NOT 
+(complement) 
+on one input 
+xy, or x•y x + y x or x 
+Operation: 
+Expression 
+Notation: 
+Truth table: 
+11 
+Boolean'expressions'(formally)'
+  Use'these'basic'opera1ons'to'form'more'complex'expressions:'
+f(x,y,z)'='(x'+'y)z'+'x'
+  Some'terminology'and'nota1on:'
+  f#is#the#name#of#the#func+on.#
+  (x,y,z)#are#the#input#variables,#each#represen+ng#1#or#0.#Lis+ng#
+the#inputs#is#op+onal,#but#some+mes#helpful.#
+  A#literal#is#any#occurrence#of#an#input#variable#or#complement.#
+The#func+on#above#has#four#literals:#x,#y’,#z,#and#x’.#
+  Precedences'are'important,'but'not'too'difficult.'
+  NOT#has#the#highest#precedence,#followed#by#AND,#and#then#OR.#
+  Fully#parenthesized,#the#func+on#above#would#be#kind#of#messy:#
+f(x,y,z)'='(((x'+(y’))z)'+'x’)'
+'
+12 
+Boolean'expressions'to'Truth'tables'
+  To'compute'a'truth'table'given'a'Boolean'expression:'
+  Evaluate#the#func+on#for#every#combina+on#of#inputs.#
+f(0,0,0)  = (___  + ___)___ + ___ =  ___ 
+ 
+ 
+ 
+ 
+f(1,0,1)  = (___  + ___)___ + ___ =  ___ 
+ 
+ 
+f(x,y,z) = (x + y)z + x 
+a) 0 
+b) 1 
+13 
+Primi1ve'logic'gates'
+  Each'of'our'basic'opera1ons'can'be'implemented'in'hardware'using'a'
+primi1ve'logic'gate.'
+  Symbols#for#each#of#the#logic#gates#are#shown#below.#
+  These#gates#output#the#product,#sum#or#complement#of#their#inputs.#
+Logic gate: 
+AND (product) 
+of two inputs 
+OR (sum) of 
+two inputs 
+NOT 
+(complement) 
+on one input 
+xy, or x•y x + y x 
+Operation: 
+Expression: 
+14 
+Boolean'expressions'to'circuits'
+  Any'Boolean'expression'can'be'converted'into'a'circuit'in'a'
+straighgorward'way.'
+  Write#a#gate#for#each#opera+on#in#the#expression#in#precedence#order.#
+  We#typically#draw#circuits#with#inputs#on#leP#and#outputs#on#right.#
+(x + y’)z + x’ 
+(x + y’)z + x’ 
+x 
+y 
+z 
+Inputs/ Output/
+15 
+  What'Boolean'expression'does'this'circuit'implement?'
+a)''(x'+'y)y’'
+b)'''x'+'y'+'y’'
+c)'''xy’'+'y'
+d)''(xy)'+'y’'
+e)''(x+y)(x+y’)'
+Conver1ng'circuits'to'expressions'
+OR
+AND
+NOT f(x,y)
+x
+y
+16 
+Hardware'Descrip1on'Languages'(HDL)'
+  Textual'descrip1ons'of'circuits'
+  (We’re#very#good#at#manipula+ng#text…)#
+  Not'like'a'normal'programming'language'
+  Each#statement#describes#one#or#more#gates#and/or#wires.#
+A'Circuit:'
+Verilog'
+HDL'Code:'
+wire##x,#y,#z,#a,#w; ##
+and#a1(a,#x,#y);## #//#gatetype#name(out,#in1,#in2);#
+or##o1(w,#a,#z);##
+17 
+Boolean'func1ons'summary'
+  We'can'interpret'high'and'low'voltages'as'true'and'false.'
+  A'Boolean'variable'can'be'either'1'or'0.'
+  AND,'OR,'and'NOT'are'the'basic'Boolean'opera1ons.'
+  We'can'express'Boolean'func1ons'in'many'ways:'
+  Expressions,#truth#tables,#circuits,#and#HDL#code#
+  These#are#different#representa+ons#for#equivalent#things#
+Expressions Truth Tables 
+HDLs (Verilog) Gates (Schematics) 
+18 
+Discussion'Sec1on'starts'this'week!'
+  We’ll'introduce'you'to'the'tools'designing,'tes1ng,'and'
+debugging'digital'logic'circuits'
+  Verilog#
+  Waveform#Viewers#

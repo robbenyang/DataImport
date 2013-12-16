@@ -1,0 +1,22 @@
+Week #4: Memory II (Page Tables) 
+Exam Review Question  
+CS 241: Fall 2013 
+These questions are provided to you to help you study material covered in CS 241 that may appear on the 
+final exam.  These exact questions may or may not appear on the final exam, but the topics they cover will 
+almost certainly be on the final exam. 
+1. Consider a 64-bit system that has 16 KB pages.  If a single-level page table is used and each PTE 
+is 4 bytes, how large is the page table? 
+ 
+2. Consider the same 64-bit system with 16 KB pages and 4 byte PTEs.  Instead of a single-level 
+page table, a multi-level page table is used where each page table fits exactly in one page.  How 
+many levels of page tables exist? 
+ 
+3. Consider a system with 40-bit addresses and a two-level page table.  Both of the first- and 
+second-level page table indexes are 16-bits.  What is the offset of the address 0x584ace42? 
+ 
+4. When executing a program, accessing the memory address 0x80500ac3 caused a segmentation 
+fault.  Explain the process that the computer used to look up that memory address and when the 
+segmentation fault occurred. 
+ 
+5. Two processes independently access the address 0x400241.  When the value of that address is 
+printed out, it was different in each process.  Explain how this could happen. 
